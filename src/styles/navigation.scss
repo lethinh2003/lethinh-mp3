@@ -1,0 +1,140 @@
+@import "../scss/_variables.scss";
+@import "../scss/_mixin.scss";
+a.active {
+  background-color: $nav-selected-bg;
+  color: #50d493;
+  border-left: 5px solid #50d493;
+  display: block;
+}
+.active > .nav__item {
+  color: unset;
+}
+
+.navigation {
+  z-index: 10;
+  width: 200px;
+  height: calc(100% - 90px);
+  background-color: $nav-bg;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s linear;
+  height: 100%;
+}
+.userlogin-info {
+  min-height: 64px;
+  max-height: 111px;
+  background-color: #1b1718;
+  @include flex(center, center);
+  gap: 7px;
+
+  &__avatar {
+    @include widthHeight(42px, 42px);
+    border-radius: 50%;
+    overflow: hidden;
+    img {
+      @include widthHeight(100%, 100%);
+      object-fit: cover;
+      gap: 10px;
+    }
+  }
+
+  &__desc {
+    width: 115px;
+    @include flex(unset, center);
+    flex-direction: column;
+    &--name {
+      font-size: $font-size-first;
+      @include threeDots;
+    }
+    &--level {
+      font-size: $font-size-second;
+      color: #c4861c;
+      @include threeDots;
+    }
+  }
+}
+.nav__items {
+  display: flex;
+  flex-direction: column;
+
+  &--title {
+    font-size: $font-size-first;
+    width: 140px;
+    color: $text-color;
+  }
+}
+.nav__item {
+  height: 50px;
+  color: $text-second-color;
+  @include flex(center, center);
+
+  &.active {
+    background-color: $nav-selected-bg;
+    color: #50d493;
+    border-left: 5px solid #50d493;
+  }
+
+  &--icon {
+    font-size: 30px;
+    @include widthHeight(42px, 42px);
+    @include flex(center, center);
+  }
+
+  &--title {
+    @include threeDots;
+    width: 115px;
+    font-size: $font-size-first;
+  }
+}
+
+.nav-open,
+.nav-down {
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  background-color: #40384e;
+  border-radius: 50%;
+  margin: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  bottom: 35px;
+  position: absolute;
+  transition: all 0.1s linear;
+}
+.close {
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+}
+.btn-openmenu {
+  z-index: 10;
+  background-color: $main-color;
+  height: 50px;
+  width: 50px;
+  top: 50%;
+  position: fixed;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+}
+@include mobile {
+  .navigation {
+    // display: none;
+  }
+  .close {
+    opacity: 1;
+    visibility: visible;
+  }
+  .btn-openmenu {
+    opacity: 1;
+    visibility: visible;
+  }
+}

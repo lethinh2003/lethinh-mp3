@@ -1,0 +1,223 @@
+@import "../scss/_variables.scss";
+@import "../scss/_mixin.scss";
+.fullview {
+  transition: all 0.4s linear;
+  transform: translateY(100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-image: linear-gradient(to right, #2c1e3c, #23123ce0);
+  z-index: 999;
+
+  &__icon--turnoff {
+    @include flex(center, center);
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    @include widthHeight(40px, 40px);
+    background-color: #40384e;
+    border-radius: 50%;
+    margin: 4px;
+    color: $text-color;
+    bottom: 35px;
+    position: absolute;
+    transition: all 0.1s linear;
+  }
+
+  .list_music_current {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    @include flex(flex-end, center);
+    gap: 20px;
+    .next,
+    .previous {
+      height: 400px;
+      opacity: 0.8;
+    }
+    .info-current_music {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      @include mobile {
+        width: 300px;
+      }
+      .thumbnail-current {
+        @include widthHeight(400px, 400px);
+        border-radius: 5px;
+        overflow: hidden;
+        position: relative;
+        @include mobile {
+          @include widthHeight(250px, 250px);
+        }
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .item-thumbnail_hover {
+        background-color: #18171787;
+      }
+      .thumbnail-current:hover .item-thumbnail_hover {
+        opacity: 1;
+      }
+      .thumbnail-current:hover .item-play_icon {
+        opacity: 1;
+      }
+      .desc-current {
+        display: flex;
+        flex-direction: column;
+        height: 40px;
+
+        .music_name {
+          $font-size-first: 20px;
+          color: $text-color;
+          font-weight: $font-weight;
+          font-size: $font-size-first;
+          width: 400px;
+          text-align: center;
+          @include threeDots;
+        }
+        .music_author {
+          color: $text-second-color;
+          text-align: center;
+          font-size: $font-size-second;
+          @include threeDots;
+          width: 400px;
+        }
+      }
+    }
+  }
+
+  &__music-player {
+    margin-bottom: 20px;
+    z-index: 4;
+    height: 70px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    padding: 10px;
+    color: white;
+    justify-content: space-between;
+
+    .music-info {
+      justify-content: space-around;
+      width: 340px;
+      color: white;
+      display: flex;
+      align-items: center;
+      .cd {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        border: 2px solid white;
+        overflow: hidden;
+        object-fit: cover;
+        img {
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .music-name {
+        width: 180px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        .name {
+          font-size: 14px;
+        }
+        .subtitle {
+          font-size: 12px;
+        }
+      }
+
+      .music-icon {
+        display: flex;
+        justify-content: space-around;
+        width: 80px;
+      }
+    }
+    .music-playing {
+      left: 50%;
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      top: 50%;
+      transform: translate(-50%, -50%);
+
+      .playbar-top {
+        justify-content: space-around;
+        display: flex;
+        align-items: center;
+        .fa {
+          cursor: pointer;
+        }
+      }
+
+      .playbar-bottom {
+        width: 520px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        @include mobile {
+          width: 350px;
+        }
+        .range {
+          margin: 0 5px;
+          width: 400px;
+          height: 3px;
+          @include mobile {
+            width: 230px;
+          }
+          &:hover {
+            height: 5px;
+          }
+        }
+      }
+    }
+
+    .music-controler {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      #volumn {
+        height: 3px;
+        width: 70px;
+      }
+      .volume-icon {
+        display: inherit;
+      }
+    }
+  }
+}
+.item-playing_icon {
+  padding: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 40px;
+}
+
+@include mobile {
+  .fullview .list_music_current .next,
+  .fullview .list_music_current .previous {
+    display: none;
+  }
+}

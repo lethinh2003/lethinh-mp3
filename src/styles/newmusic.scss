@@ -1,0 +1,8 @@
+@import "../scss/_variables.scss";
+@import "../scss/_mixin.scss";
+.item-thumbnail__icon--play {
+  @include flex(center, center);
+  border: 2px solid $text-color;
+  border-radius: 50%;
+  @include widthHeight(50px, 50px);
+}

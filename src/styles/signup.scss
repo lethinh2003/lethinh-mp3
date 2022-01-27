@@ -1,0 +1,82 @@
+@import "../scss/_variables.scss";
+@import "../scss/_mixin.scss";
+
+.signup-opacity {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(2, 0, 0, 0.445);
+}
+.box-signup {
+  @include widthHeight(350px, 500px);
+  background-color: #fff;
+  position: absolute;
+  @include center;
+  border-radius: 30px;
+  overflow: hidden;
+}
+.signup__header {
+  color: black;
+  font-weight: $font-weight;
+  position: absolute;
+  height: 70px;
+  width: 100%;
+  object-fit: cover;
+  @include flex(center, space-around);
+
+  &--title {
+    padding-right: 150px;
+  }
+}
+.signup__body {
+  width: 90%;
+  position: absolute;
+  @include center;
+  @include flex(center, center);
+  flex-direction: column;
+
+  &--button {
+    margin-top: 10px;
+    @include widthHeight(100%, 50px);
+    background-color: #c9284d;
+    @include flex(center, center);
+    cursor: pointer;
+    font-size: $font-size-first;
+  }
+
+  &--message {
+    margin-top: 5px;
+    @include flex(center, center);
+    flex-direction: column;
+    font-size: $font-size-first;
+    font-weight: $font-weight;
+
+    .message--error {
+      display: none;
+      color: red;
+    }
+    .message--info {
+      color: blue;
+    }
+  }
+
+  &--input {
+    margin-top: 10px;
+    @include widthHeight(100%, 40px);
+    input {
+      font-size: $font-size-first;
+      @include widthHeight(100%, 100%);
+      color: #130d21;
+      border-color: #6121ac;
+      border-radius: 4px;
+      font-weight: 700;
+      padding: 5px;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}

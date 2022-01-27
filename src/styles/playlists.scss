@@ -1,0 +1,60 @@
+@import "../scss/_variables.scss";
+@import "../scss/_mixin.scss";
+
+.box-playlists {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 200px;
+  gap: 20px;
+
+  &__scroll {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  &__items {
+    display: grid;
+    grid-template-columns: 290px 290px;
+    grid-template-rows: 115px 115px;
+    gap: 15px;
+
+    @include mobile {
+      grid-template-columns: 190px 190px;
+      grid-template-rows: 70px 70px;
+    }
+  }
+}
+
+.box-title {
+  color: $text-color;
+  font-size: $font-size-first;
+  font-weight: $font-weight;
+}
+
+.playlists-item {
+  @include widthHeight(290px, 115px);
+  border-radius: $border-radius;
+  background-color: #fff;
+  overflow: hidden;
+  position: relative;
+
+  @include mobile {
+    @include widthHeight(190px, 70px);
+  }
+
+  img {
+    @include widthHeight(100%, 100%);
+    object-fit: cover;
+  }
+
+  &__title {
+    @include threeDots;
+    position: absolute;
+    color: $text-color;
+    font-size: $font-size-first;
+    font-weight: $font-weight;
+    left: 0;
+    bottom: 0;
+    margin: 18px;
+  }
+}

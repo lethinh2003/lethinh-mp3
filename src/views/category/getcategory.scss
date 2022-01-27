@@ -1,0 +1,107 @@
+.category-container {
+  display: flex;
+  color: white;
+  height: 500px;
+  margin-top: 120px;
+  .box-left {
+    width: 40%;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .left-images {
+      width: 300px;
+      height: 300px;
+
+      border-radius: 10px;
+      overflow: hidden;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    .left-desc {
+      align-items: center;
+
+      display: flex;
+      flex-direction: column;
+      .desc-title {
+        font-size: 30px;
+        font-weight: bold;
+      }
+      .desc-author {
+        color: #ccc;
+      }
+    }
+  }
+  .box-right {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+
+    max-height: 400px;
+
+    .box-right_data {
+      overflow-y: auto;
+    }
+    .right-title {
+      padding-bottom: 7px;
+      border-bottom: 2px solid;
+    }
+    .icon-back {
+      font-size: 30px;
+      cursor: pointer;
+      width: 30px;
+    }
+    .right-list_item {
+      padding: 5px 0;
+      align-items: center;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 10px;
+      &:not(:last-child) {
+        border-bottom: 1px solid #ccc;
+      }
+      .list-item_left {
+        border-radius: 5px;
+        overflow: hidden;
+
+        width: 50px;
+        height: 50px;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .list-item_right {
+        width: 300px;
+        height: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        .item-right_name {
+          font-size: 15px;
+          font-weight: 600;
+        }
+        .item-right_author {
+          color: #ccc;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 768px) {
+  .category-container {
+    width: calc(100% - 20px);
+    .box-left {
+      display: none;
+    }
+    .box-right {
+      width: 100%;
+    }
+  }
+}

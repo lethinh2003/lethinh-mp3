@@ -1,0 +1,32 @@
+@import "../scss/mixin";
+@import "../scss/variables";
+.heart-opacity {
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.25s linear;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(2, 0, 0, 0.445);
+  z-index: 999998;
+}
+
+.heart {
+  @include flex(center, center);
+  @include center;
+  position: absolute;
+  font-size: 150px;
+  color: #e00;
+
+  & > i {
+    animation: beat 0.25s infinite alternate;
+    transform-origin: center;
+  }
+}
+@keyframes beat {
+  to {
+    transform: scale(1.5);
+  }
+}

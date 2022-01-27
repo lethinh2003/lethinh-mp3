@@ -1,0 +1,49 @@
+@import "../scss/_variables.scss";
+@import "../scss/_mixin.scss";
+@import url("https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  // @include widthHeight(100%, 1300px);
+  // height: 1500px;
+
+  font-family: $font-family;
+  color: $text-color;
+  // background: linear-gradient(to bottom, $body-bg-first, $body-bg-second);
+  // background-color: $body-bg-first;
+  background-color: #0a0a0a;
+
+  @include mobile {
+    height: 1000px;
+  }
+}
+ul,
+li {
+  list-style-type: none;
+}
+a {
+  text-decoration: none;
+  color: unset;
+}
+::-webkit-scrollbar {
+  width: 5px;
+  height: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
