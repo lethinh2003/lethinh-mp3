@@ -7,16 +7,16 @@ import Popular from "./Popular";
 import Playlists from "./Playlists";
 import Artists from "./Artists";
 import Heart from "./Heart";
+import Layout from "./Layout";
+
 const MainPage = () => {
   return (
     <>
       <Heart />
-      <div className="mainpage">
-        <Search />
-        {/* <UserInfo /> */}
-        {/* <Category /> */}
-        <Artists />
 
+      {/* MAINPAGE */}
+      <div className="ms-mainpage">
+        <Artists />
         <NewMusic />
         <div className="box-two-col">
           <Popular />

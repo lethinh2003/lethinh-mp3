@@ -66,7 +66,6 @@ const MenuRight = (props) => {
       }
     }
   };
-  console.log(isPlayingPlaylist);
 
   useEffect(() => {
     //Check User Valid
@@ -76,6 +75,7 @@ const MenuRight = (props) => {
       setIsLoading(false);
     }
   }, []);
+
   useEffect(() => {
     if (!accessAccount) {
       if (dataMusic.length > 1) {
@@ -116,9 +116,7 @@ const MenuRight = (props) => {
       }
     }
   }, [dataMusic, dataMusicUser, isPlayingPlaylist]);
-  useEffect(() => {
-    console.log(isPlayingPlaylist);
-  }, [isPlayingPlaylist]);
+  useEffect(() => {}, [isPlayingPlaylist]);
 
   useEffect(() => {
     if (currentMusic) {
@@ -168,7 +166,7 @@ const MenuRight = (props) => {
         if (TokenAccount) {
           const nextMusic = dataMusicUser[nextMusicId];
           const previousMusic = dataMusicUser[previousMusicId];
-          console.log(nextMusic, previousMusic);
+
           dispatch(setNextSelectedMusic(nextMusic));
           dispatch(setPreviousSelectedMusic(previousMusic));
         } else {
@@ -252,7 +250,6 @@ const MenuRight = (props) => {
       }
     }
   };
-  console.log("rerender", isPlayingPlaylist);
 
   return (
     <>

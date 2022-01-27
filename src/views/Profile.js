@@ -89,33 +89,21 @@ const Profile = () => {
                 },
               });
               const path = response.data.data;
-              const updateUser = await axios.post(
-                "https://random-musics.herokuapp.com/api/v1/users/update",
-                {
-                  _id: dataUser._id,
-                  name: name,
-                  avatar: path,
-                }
-              );
-              localStorage.setItem(
-                "currentUser",
-                JSON.stringify(updateUser.data.data)
-              );
+              const updateUser = await axios.post("https://random-musics.herokuapp.com/api/v1/users/update", {
+                _id: dataUser._id,
+                name: name,
+                avatar: path,
+              });
+              localStorage.setItem("currentUser", JSON.stringify(updateUser.data.data));
               dispatch(getUserLogin(updateUser.data.data));
             } else {
               const path = dataUser.avatar;
-              const updateUser = await axios.post(
-                "https://random-musics.herokuapp.com/api/v1/users/update",
-                {
-                  _id: dataUser._id,
-                  name: name,
-                  avatar: path,
-                }
-              );
-              localStorage.setItem(
-                "currentUser",
-                JSON.stringify(updateUser.data.data)
-              );
+              const updateUser = await axios.post("https://random-musics.herokuapp.com/api/v1/users/update", {
+                _id: dataUser._id,
+                name: name,
+                avatar: path,
+              });
+              localStorage.setItem("currentUser", JSON.stringify(updateUser.data.data));
               dispatch(getUserLogin(updateUser.data.data));
             }
 
@@ -126,7 +114,6 @@ const Profile = () => {
             nameInput.current.disabled = true;
             avatarInput.current.value = null;
           } catch (err) {
-            console.log(err);
             profileBtn.current.style = ``;
             profileBtn.current.textContent = "Edit";
           }
@@ -154,11 +141,7 @@ const Profile = () => {
           <div className="box-profile">
             <div className="profile__header">
               <div className="profile__header--title">
-                <BiArrowBack
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleClickBack()}
-                />{" "}
-                Profile
+                <BiArrowBack style={{ cursor: "pointer" }} onClick={() => handleClickBack()} /> Profile
               </div>
               <Link to="/">
                 <div className="profile__header--icon">X</div>
@@ -169,10 +152,7 @@ const Profile = () => {
                 <div className="info--avatar">
                   <img src={currentUserParse.avatar} />
                 </div>
-                <div
-                  className="profile__body--input"
-                  style={{ display: "none" }}
-                >
+                <div className="profile__body--input" style={{ display: "none" }}>
                   <input type="file" ref={avatarInput} />
                 </div>
                 <div className="profile__body--input">
@@ -202,11 +182,7 @@ const Profile = () => {
                 </span>
               </div>
 
-              <div
-                className="profile__body--button"
-                ref={profileBtn}
-                onClick={() => handleClickEdit()}
-              >
+              <div className="profile__body--button" ref={profileBtn} onClick={() => handleClickEdit()}>
                 Edit
               </div>
               <div className="profile__body--message">

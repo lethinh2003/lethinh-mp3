@@ -6,6 +6,8 @@ import Login from "./views/Login";
 import Logout from "./views/Logout";
 import Signup from "./views/Signup";
 import Profile from "./views/Profile";
+
+import Layout from "./views/Layout";
 import ProfilePassword from "./views/ProfilePassword";
 import GetCateGory from "./views/category/GetCategory";
 import "./styles/loading.scss";
@@ -14,10 +16,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-notifications/lib/notifications.css";
-import {
-  NotificationContainer,
-  NotificationManager,
-} from "react-notifications";
+import { NotificationContainer, NotificationManager } from "react-notifications";
 function App() {
   ////CONFIG DEFAULT AXIOS
   const AuthToken = localStorage.getItem("jwt");
@@ -35,46 +34,49 @@ function App() {
   }
   return (
     <>
-      <Router>
-        <Navigation />
-        <Switch>
-          <Route path="/" exact={true}>
-            <MainPage />
-          </Route>
-          <Route path="/category/:category" exact={true}>
-            <GetCateGory />
-          </Route>
-          <Route path="/login" exact={true}>
-            <Login />
-          </Route>
-          <Route path="/logout" exact={true}>
-            <Logout />
-          </Route>
-          <Route path="/signup" exact={true}>
-            <Signup />
-          </Route>
-          <Route path="/me" exact={true}>
-            <Profile />
-          </Route>
-          <Route path="/me/password" exact={true}>
-            <ProfilePassword />
-          </Route>
-        </Switch>
+      <div className="ms-layout">
+        <Router>
+          <Navigation />
 
-        <MusicPlayer />
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable
-          pauseOnHover={false}
-          theme="dark"
-        />
-      </Router>
+          <Switch>
+            <Route path="/" exact={true}>
+              <MainPage />
+            </Route>
+            <Route path="/category/:category" exact={true}>
+              <GetCateGory />
+            </Route>
+            <Route path="/login" exact={true}>
+              <Login />
+            </Route>
+            <Route path="/logout" exact={true}>
+              <Logout />
+            </Route>
+            <Route path="/signup" exact={true}>
+              <Signup />
+            </Route>
+            <Route path="/me" exact={true}>
+              <Profile />
+            </Route>
+            <Route path="/me/password" exact={true}>
+              <ProfilePassword />
+            </Route>
+          </Switch>
+
+          <MusicPlayer />
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss={false}
+            draggable
+            pauseOnHover={false}
+            theme="dark"
+          />
+        </Router>
+      </div>
     </>
   );
 }

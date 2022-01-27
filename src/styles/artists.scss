@@ -17,6 +17,7 @@
 
 .box-artists-sliders {
   min-height: 500px;
+  padding: 0 30px;
 
   transition: 0.25s linear;
   @include mobile {

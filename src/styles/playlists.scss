@@ -19,8 +19,8 @@
     gap: 15px;
 
     @include mobile {
-      grid-template-columns: 190px 190px;
-      grid-template-rows: 70px 70px;
+      grid-template-columns: 170px 170px;
+      grid-template-rows: 50px 50px;
     }
   }
 }
@@ -39,7 +39,7 @@
   position: relative;
 
   @include mobile {
-    @include widthHeight(190px, 70px);
+    @include widthHeight(170px, 50px);
   }
 
   img {

@@ -110,14 +110,11 @@ const ProfilePassword = () => {
         try {
           profileBtn.current.style = `opacity: 0.7; pointer-events: none;`;
           profileBtn.current.textContent = "Changing...";
-          const response = await axios.post(
-            "https://random-musics.herokuapp.com/api/v1/users/updatePassword",
-            {
-              currentPassword,
-              password,
-              confirmPassword,
-            }
-          );
+          const response = await axios.post("https://random-musics.herokuapp.com/api/v1/users/updatePassword", {
+            currentPassword,
+            password,
+            confirmPassword,
+          });
           localStorage.setItem("accessAccount", true);
           localStorage.setItem("jwt", response.data.token);
 
@@ -132,7 +129,6 @@ const ProfilePassword = () => {
           profileBtn.current.textContent = "Change";
           history.replace("/");
         } catch (err) {
-          console.log(err);
           if (err.response) {
             toast.error(err.response.data.message);
           }
@@ -174,11 +170,7 @@ const ProfilePassword = () => {
           <div className="box-profile">
             <div className="profile__header">
               <div className="profile__header--title">
-                <BiArrowBack
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleClickBack()}
-                />{" "}
-                Profile
+                <BiArrowBack style={{ cursor: "pointer" }} onClick={() => handleClickBack()} /> Profile
               </div>
               <Link to="/">
                 <div className="profile__header--icon">X</div>
@@ -199,10 +191,7 @@ const ProfilePassword = () => {
                   <span className="message--error" ref={confirmPasswordError}>
                     Nhập lại mật khẩu phải từ 6 kí tự trở lên
                   </span>
-                  <span
-                    className="message--error"
-                    ref={confirmPasswordEqualError}
-                  >
+                  <span className="message--error" ref={confirmPasswordEqualError}>
                     Vui lòng nhập đúng xác nhận mật khẩu
                   </span>
                 </div>
@@ -236,11 +225,7 @@ const ProfilePassword = () => {
                 </div>
               </div>
 
-              <div
-                className="profile__body--button"
-                ref={profileBtn}
-                onClick={() => handleClickEdit()}
-              >
+              <div className="profile__body--button" ref={profileBtn} onClick={() => handleClickEdit()}>
                 Change
               </div>
             </div>

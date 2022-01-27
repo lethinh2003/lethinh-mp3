@@ -53,7 +53,7 @@ const MusicPlayer = () => {
     const musicPlayer = document.querySelector(".music-player");
     const musicInfo = document.querySelector(".music-info");
     const navDown = document.querySelector(".turn-off_fullview");
-    const menuRight = document.querySelector(".menu-right");
+    const menuRight = document.querySelector(".ms-sidebar");
     const fullView = document.querySelector(".fullview");
     setFullView(fullView);
     setMenuRight(menuRight);

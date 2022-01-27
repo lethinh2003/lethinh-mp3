@@ -12,13 +12,7 @@ import {
 } from "../redux/actions";
 
 const FullView = (props) => {
-  let {
-    handleSetCurrentMusic,
-    currentMusic,
-    handleCloseFullView,
-    handleUpdateStatusAudio,
-    listCurrentMusic,
-  } = props;
+  let { handleSetCurrentMusic, currentMusic, handleCloseFullView, handleUpdateStatusAudio, listCurrentMusic } = props;
 
   const [minutesCurrent, setMinutesCurrent] = useState(0);
   const [secondsCurrent, setSecondsCurrent] = useState(0);
@@ -49,7 +43,6 @@ const FullView = (props) => {
 
   useEffect(() => {
     if (Array.isArray(currentMusic) === false) {
-      document.title = "You are listening " + currentMusic.info[0].name;
       if (isAudioPlay === true) {
         if (getMusicDuration.minutesDuration) {
           dispatch(getStatusSelectedMusic(false));
@@ -67,6 +60,11 @@ const FullView = (props) => {
       }
     }
   }, [currentMusic]);
+  useEffect(() => {
+    if (isAudioPlay) {
+      document.title = "You are listening " + currentMusic.info[0].name;
+    }
+  }, [isAudioPlay]);
 
   useEffect(() => {
     const updateTime = () => {
@@ -85,9 +83,7 @@ const FullView = (props) => {
         } else {
           getSecondsCurrent = getSecondsCurrent;
         }
-        const valueCurrent = Math.floor(
-          (audioPlay.current.currentTime / audioPlay.current.duration) * 100
-        );
+        const valueCurrent = Math.floor((audioPlay.current.currentTime / audioPlay.current.duration) * 100);
         setMinutesCurrent(getMinutesCurrent);
         setSecondsCurrent(getSecondsCurrent);
         setMinutesDuration(getMinutes);
@@ -161,11 +157,7 @@ const FullView = (props) => {
 
   //Handle Change Value Music
   const handleChangeValue = (e) => {
-    if (
-      audioPlay.current &&
-      getMusicDuration.minutesDuration &&
-      Array.isArray(currentMusic) === false
-    ) {
+    if (audioPlay.current && getMusicDuration.minutesDuration && Array.isArray(currentMusic) === false) {
       const changeValue = (audioPlay.current.duration / 100) * e.target.value;
       setValueCurrent(e.target.value);
       audioPlay.current.currentTime = changeValue;
@@ -237,12 +229,6 @@ const FullView = (props) => {
       setIsAutoNext(!isAutoNext);
     }
   };
-  console.log("-----------------");
-  console.log("account", accessAccount);
-  console.log("isplayingplaylist", isPlayingPlaylist);
-  console.log("datamusic", dataMusic);
-  console.log("datamusicuser", dataMusicUser);
-  console.log("-----------------");
 
   return (
     <>
@@ -301,12 +287,8 @@ const FullView = (props) => {
                     style={{ width: "100px", height: "100px" }}
                     onClick={() => handleOnOffMusic()}
                   >
-                    {isAudioPlay === false && (
-                      <i className="fa fa-play big-icon" aria-hidden="true"></i>
-                    )}
-                    {isAudioPlay === true && (
-                      <i className="fa fa-pause big-icon" aria-hidden="true"></i>
-                    )}
+                    {isAudioPlay === false && <i className="fa fa-play big-icon" aria-hidden="true"></i>}
+                    {isAudioPlay === true && <i className="fa fa-pause big-icon" aria-hidden="true"></i>}
                   </div>
                   <img src={currentMusic.info[0].thumbnail} />
                 </div>
@@ -374,13 +356,8 @@ const FullView = (props) => {
                 </div>
                 <div className="playbar-bottom">
                   <span className="time-left">
-                    {getMusicDuration && getMusicDuration.minutesCurrent
-                      ? getMusicDuration.minutesCurrent
-                      : "0"}
-                    :
-                    {getMusicDuration && getMusicDuration.secondsCurrent
-                      ? getMusicDuration.secondsCurrent
-                      : "00"}
+                    {getMusicDuration && getMusicDuration.minutesCurrent ? getMusicDuration.minutesCurrent : "0"}:
+                    {getMusicDuration && getMusicDuration.secondsCurrent ? getMusicDuration.secondsCurrent : "00"}
                   </span>
                   <input
                     onChange={(e) => handleChangeValue(e)}
@@ -393,13 +370,8 @@ const FullView = (props) => {
                   />
 
                   <span className="time-right">
-                    {getMusicDuration && getMusicDuration.minutesDuration
-                      ? getMusicDuration.minutesDuration
-                      : "0"}
-                    :
-                    {getMusicDuration && getMusicDuration.secondsDuration
-                      ? getMusicDuration.secondsDuration
-                      : "00"}
+                    {getMusicDuration && getMusicDuration.minutesDuration ? getMusicDuration.minutesDuration : "0"}:
+                    {getMusicDuration && getMusicDuration.secondsDuration ? getMusicDuration.secondsDuration : "00"}
                   </span>
                 </div>
                 <div className="playbar-top">

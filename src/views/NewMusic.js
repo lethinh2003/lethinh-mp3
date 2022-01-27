@@ -49,7 +49,7 @@ const NewMusic = () => {
   const dataMyPlaylistUser = useSelector((state) => state.addMyPlaylistUser);
   const dispatch = useDispatch();
   const isPlayingPlaylist = localStorage.getItem("isPlayingPlaylist") || "false";
-  console.log(isPlayingPlaylist);
+
   const fetchAPI = async () => {
     try {
       const response = await axios.get("https://random-musics.herokuapp.com/api/v1/musics/new-musics");
