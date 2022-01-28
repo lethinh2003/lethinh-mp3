@@ -13,9 +13,24 @@ import { FaBars } from "react-icons/fa";
 import { RiBarChartHorizontalLine } from "react-icons/ri";
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { getUserLogin, removeUserLogin, accessAccount } from "../redux/actions";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 const Navigation = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const nav = useRef(null);
+  const dataUser = useSelector((state) => state.getUserLogin);
+  const dataSelectedMusic = useSelector((state) => state.selectedMusic.data);
+  console.log(dataSelectedMusic);
+  let history = useHistory();
+  useEffect(() => {
+    if (Array.isArray(dataSelectedMusic)) {
+      nav.current.classList.remove("has-player");
+    } else {
+      nav.current.classList.add("has-player");
+    }
+  }, [dataSelectedMusic]);
+
   const hanldeOnOffNavbar = () => {
     if (isNavOpen) {
       nav.current.style = "transform: translateX(-100%); opacity: 0; visibility: hidden;";
@@ -24,6 +39,13 @@ const Navigation = () => {
     }
     setIsNavOpen(!isNavOpen);
   };
+
+  const hanldeClickBackHistory = () => {
+    history.goBack();
+  };
+  const hanldeClickForwardHistory = () => {
+    history.goForward();
+  };
   return (
     <>
       {/* SIDEBAR */}
@@ -31,6 +53,19 @@ const Navigation = () => {
         <div className="ms-sidebar__logo">
           <img src="https://i.imgur.com/O784N6i.png" />
         </div>
+        {dataUser && (
+          <div className="userlogin-info">
+            <div className="userlogin-info__avatar">
+              <Link to="/me">
+                <img src={dataUser.avatar} />
+              </Link>
+            </div>
+            <div className="userlogin-info__desc">
+              <span className="userlogin-info__desc--name">{dataUser.name}</span>
+              <span className="userlogin-info__desc--level">{dataUser.role}</span>
+            </div>
+          </div>
+        )}
 
         <div className="ms-sidebar__wrapper">
           <div className="ms-navbar">
@@ -90,12 +125,6 @@ const Navigation = () => {
               </span>
               <span className="ms-navbar__item--title">For You</span>
             </div>
-            <div className="ms-navbar__item close">
-              <span className="ms-navbar__item--icon">
-                <RiCloseCircleLine />
-              </span>
-              <span className="ms-navbar__item--title">Close Menu</span>
-            </div>
           </div>
         </div>
       </aside>
@@ -104,10 +133,10 @@ const Navigation = () => {
       <header className="ms-header">
         <div className="level">
           <div className="level-left">
-            <span className="ms-btn">
+            <span className="ms-btn" onClick={() => hanldeClickBackHistory()}>
               <IoIosArrowRoundBack />
             </span>
-            <span className="ms-btn">
+            <span className="ms-btn" onClick={() => hanldeClickForwardHistory()}>
               <IoIosArrowRoundForward />
             </span>
             <div className="search"></div>
@@ -118,7 +147,7 @@ const Navigation = () => {
             </span>
 
             <div className="login-btn">
-              <Link to="/login">Login</Link>
+              {!dataUser ? <Link to="/login">Login</Link> : <Link to="/logout">Logout</Link>}
             </div>
           </div>
         </div>

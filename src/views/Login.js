@@ -2,6 +2,8 @@ import "../styles/login.scss";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { AiOutlinePlus } from "react-icons/ai";
+import { FiEye } from "react-icons/fi";
+import { FiEyeOff } from "react-icons/fi";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Oval } from "react-loading-icons";
@@ -20,6 +22,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [accountStatus, setAccountStatus] = useState(false);
   const [passwordStatus, setPasswordStatus] = useState(false);
+  const [isShowPassword, setIsShowPassword] = useState(false);
   const currentUser = localStorage.getItem("currentUser");
   if (currentUser) {
     history.replace("/");
@@ -62,20 +65,15 @@ const Login = () => {
         loginBtn.current.style = `opacity: 0.7; pointer-events: none;`;
         loginBtn.current.textContent = "Logging...";
 
-        const response = await axios.post(
-          "https://random-musics.herokuapp.com/api/v1/users/login",
-          {
-            account,
-            password,
-          }
-        );
+        const response = await axios.post("https://random-musics.herokuapp.com/api/v1/users/login", {
+          account,
+          password,
+        });
 
         localStorage.setItem("jwt", response.data.token);
         localStorage.setItem("accessAccount", true);
         localStorage.setItem("currentUser", JSON.stringify(response.data.data));
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${response.data.token}`;
+        axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
         const getPlayList = await axios.get(
           `https://random-musics.herokuapp.com/api/v1/playlists/${response.data.data._id}/`,
           {}
@@ -84,10 +82,7 @@ const Login = () => {
         const data = getPlayList.data.data.data.map((item) => {
           dataStorage.push(item.music[0]);
         });
-        localStorage.setItem(
-          "MyPlayListMusicFromDB",
-          JSON.stringify(dataStorage)
-        );
+        localStorage.setItem("MyPlayListMusicFromDB", JSON.stringify(dataStorage));
         localStorage.removeItem("selectedMusic");
         loginBtn.current.style = ``;
         loginBtn.current.textContent = "Login";
@@ -113,6 +108,14 @@ const Login = () => {
   const handleChangePassword = (e) => {
     setPasswordStatus(true);
     setPassword(e.target.value);
+  };
+  const handleHideShowPassword = () => {
+    if (!isShowPassword) {
+      passwordInputError.current.type = "text";
+    } else {
+      passwordInputError.current.type = "password";
+    }
+    setIsShowPassword(!isShowPassword);
   };
 
   return (
@@ -151,12 +154,11 @@ const Login = () => {
                 placeholder="Password"
                 onChange={(e) => handleChangePassword(e)}
               />
+              <label className="password-option" onClick={() => handleHideShowPassword()}>
+                {isShowPassword ? <FiEye /> : <FiEyeOff />}
+              </label>
             </div>
-            <div
-              className="login__body--button"
-              ref={loginBtn}
-              onClick={() => fetchAPI()}
-            >
+            <div className="login__body--button" ref={loginBtn} onClick={() => fetchAPI()}>
               Login
             </div>
             <div className="login__body--message">

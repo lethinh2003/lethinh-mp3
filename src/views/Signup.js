@@ -128,16 +128,13 @@ const Login = () => {
       try {
         signupBtn.current.style = `opacity: 0.7; pointer-events: none;`;
         signupBtn.current.textContent = "Signing up...";
-        const response = await axios.post(
-          "https://random-musics.herokuapp.com/api/v1/users/signup",
-          {
-            account,
-            name,
-            password,
-            confirmPassword,
-            email,
-          }
-        );
+        const response = await axios.post("https://random-musics.herokuapp.com/api/v1/users/signup", {
+          account,
+          name,
+          password,
+          confirmPassword,
+          email,
+        });
         signupBtn.current.style = ``;
         signupBtn.current.textContent = "Signup";
 
@@ -182,7 +179,7 @@ const Login = () => {
       <div className="signup-opacity">
         <div className="box-signup">
           <div className="signup__header">
-            <div className="signup__header--title">Signup</div>
+            <div className="signup__header--title">Sign up</div>
             <Link to="/">
               <div className="signup__header--icon">X</div>
             </Link>
@@ -208,56 +205,74 @@ const Login = () => {
                 Vui lòng nhập Email hợp lệ
               </span>
             </div>
-            <div className="signup__body--input">
+
+            <div class="field-container" ref={accountInputError}>
               <input
+                class="field-input"
+                name="account"
                 type="text"
+                placeholder=" "
                 value={account}
-                ref={accountInputError}
-                placeholder="Account"
                 onChange={(e) => handleChangeAccount(e)}
               />
+              <label class="field-placeholder" htmlFor="account">
+                Account
+              </label>
             </div>
-            <div className="signup__body--input">
+            <div class="field-container" ref={nameInputError}>
               <input
+                class="field-input"
+                name="name"
                 type="text"
+                placeholder=" "
                 value={name}
-                ref={nameInputError}
-                placeholder="Name"
                 onChange={(e) => handleChangeName(e)}
               />
+              <label class="field-placeholder" htmlFor="name">
+                Name
+              </label>
             </div>
-            <div className="signup__body--input">
+            <div class="field-container" ref={passwordInputError}>
               <input
+                class="field-input"
+                name="password"
                 type="password"
+                placeholder=" "
                 value={password}
-                ref={passwordInputError}
-                placeholder="Password"
                 onChange={(e) => handleChangePassword(e)}
               />
+              <label class="field-placeholder" htmlFor="password">
+                Password
+              </label>
             </div>
-            <div className="signup__body--input">
+            <div class="field-container" ref={confirmPasswordInputError}>
               <input
+                class="field-input"
+                name="confirmPassword"
                 type="password"
+                placeholder=" "
                 value={confirmPassword}
-                ref={confirmPasswordInputError}
-                placeholder="Confirm Password"
                 onChange={(e) => handleChangeConfirmPassword(e)}
               />
+              <label class="field-placeholder" htmlFor="confirmPassword">
+                Confirm Password
+              </label>
             </div>
-            <div className="signup__body--input">
+            <div class="field-container" ref={emailInputError}>
               <input
+                class="field-input"
+                name="email"
                 type="text"
+                placeholder=" "
                 value={email}
-                ref={emailInputError}
-                placeholder="Email"
                 onChange={(e) => handleChangeEmail(e)}
               />
+              <label class="field-placeholder" htmlFor="email">
+                Email
+              </label>
             </div>
-            <div
-              className="signup__body--button"
-              ref={signupBtn}
-              onClick={() => fetchAPI()}
-            >
+
+            <div className="signup__body--button" ref={signupBtn} onClick={() => fetchAPI()}>
               Signup
             </div>
           </div>

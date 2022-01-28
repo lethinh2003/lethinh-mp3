@@ -222,6 +222,7 @@ $margin-primary: 52px;
 
   &__logo {
     @include widthHeight(120px, 50px);
+    margin: 5px;
 
     img {
       @include widthHeight(100%, 100%);

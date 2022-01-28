@@ -8,11 +8,16 @@
   bottom: 0;
   right: 0;
   background-color: rgba(2, 0, 0, 0.445);
+  z-index: 9999999;
 }
 .box-signup {
-  @include widthHeight(350px, 500px);
+  max-width: 350px;
+
+  max-height: 600px;
+
+  @include widthHeight(100%, 100%);
   background-color: #fff;
-  position: absolute;
+  position: relative;
   @include center;
   border-radius: 30px;
   overflow: hidden;
@@ -65,6 +70,7 @@
   &--input {
     margin-top: 10px;
     @include widthHeight(100%, 40px);
+    position: relative;
     input {
       font-size: $font-size-first;
       @include widthHeight(100%, 100%);
@@ -79,4 +85,71 @@
       }
     }
   }
+}
+$field-container-padding: 5px;
+$label-padding: $field-container-padding !default;
+
+.field-container {
+  position: relative;
+  border: 1px solid #6121ac;
+  height: 50px;
+  width: 100%;
+  padding-left: 12px;
+  font-weight: 700;
+  margin: 5px 0;
+}
+
+.field-placeholder {
+  position: absolute;
+  top: 50%;
+  transform: translate(#{$label-padding}, -50%);
+  pointer-events: none;
+  transition: all 0.14s ease-in-out;
+  font-size: $font-size-first;
+  color: #adadad;
+}
+
+input.field-input {
+  color: #000;
+  border: none;
+  padding: $label-padding;
+  margin-top: 20px;
+  font-size: $font-size-first;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  bottom: 0px;
+  &:focus {
+    outline: none;
+  }
+  &.c-fix,
+  &:focus,
+  &:not(:placeholder-shown) {
+    border-color: transparent;
+    ~ label {
+      color: #646669;
+      font-size: 11px;
+      //Come up with a calculation for this
+      top: calc(30% - 0.5rem);
+      transform: translate(#{$label-padding}, 0%);
+    }
+  }
+
+  &::-webkit-input-placeholder {
+    color: transparent;
+  }
+  &::-moz-placeholder {
+    color: transparent;
+  }
+  &:-ms-input-placeholder {
+    color: transparent;
+  }
+}
+.password-option {
+  bottom: -11px;
+  right: 7px;
+  height: 100%;
+
+  position: absolute;
+  color: black;
 }

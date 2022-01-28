@@ -22,6 +22,7 @@ a.active {
   height: 100%;
 }
 .userlogin-info {
+  width: 100%;
   min-height: 64px;
   max-height: 111px;
   background-color: #1b1718;
@@ -51,6 +52,7 @@ a.active {
       font-size: $font-size-second;
       color: #c4861c;
       @include threeDots;
+      text-transform: capitalize;
     }
   }
 }
