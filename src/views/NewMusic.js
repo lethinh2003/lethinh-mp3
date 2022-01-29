@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "../styles/newmusic.scss";
-
+import { Bars } from "react-loading-icons";
 import axios from "axios";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -50,13 +50,14 @@ const NewMusic = () => {
   const dataMyPlaylist = useSelector((state) => state.addMyPlaylist);
   const dataMyPlaylistUser = useSelector((state) => state.addMyPlaylistUser);
   const myListHearts = useSelector((state) => state.getMyListHearts);
-
+  const isAudioPlay = useSelector((state) => state.getStatusSelectedMusic.data.status);
   const dispatch = useDispatch();
   const isPlayingPlaylist = localStorage.getItem("isPlayingPlaylist") || "false";
 
   const fetchAPI = async () => {
     try {
       const response = await axios.get("https://random-musics.herokuapp.com/api/v1/musics/new-musics");
+      console.log(response.data.data.data);
       dispatch(getListMusic(response.data.data.data));
       setIsLoading(false);
       if (getUserLogin) {
@@ -136,6 +137,7 @@ const NewMusic = () => {
     if (!getUserLogin) {
       return toast.error("You must login to heart this music!!");
     } else if (getUserLogin && checkMusic === true) {
+      console.log(checkMusic);
       return toast.error("You have hearted this music!!");
     }
 
@@ -306,7 +308,15 @@ const NewMusic = () => {
                           <div className="item-play_icon">
                             <i className="fa fa-heart" onClick={() => handleClickHeart(item)}></i>
                             <div className="item-thumbnail__icon--play">
-                              <i className="fa fa-play" aria-hidden="true" onClick={() => handleChangeMusic(item)}></i>
+                              {currentMusic._id === item._id && isAudioPlay ? (
+                                <Bars />
+                              ) : (
+                                <i
+                                  className="fa fa-play"
+                                  aria-hidden="true"
+                                  onClick={() => handleChangeMusic(item)}
+                                ></i>
+                              )}
                             </div>
                             <AiOutlinePlus onClick={() => handleClickAddMusic(item)} />
                           </div>

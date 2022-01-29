@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserLogin, removeUserLogin, accessAccount } from "../redux/actions";
+import { getUserLogin, removeUserLogin, accessAccount } from "../../redux/actions";
 const Logout = () => {
   const dispatch = useDispatch();
   let history = useHistory();
@@ -24,7 +24,7 @@ const Logout = () => {
 
   return (
     <>
-      <div className="logout">Success</div>
+      <div className="logout"></div>
     </>
   );
 };

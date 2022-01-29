@@ -1,4 +1,3 @@
-import "../styles/modal.scss";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -8,7 +7,7 @@ import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Oval } from "react-loading-icons";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserLogin, removeUserLogin, accessAccount } from "../redux/actions";
+import { getUserLogin, removeUserLogin, accessAccount } from "../../redux/actions";
 import validator from "validator";
 
 const ForgotPassword = () => {
@@ -23,6 +22,7 @@ const ForgotPassword = () => {
   const emailInputError = useRef(null);
   const [email, setEmail] = useState("");
   const [emailStatus, setEmailStatus] = useState(false);
+  const [isClickBtn, setIsClickBtn] = useState(false);
   const currentUser = localStorage.getItem("currentUser");
   if (currentUser) {
     history.replace("/");
@@ -51,8 +51,11 @@ const ForgotPassword = () => {
     }
     if (emailValidate) {
       try {
+        setIsClickBtn(true);
         Btn.current.style = `opacity: 0.7; pointer-events: none;`;
         Btn.current.textContent = "Sending...";
+        emailInputError.current.classList.add("disabled");
+        emailInputError.current.disabled = true;
 
         const response = await axios.post("https://random-musics.herokuapp.com/api/v1/users/forgotPassword", {
           email,
@@ -60,9 +63,16 @@ const ForgotPassword = () => {
         toast.success(response.data.message);
         Btn.current.style = ``;
         Btn.current.textContent = "Send";
+        setIsClickBtn(false);
+        emailInputError.current.classList.remove("disabled");
+        emailInputError.current.disabled = false;
+        emailInputError.current.value = "";
       } catch (err) {
         Btn.current.textContent = "Send";
         Btn.current.style = ``;
+        emailInputError.current.classList.remove("disabled");
+        emailInputError.current.disabled = false;
+        setIsClickBtn(false);
         if (err.response) {
           toast.error(err.response.data.message);
         }
@@ -71,8 +81,10 @@ const ForgotPassword = () => {
   };
 
   const handleChangeEmail = (e) => {
-    setEmailStatus(true);
-    setEmail(e.target.value);
+    if (!isClickBtn) {
+      setEmailStatus(true);
+      setEmail(e.target.value);
+    }
   };
 
   return (

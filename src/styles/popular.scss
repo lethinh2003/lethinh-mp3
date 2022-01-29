@@ -38,11 +38,13 @@
 }
 
 .popular-item {
+  background-color: black;
+  margin-bottom: 10px;
   @include widthHeight(374px, 60px);
   margin-right: 35px;
 
   border-radius: $border-radius;
-  @include flex(center, center);
+  @include flex(center, space-between);
   &.active {
     background-color: #4c3d43;
   }

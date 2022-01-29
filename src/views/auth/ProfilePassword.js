@@ -1,13 +1,13 @@
-import "../styles/modal.scss";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { BiArrowBack } from "react-icons/bi";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Oval } from "react-loading-icons";
-import cloudinaryUpload from "./utils/uploads";
-import { getUserLogin, removeUserLogin, accessAccount } from "../redux/actions";
+import cloudinaryUpload from "../utils/uploads";
+import { getUserLogin, removeUserLogin, accessAccount } from "../../redux/actions";
 import { useSelector, useDispatch } from "react-redux";
+import errorAuth from "../utils/errorAuth";
 
 const ProfilePassword = () => {
   const dataUser = useSelector((state) => state.getUserLogin);
@@ -30,7 +30,7 @@ const ProfilePassword = () => {
   const [password, setPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+  const [isClickBtn, setIsClickBtn] = useState(false);
   let history = useHistory();
   const currentUser = localStorage.getItem("currentUser");
   const currentUserParse = JSON.parse(currentUser);
@@ -112,6 +112,14 @@ const ProfilePassword = () => {
     ) {
       const handleUploadAvatar = async () => {
         try {
+          setIsClickBtn(true);
+          passwordInputError.current.classList.add("disabled");
+          passwordInputError.current.disabled = true;
+          currentPasswordInputError.current.classList.add("disabled");
+          currentPasswordInputError.current.disabled = true;
+          confirmPasswordInputError.current.classList.add("disabled");
+          confirmPasswordInputError.current.disabled = true;
+
           ChangePasswordBtn.current.style = `opacity: 0.7; pointer-events: none;`;
           ChangePasswordBtn.current.textContent = "Changing...";
           const response = await axios.post("https://random-musics.herokuapp.com/api/v1/users/updatePassword", {
@@ -127,14 +135,29 @@ const ProfilePassword = () => {
           //   JSON.stringify(updateUser.data.data)
           // );
           // dispatch(getUserLogin(updateUser.data.data));
+          setIsClickBtn(false);
 
           toast.success("Updated!!");
           ChangePasswordBtn.current.style = ``;
           ChangePasswordBtn.current.textContent = "Change";
+          passwordInputError.current.classList.remove("disabled");
+          passwordInputError.current.disabled = false;
+          currentPasswordInputError.current.classList.remove("disabled");
+          currentPasswordInputError.current.disabled = false;
+          confirmPasswordInputError.current.classList.remove("disabled");
+          confirmPasswordInputError.current.disabled = false;
           history.replace("/");
         } catch (err) {
+          setIsClickBtn(false);
+          passwordInputError.current.classList.remove("disabled");
+          passwordInputError.current.disabled = false;
+          currentPasswordInputError.current.classList.remove("disabled");
+          currentPasswordInputError.current.disabled = false;
+          confirmPasswordInputError.current.classList.remove("disabled");
+          confirmPasswordInputError.current.disabled = false;
           if (err.response) {
             toast.error(err.response.data.message);
+            errorAuth(err);
           }
           ChangePasswordBtn.current.style = ``;
           ChangePasswordBtn.current.textContent = "Change";

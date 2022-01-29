@@ -1,4 +1,3 @@
-import "../styles/modal.scss";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -8,7 +7,7 @@ import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Oval } from "react-loading-icons";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserLogin, removeUserLogin, accessAccount } from "../redux/actions";
+import { getUserLogin, removeUserLogin, accessAccount } from "../../redux/actions";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -23,6 +22,7 @@ const Login = () => {
   const [accountStatus, setAccountStatus] = useState(false);
   const [passwordStatus, setPasswordStatus] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isClickBtn, setIsClickBtn] = useState(false);
   const currentUser = localStorage.getItem("currentUser");
   if (currentUser) {
     history.replace("/");
@@ -64,9 +64,13 @@ const Login = () => {
     }
     if (account.length >= 6 && password.length >= 6) {
       try {
+        setIsClickBtn(true);
+        accountInputError.current.classList.add("disabled");
+        accountInputError.current.disabled = true;
+        passwordInputError.current.classList.add("disabled");
+        passwordInputError.current.disabled = true;
         Btn.current.style = `opacity: 0.7; pointer-events: none;`;
         Btn.current.textContent = "Logging...";
-
         const response = await axios.post("https://random-musics.herokuapp.com/api/v1/users/login", {
           account,
           password,
@@ -88,6 +92,11 @@ const Login = () => {
         localStorage.removeItem("selectedMusic");
         Btn.current.style = ``;
         Btn.current.textContent = "Login";
+        accountInputError.current.classList.remove("disabled");
+        accountInputError.current.disabled = false;
+        passwordInputError.current.classList.remove("disabled");
+        passwordInputError.current.disabled = false;
+        setIsClickBtn(false);
         toast.success("Login success");
         dispatch(accessAccount(true));
         dispatch(getUserLogin(response.data.data));
@@ -96,6 +105,12 @@ const Login = () => {
       } catch (err) {
         Btn.current.textContent = "Login";
         Btn.current.style = ``;
+
+        accountInputError.current.classList.remove("disabled");
+        accountInputError.current.disabled = false;
+        passwordInputError.current.classList.remove("disabled");
+        passwordInputError.current.disabled = false;
+        setIsClickBtn(false);
         if (err.response) {
           toast.error(err.response.data.message);
         }
@@ -104,20 +119,26 @@ const Login = () => {
   };
 
   const handleChangeAccount = (e) => {
-    setAccountStatus(true);
-    setAccount(e.target.value);
+    if (!isClickBtn) {
+      setAccountStatus(true);
+      setAccount(e.target.value);
+    }
   };
   const handleChangePassword = (e) => {
-    setPasswordStatus(true);
-    setPassword(e.target.value);
+    if (!isClickBtn) {
+      setPasswordStatus(true);
+      setPassword(e.target.value);
+    }
   };
   const handleHideShowPassword = () => {
-    if (!isShowPassword) {
-      passwordInputError.current.type = "text";
-    } else {
-      passwordInputError.current.type = "password";
+    if (!isClickBtn) {
+      if (!isShowPassword) {
+        passwordInputError.current.type = "text";
+      } else {
+        passwordInputError.current.type = "password";
+      }
+      setIsShowPassword(!isShowPassword);
     }
-    setIsShowPassword(!isShowPassword);
   };
 
   return (

@@ -1,14 +1,13 @@
-import "../styles/modal.scss";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { BiArrowBack } from "react-icons/bi";
+import { BsCloudUpload } from "react-icons/bs";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Oval } from "react-loading-icons";
-import cloudinaryUpload from "./utils/uploads";
-import { getUserLogin, removeUserLogin, accessAccount } from "../redux/actions";
+import cloudinaryUpload from "../utils/uploads";
+import { getUserLogin, removeUserLogin, accessAccount } from "../../redux/actions";
 import { useSelector, useDispatch } from "react-redux";
-
+import errorAuth from "../utils/errorAuth";
 const Profile = () => {
   const dataUser = useSelector((state) => state.getUserLogin);
   const removeDataUser = useSelector((state) => state.removeUserLogin);
@@ -19,6 +18,8 @@ const Profile = () => {
   const nameInput = useRef(null);
   const accountInput = useRef(null);
   const avatarInput = useRef(null);
+  const fileName = useRef(null);
+  const [isClickBtn, setIsClickBtn] = useState(false);
   let history = useHistory();
   const currentUser = localStorage.getItem("currentUser");
   const currentUserParse = JSON.parse(currentUser);
@@ -46,6 +47,13 @@ const Profile = () => {
       }
     }
   }, [isEditClick]);
+  useEffect(() => {
+    if (isClickBtn) {
+      avatarInput.current.disabled = true;
+    } else {
+      avatarInput.current.disabled = false;
+    }
+  }, [isClickBtn]);
 
   useEffect(() => {
     if (accessAccount) {
@@ -75,6 +83,9 @@ const Profile = () => {
         const handleUploadAvatar = async () => {
           const checkFile = avatarInput.current.files[0];
           try {
+            setIsClickBtn(true);
+            nameInput.current.classList.add("disabled");
+            nameInput.current.disabled = true;
             profileBtn.current.style = `opacity: 0.7; pointer-events: none;`;
             profileBtn.current.textContent = "Updating...";
             if (checkFile) {
@@ -107,6 +118,9 @@ const Profile = () => {
               localStorage.setItem("currentUser", JSON.stringify(updateUser.data.data));
               dispatch(getUserLogin(updateUser.data.data));
             }
+            nameInput.current.classList.remove("disabled");
+            nameInput.current.disabled = false;
+            setIsClickBtn(false);
 
             toast.success("Updated!!");
             profileBtn.current.style = ``;
@@ -114,7 +128,15 @@ const Profile = () => {
             setIsEditClick(false);
             nameInput.current.disabled = true;
             avatarInput.current.value = null;
+            fileName.current.textContent = "";
           } catch (err) {
+            if (err.response) {
+              toast.error(err.response.data.message);
+              errorAuth(err);
+            }
+            setIsClickBtn(false);
+            nameInput.current.classList.remove("disabled");
+            nameInput.current.disabled = false;
             profileBtn.current.style = ``;
             profileBtn.current.textContent = "Edit";
           }
@@ -129,6 +151,13 @@ const Profile = () => {
     if (accessAccount) {
       setNameStatus(true);
       setName(e.target.value);
+    }
+  };
+  const handleChangeFileUpload = (e) => {
+    if (e.target.files.length > 0) {
+      fileName.current.textContent = e.target.files[0].name;
+    } else {
+      fileName.current.textContent = "";
     }
   };
 
@@ -148,8 +177,32 @@ const Profile = () => {
                 <div className="info--avatar">
                   <img src={currentUserParse.avatar} />
                 </div>
-                <div className="modal__body--input" style={{ display: "none" }}>
-                  <input type="file" ref={avatarInput} />
+                {/* <div className="modal__body--input" style={{ display: "none" }}>
+                  <input type="file"  />
+                </div> */}
+
+                <div className="input-file" style={{ display: "none" }}>
+                  <input
+                    type="file"
+                    name="file"
+                    ref={avatarInput}
+                    id="file"
+                    onChange={(e) => handleChangeFileUpload(e)}
+                  />
+                  <label htmlFor="file" className="input-label">
+                    <BsCloudUpload />
+                  </label>
+                  <label className="file_name" ref={fileName}></label>
+                </div>
+
+                <div className="modal__body--input">
+                  <input
+                    type="text"
+                    className="disabled"
+                    ref={accountInput}
+                    value={currentUserParse.account}
+                    disabled
+                  />
                 </div>
                 <div className="modal__body--input">
                   <input
@@ -159,15 +212,6 @@ const Profile = () => {
                     value={name}
                     name="name"
                     onChange={(e) => handleChangeName(e)}
-                    disabled
-                  />
-                </div>
-                <div className="modal__body--input">
-                  <input
-                    type="text"
-                    className="disabled"
-                    ref={accountInput}
-                    value={currentUserParse.account}
                     disabled
                   />
                 </div>

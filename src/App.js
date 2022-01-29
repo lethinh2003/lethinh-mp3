@@ -1,16 +1,20 @@
 import "./styles/body.scss";
+import "./styles/modal.scss";
+
 import Navigation from "./views/Navigation";
 import MusicPlayer from "./views/MusicPlayer";
 import MainPage from "./views/MainPage";
-import Login from "./views/Login";
-import Logout from "./views/Logout";
-import Signup from "./views/Signup";
-import Profile from "./views/Profile";
-import ForgotPassword from "./views/ForgotPassword";
-import ResetPassword from "./views/ResetPassword";
+
+// AUTH
+import Login from "./views/auth/Login";
+import Logout from "./views/auth/Logout";
+import Signup from "./views/auth/Signup";
+import Profile from "./views/auth/Profile";
+import ForgotPassword from "./views/auth/ForgotPassword";
+import ResetPassword from "./views/auth/ResetPassword";
+import ProfilePassword from "./views/auth/ProfilePassword";
 
 import Layout from "./views/Layout";
-import ProfilePassword from "./views/ProfilePassword";
 import GetCateGory from "./views/category/GetCategory";
 import "./styles/loading.scss";
 import axios from "axios";

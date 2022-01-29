@@ -1,4 +1,3 @@
-import "../styles/login.scss";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -8,7 +7,7 @@ import { Link, useHistory, Redirect, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Oval } from "react-loading-icons";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserLogin, removeUserLogin, accessAccount } from "../redux/actions";
+import { getUserLogin, removeUserLogin, accessAccount } from "../../redux/actions";
 import validator from "validator";
 
 const ResetPassword = () => {
