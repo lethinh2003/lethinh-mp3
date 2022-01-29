@@ -1,7 +1,9 @@
 @import "../scss/_variables.scss";
 @import "../scss/_mixin.scss";
+$field-container-padding: 5px;
+$label-padding: $field-container-padding !default;
 
-.signup-opacity {
+.modal-opacity {
   position: fixed;
   top: 0;
   left: 0;
@@ -10,37 +12,51 @@
   background-color: rgba(2, 0, 0, 0.445);
   z-index: 9999999;
 }
-.box-signup {
-  max-width: 350px;
-
-  max-height: 600px;
-
+.box-modal {
   @include widthHeight(100%, 100%);
+  max-width: 350px;
+  max-height: 600px;
   background-color: #fff;
-  position: relative;
   @include center;
   border-radius: 30px;
   overflow: hidden;
+  position: absolute;
 }
-.signup__header {
+.modal__header {
+  padding: 0 20px;
   color: black;
   font-weight: $font-weight;
   position: absolute;
   height: 70px;
   width: 100%;
   object-fit: cover;
-  @include flex(center, space-around);
+  @include flex(center, space-between);
 
   &--title {
-    padding-right: 150px;
+    font-family: "Indie Flower", cursive;
+    font-size: 30px;
   }
 }
-.signup__body {
+.modal__body {
   width: 90%;
   position: absolute;
   @include center;
   @include flex(center, center);
   flex-direction: column;
+
+  &--info {
+    @include flex(center, center);
+    flex-direction: column;
+    width: 100%;
+    .info--avatar {
+      overflow: hidden;
+      @include widthHeight(60px, 60px);
+      border-radius: 50%;
+      img {
+        @include widthHeight(100%, 100%);
+      }
+    }
+  }
 
   &--button {
     margin-top: 10px;
@@ -68,9 +84,9 @@
   }
 
   &--input {
+    position: relative;
     margin-top: 10px;
     @include widthHeight(100%, 40px);
-    position: relative;
     input {
       font-size: $font-size-first;
       @include widthHeight(100%, 100%);
@@ -78,7 +94,7 @@
       border-color: #6121ac;
       border-radius: 4px;
       font-weight: 700;
-      padding: 5px;
+      padding: 5px 30px 5px 5px;
 
       &:focus {
         outline: none;
@@ -86,9 +102,6 @@
     }
   }
 }
-$field-container-padding: 5px;
-$label-padding: $field-container-padding !default;
-
 .field-container {
   border-radius: 4px;
   overflow: hidden;
@@ -149,10 +162,13 @@ input.field-input {
   }
 }
 .password-option {
-  bottom: -11px;
+  bottom: -10px;
   right: 7px;
   height: 100%;
-
   position: absolute;
   color: black;
+}
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }

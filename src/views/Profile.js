@@ -1,4 +1,4 @@
-import "../styles/profile.scss";
+import "../styles/modal.scss";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { BiArrowBack } from "react-icons/bi";
@@ -70,6 +70,7 @@ const Profile = () => {
       if (name.length < 2) {
         nameError.current.style.display = "block";
         nameInput.current.style = InputErrorStyle();
+        nameInput.current.focus();
       } else if (name.length >= 2) {
         const handleUploadAvatar = async () => {
           const checkFile = avatarInput.current.files[0];
@@ -130,32 +131,27 @@ const Profile = () => {
       setName(e.target.value);
     }
   };
-  const handleClickBack = () => {
-    history.goBack();
-  };
 
   return (
     <>
       {currentUser && (
-        <div className="profile-opacity">
-          <div className="box-profile">
-            <div className="profile__header">
-              <div className="profile__header--title">
-                <BiArrowBack style={{ cursor: "pointer" }} onClick={() => handleClickBack()} /> Profile
-              </div>
+        <div className="modal-opacity">
+          <div className="box-modal" style={{ maxHeight: "400px" }}>
+            <div className="modal__header">
+              <div className="modal__header--title">Profile</div>
               <Link to="/">
-                <div className="profile__header--icon">X</div>
+                <div className="modal__header--icon">X</div>
               </Link>
             </div>
-            <div className="profile__body">
-              <div className="profile__body--info">
+            <div className="modal__body">
+              <div className="modal__body--info">
                 <div className="info--avatar">
                   <img src={currentUserParse.avatar} />
                 </div>
-                <div className="profile__body--input" style={{ display: "none" }}>
+                <div className="modal__body--input" style={{ display: "none" }}>
                   <input type="file" ref={avatarInput} />
                 </div>
-                <div className="profile__body--input">
+                <div className="modal__body--input">
                   <input
                     type="text"
                     className="disabled"
@@ -166,7 +162,7 @@ const Profile = () => {
                     disabled
                   />
                 </div>
-                <div className="profile__body--input">
+                <div className="modal__body--input">
                   <input
                     type="text"
                     className="disabled"
@@ -176,18 +172,18 @@ const Profile = () => {
                   />
                 </div>
               </div>
-              <div className="profile__body--message">
+              <div className="modal__body--message">
                 <span className="message--error" ref={nameError}>
                   Tên phải từ 2 kí tự trở lên
                 </span>
               </div>
 
-              <div className="profile__body--button" ref={profileBtn} onClick={() => handleClickEdit()}>
+              <div className="modal__body--button" ref={profileBtn} onClick={() => handleClickEdit()}>
                 Edit
               </div>
-              <div className="profile__body--message">
+              <div className="modal__body--message">
                 <span className="message--info">
-                  <Link to="/me/password">Change password </Link>
+                  <Link to="/auth/me/password">Change password </Link>
                 </span>
               </div>
             </div>

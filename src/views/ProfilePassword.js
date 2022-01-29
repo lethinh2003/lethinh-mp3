@@ -1,4 +1,4 @@
-import "../styles/profile.scss";
+import "../styles/modal.scss";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { BiArrowBack } from "react-icons/bi";
@@ -14,7 +14,7 @@ const ProfilePassword = () => {
   const accessAccount = useSelector((state) => state.accessAccount);
   const dispatch = useDispatch();
 
-  const profileBtn = useRef(null);
+  const ChangePasswordBtn = useRef(null);
 
   const passwordError = useRef(null);
   const currentPasswordError = useRef(null);
@@ -87,18 +87,22 @@ const ProfilePassword = () => {
     if (currentPassword.length < 6) {
       currentPasswordError.current.style.display = "block";
       currentPasswordInputError.current.style = InputErrorStyle();
+      currentPasswordInputError.current.focus();
     }
     if (password.length < 6) {
       passwordError.current.style.display = "block";
       passwordInputError.current.style = InputErrorStyle();
+      passwordInputError.current.focus();
     }
     if (confirmPassword.length < 6) {
       confirmPasswordError.current.style.display = "block";
       confirmPasswordInputError.current.style = InputErrorStyle();
+      confirmPasswordInputError.current.focus();
     }
     if (password !== confirmPassword) {
       confirmPasswordEqualError.current.style.display = "block";
       confirmPasswordInputError.current.style = InputErrorStyle();
+      confirmPasswordInputError.current.focus();
     }
     if (
       currentPassword.length >= 6 &&
@@ -108,8 +112,8 @@ const ProfilePassword = () => {
     ) {
       const handleUploadAvatar = async () => {
         try {
-          profileBtn.current.style = `opacity: 0.7; pointer-events: none;`;
-          profileBtn.current.textContent = "Changing...";
+          ChangePasswordBtn.current.style = `opacity: 0.7; pointer-events: none;`;
+          ChangePasswordBtn.current.textContent = "Changing...";
           const response = await axios.post("https://random-musics.herokuapp.com/api/v1/users/updatePassword", {
             currentPassword,
             password,
@@ -125,15 +129,15 @@ const ProfilePassword = () => {
           // dispatch(getUserLogin(updateUser.data.data));
 
           toast.success("Updated!!");
-          profileBtn.current.style = ``;
-          profileBtn.current.textContent = "Change";
+          ChangePasswordBtn.current.style = ``;
+          ChangePasswordBtn.current.textContent = "Change";
           history.replace("/");
         } catch (err) {
           if (err.response) {
             toast.error(err.response.data.message);
           }
-          profileBtn.current.style = ``;
-          profileBtn.current.textContent = "Change";
+          ChangePasswordBtn.current.style = ``;
+          ChangePasswordBtn.current.textContent = "Change";
         }
       };
       handleUploadAvatar();
@@ -159,29 +163,24 @@ const ProfilePassword = () => {
       setCurrentPassword(e.target.value);
     }
   };
-  const handleClickBack = () => {
-    history.goBack();
-  };
 
   return (
     <>
       {currentUser && (
-        <div className="profile-opacity">
-          <div className="box-profile">
-            <div className="profile__header">
-              <div className="profile__header--title">
-                <BiArrowBack style={{ cursor: "pointer" }} onClick={() => handleClickBack()} /> Profile
-              </div>
+        <div className="modal-opacity">
+          <div className="box-modal" style={{ maxHeight: "400px" }}>
+            <div className="modal__header">
+              <div className="modal__header--title">Profile</div>
               <Link to="/">
-                <div className="profile__header--icon">X</div>
+                <div className="modal__header--icon">X</div>
               </Link>
             </div>
-            <div className="profile__body">
-              <div className="profile__body--info">
+            <div className="modal__body">
+              <div className="modal__body--info">
                 <div className="info--avatar">
                   <img src={currentUserParse.avatar} />
                 </div>
-                <div className="profile__body--message">
+                <div className="modal__body--message">
                   <span className="message--error" ref={currentPasswordError}>
                     Mật khẩu hiện tại phải từ 6 kí tự trở lên
                   </span>
@@ -196,7 +195,7 @@ const ProfilePassword = () => {
                   </span>
                 </div>
 
-                <div className="profile__body--input">
+                <div className="modal__body--input">
                   <input
                     type="password"
                     value={currentPassword}
@@ -205,7 +204,7 @@ const ProfilePassword = () => {
                     onChange={(e) => handleChangeCurrentPassword(e)}
                   />
                 </div>
-                <div className="profile__body--input">
+                <div className="modal__body--input">
                   <input
                     type="password"
                     value={password}
@@ -214,7 +213,7 @@ const ProfilePassword = () => {
                     onChange={(e) => handleChangePassword(e)}
                   />
                 </div>
-                <div className="profile__body--input">
+                <div className="modal__body--input">
                   <input
                     type="password"
                     value={confirmPassword}
@@ -225,7 +224,7 @@ const ProfilePassword = () => {
                 </div>
               </div>
 
-              <div className="profile__body--button" ref={profileBtn} onClick={() => handleClickEdit()}>
+              <div className="modal__body--button" ref={ChangePasswordBtn} onClick={() => handleClickEdit()}>
                 Change
               </div>
             </div>

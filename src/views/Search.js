@@ -4,11 +4,7 @@ import { useEffect, useState } from "react";
 import APIMusic from "../api/APIMusic";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import {
-  getListMusic,
-  setSelectedMusic,
-  removeSelectedMusic,
-} from "../redux/actions";
+import { getListMusic, setSelectedMusic, removeSelectedMusic } from "../redux/actions";
 
 const Search = () => {
   let history = useHistory();
@@ -19,9 +15,7 @@ const Search = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     if (dataMusic && listMusic) {
-      const listSearch = dataMusic.filter((item) =>
-        item.name.toLowerCase().includes(keyword.toLowerCase())
-      );
+      const listSearch = dataMusic.filter((item) => item.name.toLowerCase().includes(keyword.toLowerCase()));
       setListMusic(listSearch);
     }
   }, [keyword]);
@@ -58,12 +52,7 @@ const Search = () => {
             <CgSearch />
           </div>
           <div className="search-input">
-            <input
-              type="text"
-              value={keyword}
-              onChange={(e) => handleChangeKeyword(e)}
-              placeholder="Nhập bài hát"
-            />
+            <input type="text" value={keyword} onChange={(e) => handleChangeKeyword(e)} placeholder="Nhập bài hát" />
           </div>
         </div>
         <div
@@ -89,10 +78,7 @@ const Search = () => {
                       <div className="item-icon">
                         <CgTrending />
                       </div>
-                      <div
-                        className="item-title"
-                        onClick={() => handleChangeSelectedMusic(item)}
-                      >
+                      <div className="item-title" onClick={() => handleChangeSelectedMusic(item)}>
                         {item.name}
                       </div>
                     </div>
@@ -112,7 +98,7 @@ const Search = () => {
           </Link>
         )}
         {!TokenAccount && (
-          <Link to="/login" exact>
+          <Link to="/auth/login" exact>
             <span className="user-control__title">Login</span>
           </Link>
         )}

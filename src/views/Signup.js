@@ -1,11 +1,11 @@
-import "../styles/signup.scss";
+import "../styles/modal.scss";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { AiOutlinePlus } from "react-icons/ai";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import validator from "validator";
-const Login = () => {
+const Signup = () => {
   const accountError = useRef(null);
   const accountInputError = useRef(null);
   const passwordError = useRef(null);
@@ -17,7 +17,7 @@ const Login = () => {
   const confirmPasswordError = useRef(null);
   const confirmPasswordInputError = useRef(null);
   const confirmPasswordEqualError = useRef(null);
-  const signupBtn = useRef(null);
+  const Btn = useRef(null);
   let history = useHistory();
   const [account, setAccount] = useState("");
   const [name, setName] = useState("");
@@ -126,8 +126,8 @@ const Login = () => {
       password === confirmPassword
     ) {
       try {
-        signupBtn.current.style = `opacity: 0.7; pointer-events: none;`;
-        signupBtn.current.textContent = "Signing up...";
+        Btn.current.style = `opacity: 0.7; pointer-events: none;`;
+        Btn.current.textContent = "Signing up...";
         const response = await axios.post("https://random-musics.herokuapp.com/api/v1/users/signup", {
           account,
           name,
@@ -135,8 +135,8 @@ const Login = () => {
           confirmPassword,
           email,
         });
-        signupBtn.current.style = ``;
-        signupBtn.current.textContent = "Signup";
+        Btn.current.style = ``;
+        Btn.current.textContent = "Signup";
 
         localStorage.setItem("accessAccount", true);
         localStorage.setItem("jwt", response.data.token);
@@ -144,8 +144,8 @@ const Login = () => {
         toast.success("Signup success");
         window.location.reload();
       } catch (err) {
-        signupBtn.current.textContent = "Signup";
-        signupBtn.current.style = ``;
+        Btn.current.textContent = "Signup";
+        Btn.current.style = ``;
         if (err.response) {
           toast.error(err.response.data.message);
         }
@@ -176,16 +176,16 @@ const Login = () => {
 
   return (
     <>
-      <div className="signup-opacity">
-        <div className="box-signup">
-          <div className="signup__header">
-            <div className="signup__header--title">Sign up</div>
+      <div className="modal-opacity">
+        <div className="box-modal">
+          <div className="modal__header">
+            <div className="modal__header--title">Sign up</div>
             <Link to="/">
-              <div className="signup__header--icon">X</div>
+              <div className="modal__header--icon">X</div>
             </Link>
           </div>
-          <div className="signup__body">
-            <div className="signup__body--message">
+          <div className="modal__body">
+            <div className="modal__body--message">
               <span className="message--error" ref={accountError}>
                 Tài khoản phải từ 6 kí tự trở lên
               </span>
@@ -206,73 +206,74 @@ const Login = () => {
               </span>
             </div>
 
-            <div class="field-container" ref={accountInputError}>
+            <div className="field-container" ref={accountInputError}>
               <input
-                class="field-input"
+                className="field-input"
                 name="account"
                 type="text"
                 placeholder=" "
+                autoComplete="off"
                 value={account}
                 onChange={(e) => handleChangeAccount(e)}
               />
-              <label class="field-placeholder" htmlFor="account">
+              <label className="field-placeholder" htmlFor="account">
                 Account
               </label>
             </div>
-            <div class="field-container" ref={nameInputError}>
+            <div className="field-container" ref={nameInputError}>
               <input
-                class="field-input"
+                className="field-input"
                 name="name"
                 type="text"
                 placeholder=" "
                 value={name}
                 onChange={(e) => handleChangeName(e)}
               />
-              <label class="field-placeholder" htmlFor="name">
+              <label className="field-placeholder" htmlFor="name">
                 Name
               </label>
             </div>
-            <div class="field-container" ref={passwordInputError}>
+            <div className="field-container" ref={passwordInputError}>
               <input
-                class="field-input"
+                className="field-input"
                 name="password"
                 type="password"
                 placeholder=" "
                 value={password}
                 onChange={(e) => handleChangePassword(e)}
               />
-              <label class="field-placeholder" htmlFor="password">
+              <label className="field-placeholder" htmlFor="password">
                 Password
               </label>
             </div>
-            <div class="field-container" ref={confirmPasswordInputError}>
+            <div className="field-container" ref={confirmPasswordInputError}>
               <input
-                class="field-input"
+                className="field-input"
                 name="confirmPassword"
                 type="password"
                 placeholder=" "
                 value={confirmPassword}
                 onChange={(e) => handleChangeConfirmPassword(e)}
               />
-              <label class="field-placeholder" htmlFor="confirmPassword">
+              <label className="field-placeholder" htmlFor="confirmPassword">
                 Confirm Password
               </label>
             </div>
-            <div class="field-container" ref={emailInputError}>
+            <div className="field-container" ref={emailInputError}>
               <input
-                class="field-input"
+                className="field-input"
                 name="email"
-                type="text"
+                type="email"
                 placeholder=" "
                 value={email}
                 onChange={(e) => handleChangeEmail(e)}
               />
-              <label class="field-placeholder" htmlFor="email">
+              <label className="field-placeholder" htmlFor="email">
                 Email
               </label>
             </div>
 
-            <div className="signup__body--button" ref={signupBtn} onClick={() => fetchAPI()}>
+            <div className="modal__body--button" ref={Btn} onClick={() => fetchAPI()}>
               Signup
             </div>
           </div>
@@ -281,4 +282,4 @@ const Login = () => {
     </>
   );
 };
-export default Login;
+export default Signup;

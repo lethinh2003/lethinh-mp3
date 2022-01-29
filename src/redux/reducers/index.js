@@ -13,6 +13,7 @@ import getDuration from "./getMusicDuration";
 import getUserLogin from "./getUserLogin";
 import accessAccount from "./accessAccount";
 import isPlayingPlaylist from "./isPlayingPlaylist";
+import getMyListHearts from "./getMyListHearts";
 
 export default combineReducers({
   listMusic,
@@ -29,4 +30,5 @@ export default combineReducers({
   getUserLogin,
   accessAccount,
   isPlayingPlaylist,
+  getMyListHearts,
 });

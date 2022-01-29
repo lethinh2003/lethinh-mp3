@@ -6,6 +6,8 @@ import Login from "./views/Login";
 import Logout from "./views/Logout";
 import Signup from "./views/Signup";
 import Profile from "./views/Profile";
+import ForgotPassword from "./views/ForgotPassword";
+import ResetPassword from "./views/ResetPassword";
 
 import Layout from "./views/Layout";
 import ProfilePassword from "./views/ProfilePassword";
@@ -45,20 +47,26 @@ function App() {
             <Route path="/category/:category" exact={true}>
               <GetCateGory />
             </Route>
-            <Route path="/login" exact={true}>
+            <Route path="/auth/login" exact={true}>
               <Login />
             </Route>
-            <Route path="/logout" exact={true}>
+            <Route path="/auth/logout" exact={true}>
               <Logout />
             </Route>
-            <Route path="/signup" exact={true}>
+            <Route path="/auth/signup" exact={true}>
               <Signup />
             </Route>
-            <Route path="/me" exact={true}>
+            <Route path="/auth/me" exact={true}>
               <Profile />
             </Route>
-            <Route path="/me/password" exact={true}>
+            <Route path="/auth/me/password" exact={true}>
               <ProfilePassword />
+            </Route>
+            <Route path="/auth/forgot-password" exact={true}>
+              <ForgotPassword />
+            </Route>
+            <Route path="/auth/reset-password/:token" exact={true}>
+              <ResetPassword />
             </Route>
           </Switch>
 

@@ -15,6 +15,7 @@ const Logout = () => {
   localStorage.removeItem("nextSelectedMusic");
   localStorage.removeItem("previousSelectedMusic");
   localStorage.removeItem("MyPlayListMusicFromDB");
+  localStorage.removeItem("MyListHearts");
   localStorage.setItem("accessAccount", false);
   dispatch(accessAccount(false));
   // history.replace("/");

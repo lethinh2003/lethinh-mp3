@@ -1,4 +1,5 @@
 @use "./variables" as *;
+@import url("https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap");
 @mixin flex($alignItems, $justifyContent) {
   display: flex;
   align-items: $alignItems;

@@ -1,4 +1,4 @@
-import "../styles/login.scss";
+import "../styles/modal.scss";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -16,7 +16,7 @@ const Login = () => {
   const accountInputError = useRef(null);
   const passwordError = useRef(null);
   const passwordInputError = useRef(null);
-  const loginBtn = useRef(null);
+  const Btn = useRef(null);
   let history = useHistory();
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
@@ -55,15 +55,17 @@ const Login = () => {
     if (account.length < 6) {
       accountError.current.style.display = "block";
       accountInputError.current.style = InputErrorStyle();
+      accountInputError.current.focus();
     }
     if (password.length < 6) {
       passwordError.current.style.display = "block";
       passwordInputError.current.style = InputErrorStyle();
+      passwordInputError.current.focus();
     }
     if (account.length >= 6 && password.length >= 6) {
       try {
-        loginBtn.current.style = `opacity: 0.7; pointer-events: none;`;
-        loginBtn.current.textContent = "Logging...";
+        Btn.current.style = `opacity: 0.7; pointer-events: none;`;
+        Btn.current.textContent = "Logging...";
 
         const response = await axios.post("https://random-musics.herokuapp.com/api/v1/users/login", {
           account,
@@ -84,16 +86,16 @@ const Login = () => {
         });
         localStorage.setItem("MyPlayListMusicFromDB", JSON.stringify(dataStorage));
         localStorage.removeItem("selectedMusic");
-        loginBtn.current.style = ``;
-        loginBtn.current.textContent = "Login";
+        Btn.current.style = ``;
+        Btn.current.textContent = "Login";
         toast.success("Login success");
         dispatch(accessAccount(true));
         dispatch(getUserLogin(response.data.data));
         // history.replace("/");
         window.location.reload("/");
       } catch (err) {
-        loginBtn.current.textContent = "Login";
-        loginBtn.current.style = ``;
+        Btn.current.textContent = "Login";
+        Btn.current.style = ``;
         if (err.response) {
           toast.error(err.response.data.message);
         }
@@ -120,16 +122,16 @@ const Login = () => {
 
   return (
     <>
-      <div className="login-opacity">
-        <div className="box-login">
-          <div className="login__header">
-            <div className="login__header--title">Login</div>
+      <div className="modal-opacity">
+        <div className="box-modal" style={{ maxHeight: "400px" }}>
+          <div className="modal__header">
+            <div className="modal__header--title">Login</div>
             <Link to="/">
-              <div className="login__header--icon">X</div>
+              <div className="modal__header--icon">X</div>
             </Link>
           </div>
-          <div className="login__body">
-            <div className="login__body--message">
+          <div className="modal__body">
+            <div className="modal__body--message">
               <span className="message--error" ref={accountError}>
                 Tài khoản phải từ 6 kí tự trở lên
               </span>
@@ -137,7 +139,7 @@ const Login = () => {
                 Mật khẩu phải từ 6 kí tự trở lên
               </span>
             </div>
-            <div className="login__body--input">
+            <div className="modal__body--input">
               <input
                 type="text"
                 value={account}
@@ -146,7 +148,7 @@ const Login = () => {
                 onChange={(e) => handleChangeAccount(e)}
               />
             </div>
-            <div className="login__body--input">
+            <div className="modal__body--input">
               <input
                 type="password"
                 value={password}
@@ -158,12 +160,15 @@ const Login = () => {
                 {isShowPassword ? <FiEye /> : <FiEyeOff />}
               </label>
             </div>
-            <div className="login__body--button" ref={loginBtn} onClick={() => fetchAPI()}>
+            <div className="modal__body--button" ref={Btn} onClick={() => fetchAPI()}>
               Login
             </div>
-            <div className="login__body--message">
+            <div className="modal__body--message">
               <span className="message--info">
-                No account? <Link to="/signup">Sign up</Link>
+                No account? <Link to="/auth/signup">Sign up</Link>
+              </span>
+              <span className="message--info">
+                <Link to="/auth/forgot-password">Forgot password</Link>
               </span>
             </div>
           </div>

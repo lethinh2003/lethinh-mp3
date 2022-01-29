@@ -8,6 +8,7 @@
   bottom: 0;
   right: 0;
   background-color: rgba(2, 0, 0, 0.445);
+  z-index: 9999999;
 }
 .box-login {
   @include widthHeight(350px, 400px);
@@ -18,16 +19,18 @@
   overflow: hidden;
 }
 .login__header {
+  padding: 0 20px;
   color: black;
   font-weight: $font-weight;
   position: absolute;
   height: 70px;
   width: 100%;
   object-fit: cover;
-  @include flex(center, space-around);
+  @include flex(center, space-between);
 
   &--title {
-    padding-right: 150px;
+    font-family: "Indie Flower", cursive;
+    font-size: 30px;
   }
 }
 .login__body {

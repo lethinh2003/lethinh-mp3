@@ -56,7 +56,7 @@ const Navigation = () => {
         {dataUser && (
           <div className="userlogin-info">
             <div className="userlogin-info__avatar">
-              <Link to="/me">
+              <Link to="/auth/me">
                 <img src={dataUser.avatar} />
               </Link>
             </div>
@@ -147,7 +147,7 @@ const Navigation = () => {
             </span>
 
             <div className="login-btn">
-              {!dataUser ? <Link to="/login">Login</Link> : <Link to="/logout">Logout</Link>}
+              {!dataUser ? <Link to="/auth/login">Login</Link> : <Link to="/auth/logout">Logout</Link>}
             </div>
           </div>
         </div>

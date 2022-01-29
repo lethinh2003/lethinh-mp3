@@ -21,6 +21,7 @@ import {
   setPreviousSelectedMusic,
   removePreviousSelectedMusic,
   setIsPlayingPlaylist,
+  getMyListHearts,
 } from "../redux/actions";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -43,19 +44,33 @@ const NewMusic = () => {
   const TokenAccount = localStorage.getItem("jwt");
 
   const [isLoading, setIsLoading] = useState(true);
+  const getUserLogin = useSelector((state) => state.getUserLogin);
   const dataMusic = useSelector((state) => state.listMusic.data);
   const currentMusic = useSelector((state) => state.selectedMusic.data);
   const dataMyPlaylist = useSelector((state) => state.addMyPlaylist);
   const dataMyPlaylistUser = useSelector((state) => state.addMyPlaylistUser);
+  const myListHearts = useSelector((state) => state.getMyListHearts);
+
   const dispatch = useDispatch();
   const isPlayingPlaylist = localStorage.getItem("isPlayingPlaylist") || "false";
 
   const fetchAPI = async () => {
     try {
       const response = await axios.get("https://random-musics.herokuapp.com/api/v1/musics/new-musics");
-
       dispatch(getListMusic(response.data.data.data));
       setIsLoading(false);
+      if (getUserLogin) {
+        let data = [];
+        const response = await axios.get("https://random-musics.herokuapp.com/api/v1/hearts/" + getUserLogin._id);
+        const dataFromDB = response.data.data.data;
+        dataFromDB.map((item) => {
+          data.push(item.music[0]);
+          if (!checkMusicHearted(item.music[0])) {
+            dispatch(getMyListHearts(item.music[0]));
+          }
+        });
+        localStorage.setItem("MyListHearts", JSON.stringify(data));
+      }
     } catch (err) {
       if (err.response) {
         toast.error(err.response.data.message);
@@ -107,7 +122,23 @@ const NewMusic = () => {
       }
     }
   };
+  const checkMusicHearted = (id) => {
+    let hasHeart = false;
+    myListHearts.map((item) => {
+      if (item === id) {
+        hasHeart = true;
+      }
+    });
+    return hasHeart;
+  };
   const handleClickHeart = async (data) => {
+    const checkMusic = checkMusicHearted(data._id);
+    if (!getUserLogin) {
+      return toast.error("You must login to heart this music!!");
+    } else if (getUserLogin && checkMusic === true) {
+      return toast.error("You have hearted this music!!");
+    }
+
     try {
       let currentUser;
       if (localStorage.getItem("currentUser")) {
@@ -121,6 +152,9 @@ const NewMusic = () => {
         `https://random-musics.herokuapp.com/api/v1/musics/${data._id}/hearts`,
         axiosData
       );
+      const test = dispatch(getMyListHearts(data.id));
+      console.log(test);
+
       const heartContainer = document.querySelector(".heart-opacity");
       if (heartContainer) {
         heartContainer.style.opacity = 1;

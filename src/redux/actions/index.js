@@ -72,3 +72,7 @@ export const setIsPlayingPlaylist = (data) => ({
   type: "SET_IS_PLAYING_PLAYLIST",
   payload: data,
 });
+export const getMyListHearts = (data) => ({
+  type: "ADD_MY_LIST_HEARTS",
+  payload: data,
+});
