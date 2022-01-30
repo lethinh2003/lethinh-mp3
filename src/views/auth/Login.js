@@ -52,6 +52,7 @@ const Login = () => {
     }
   }, [account, password]);
   const fetchAPI = async () => {
+    const loadingView = document.querySelector(".loading-opacity");
     if (account.length < 6) {
       accountError.current.style.display = "block";
       accountInputError.current.style = InputErrorStyle();
@@ -64,6 +65,9 @@ const Login = () => {
     }
     if (account.length >= 6 && password.length >= 6) {
       try {
+        if (loadingView) {
+          loadingView.style.display = "block";
+        }
         setIsClickBtn(true);
         accountInputError.current.classList.add("disabled");
         accountInputError.current.disabled = true;
@@ -97,11 +101,14 @@ const Login = () => {
         passwordInputError.current.classList.remove("disabled");
         passwordInputError.current.disabled = false;
         setIsClickBtn(false);
+        if (loadingView) {
+          loadingView.style.display = "none";
+        }
         toast.success("Login success");
         dispatch(accessAccount(true));
         dispatch(getUserLogin(response.data.data));
         // history.replace("/");
-        window.location.reload("/");
+        // window.location.replace("/");
       } catch (err) {
         Btn.current.textContent = "Login";
         Btn.current.style = ``;
@@ -111,6 +118,9 @@ const Login = () => {
         passwordInputError.current.classList.remove("disabled");
         passwordInputError.current.disabled = false;
         setIsClickBtn(false);
+        if (loadingView) {
+          loadingView.style.display = "none";
+        }
         if (err.response) {
           toast.error(err.response.data.message);
         }

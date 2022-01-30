@@ -25,7 +25,7 @@ import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import errorAuth from "./utils/errorAuth";
 import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
-import { Bars } from "react-loading-icons";
+import { Audio } from "react-loading-icons";
 const Popular = () => {
   let history = useHistory();
   const TokenAccount = localStorage.getItem("jwt");
@@ -58,6 +58,7 @@ const Popular = () => {
     return hasHeart;
   };
   const handleClickHeart = async (data) => {
+    const loadingView = document.querySelector(".loading-opacity");
     const checkMusic = checkMusicHearted(data._id);
     if (!getUserLogin) {
       return toast.error("You must login to heart this music!!");
@@ -66,9 +67,14 @@ const Popular = () => {
       return toast.error("You have hearted this music!!");
     }
     try {
+      if (loadingView) {
+        loadingView.style.display = "block";
+      }
       const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/hearts`);
-      const test = dispatch(getMyListHearts(data._id));
-      console.log(test);
+      dispatch(getMyListHearts(data._id));
+      if (loadingView) {
+        loadingView.style.display = "none";
+      }
       const heartContainer = document.querySelector(".heart-opacity");
       if (heartContainer) {
         fetchAPI();
@@ -80,6 +86,9 @@ const Popular = () => {
         }, 500);
       }
     } catch (err) {
+      if (loadingView) {
+        loadingView.style.display = "none";
+      }
       if (err.response) {
         toast.error(err.response.data.message);
         errorAuth(err);
@@ -192,7 +201,12 @@ const Popular = () => {
                       style={currentMusic.id === item.id ? { opacity: "1", border: "unset" } : {}}
                     >
                       {isAudioPlay ? (
-                        <Bars />
+                        <Audio
+                          style={{
+                            width: "50%",
+                            height: "50%",
+                          }}
+                        />
                       ) : (
                         <i className="fa fa-play" aria-hidden="true" style={{ fontSize: "20px" }}></i>
                       )}

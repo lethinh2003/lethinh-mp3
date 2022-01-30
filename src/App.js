@@ -16,6 +16,8 @@ import ProfilePassword from "./views/auth/ProfilePassword";
 
 import Layout from "./views/Layout";
 import GetCateGory from "./views/category/GetCategory";
+
+import Loading from "./views/Loading";
 import "./styles/loading.scss";
 import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
@@ -43,6 +45,7 @@ function App() {
       <div className="ms-layout">
         <Router>
           <Navigation />
+          <Loading />
 
           <Switch>
             <Route path="/" exact={true}>

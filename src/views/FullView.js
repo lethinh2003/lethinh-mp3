@@ -1,7 +1,7 @@
 import "../styles/fullview.scss";
 import { useState, useEffect, useRef } from "react";
 import { BiVolumeFull, BiVolumeLow, BiVolumeMute } from "react-icons/bi";
-import { Bars } from "react-loading-icons";
+import { Audio } from "react-loading-icons";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getStatusSelectedMusic,
@@ -279,7 +279,12 @@ const FullView = (props) => {
                   <div className="item-thumbnail_hover"></div>
                   {isAudioPlay === true && (
                     <div className="item-playing_icon">
-                      <Bars />
+                      <Audio
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                        }}
+                      />
                     </div>
                   )}
                   <div

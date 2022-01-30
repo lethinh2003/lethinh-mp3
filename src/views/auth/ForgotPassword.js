@@ -44,6 +44,7 @@ const ForgotPassword = () => {
     }
   }, [email]);
   const fetchAPI = async () => {
+    const loadingView = document.querySelector(".loading-opacity");
     if (!emailValidate) {
       emailError.current.style.display = "block";
       emailInputError.current.style = InputErrorStyle();
@@ -51,6 +52,9 @@ const ForgotPassword = () => {
     }
     if (emailValidate) {
       try {
+        if (loadingView) {
+          loadingView.style.display = "block";
+        }
         setIsClickBtn(true);
         Btn.current.style = `opacity: 0.7; pointer-events: none;`;
         Btn.current.textContent = "Sending...";
@@ -67,7 +71,13 @@ const ForgotPassword = () => {
         emailInputError.current.classList.remove("disabled");
         emailInputError.current.disabled = false;
         emailInputError.current.value = "";
+        if (loadingView) {
+          loadingView.style.display = "none";
+        }
       } catch (err) {
+        if (loadingView) {
+          loadingView.style.display = "none";
+        }
         Btn.current.textContent = "Send";
         Btn.current.style = ``;
         emailInputError.current.classList.remove("disabled");

@@ -1,3 +1,5 @@
+@import "../scss/mixin";
+@import "../scss/variables";
 .lds-ripple {
   top: 50%;
   left: 50%;
@@ -33,4 +35,17 @@
     height: 72px;
     opacity: 0;
   }
+}
+.loading-opacity {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(2, 0, 0, 0.445);
+  z-index: 99999999;
+}
+.loading-icon {
+  position: absolute;
+  @include center;
 }

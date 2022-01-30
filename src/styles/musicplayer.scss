@@ -64,6 +64,13 @@
     display: flex;
     justify-content: space-around;
     width: 80px;
+
+    .play-icon {
+      display: none;
+      @include mobile {
+        display: block;
+      }
+    }
   }
 }
 .music-process {

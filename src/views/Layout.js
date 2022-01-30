@@ -124,7 +124,7 @@ const Layout = () => {
             </div>
             <div className="level-right">
               <span className="ms-btn navbar" onClick={() => hanldeOnOffNavbar()}>
-                {isNavOpen ? <RiBarChartHorizontalLine /> : <FaBars />}
+                {isNavOpen ? <RiBarChartHorizontalLine /> : <FaAudio />}
               </span>
 
               <div className="login-btn">

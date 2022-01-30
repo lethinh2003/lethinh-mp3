@@ -110,8 +110,12 @@ const ProfilePassword = () => {
       confirmPassword.length >= 6 &&
       password === confirmPassword
     ) {
-      const handleUploadAvatar = async () => {
+      const handleUpdatePassword = async () => {
+        const loadingView = document.querySelector(".loading-opacity");
         try {
+          if (loadingView) {
+            loadingView.style.display = "block";
+          }
           setIsClickBtn(true);
           passwordInputError.current.classList.add("disabled");
           passwordInputError.current.disabled = true;
@@ -136,7 +140,9 @@ const ProfilePassword = () => {
           // );
           // dispatch(getUserLogin(updateUser.data.data));
           setIsClickBtn(false);
-
+          if (loadingView) {
+            loadingView.style.display = "none";
+          }
           toast.success("Updated!!");
           ChangePasswordBtn.current.style = ``;
           ChangePasswordBtn.current.textContent = "Change";
@@ -148,6 +154,9 @@ const ProfilePassword = () => {
           confirmPasswordInputError.current.disabled = false;
           history.replace("/");
         } catch (err) {
+          if (loadingView) {
+            loadingView.style.display = "none";
+          }
           setIsClickBtn(false);
           passwordInputError.current.classList.remove("disabled");
           passwordInputError.current.disabled = false;
@@ -163,7 +172,7 @@ const ProfilePassword = () => {
           ChangePasswordBtn.current.textContent = "Change";
         }
       };
-      handleUploadAvatar();
+      handleUpdatePassword();
     }
   };
 

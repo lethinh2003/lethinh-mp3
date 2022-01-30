@@ -78,48 +78,52 @@ const MenuRight = (props) => {
 
   useEffect(() => {
     if (!accessAccount) {
-      if (dataMusic.length > 1) {
-        const nextMusicId = findNextMusic(currentMusic, dataMusicUser, dataMusic);
-        const previousMusicId = findPreviousMusic(currentMusic, dataMusicUser, dataMusic);
-        if (nextMusicId !== undefined && previousMusicId !== undefined) {
-          const nextMusic = dataMusic[nextMusicId];
-          const previousMusic = dataMusic[previousMusicId];
-          dispatch(setNextSelectedMusic(nextMusic));
-          dispatch(setPreviousSelectedMusic(previousMusic));
+      if (!Array.isArray(currentMusic)) {
+        if (dataMusic.length > 1) {
+          const nextMusicId = findNextMusic(currentMusic, dataMusicUser, dataMusic);
+          const previousMusicId = findPreviousMusic(currentMusic, dataMusicUser, dataMusic);
+          if (nextMusicId !== undefined && previousMusicId !== undefined) {
+            const nextMusic = dataMusic[nextMusicId];
+            const previousMusic = dataMusic[previousMusicId];
+            dispatch(setNextSelectedMusic(nextMusic));
+            dispatch(setPreviousSelectedMusic(previousMusic));
+          }
         }
-      }
 
-      if (dataMusic.length <= 1) {
-        localStorage.removeItem("nextSelectedMusic");
-        localStorage.removeItem("previousSelectedMusic");
-      }
-      if (dataMusic.length === 0) {
-        localStorage.removeItem("selectedMusic");
+        if (dataMusic.length <= 1) {
+          localStorage.removeItem("nextSelectedMusic");
+          localStorage.removeItem("previousSelectedMusic");
+        }
+        if (dataMusic.length === 0) {
+          localStorage.removeItem("selectedMusic");
+        }
       }
     } else {
-      if (dataMusicUser.length > 1) {
-        const nextMusicId = findNextMusic(currentMusic, dataMusicUser, dataMusic);
-        const previousMusicId = findPreviousMusic(currentMusic, dataMusicUser, dataMusic);
-        if (nextMusicId !== undefined && previousMusicId !== undefined) {
-          const nextMusic = dataMusicUser[nextMusicId];
-          const previousMusic = dataMusicUser[previousMusicId];
-          dispatch(setNextSelectedMusic(nextMusic));
-          dispatch(setPreviousSelectedMusic(previousMusic));
+      if (!Array.isArray(currentMusic)) {
+        if (dataMusicUser.length > 1) {
+          const nextMusicId = findNextMusic(currentMusic, dataMusicUser, dataMusic);
+          const previousMusicId = findPreviousMusic(currentMusic, dataMusicUser, dataMusic);
+          if (nextMusicId !== undefined && previousMusicId !== undefined) {
+            const nextMusic = dataMusicUser[nextMusicId];
+            const previousMusic = dataMusicUser[previousMusicId];
+            dispatch(setNextSelectedMusic(nextMusic));
+            dispatch(setPreviousSelectedMusic(previousMusic));
+          }
         }
-      }
-      if (dataMusicUser.length <= 1) {
-        localStorage.removeItem("nextSelectedMusic");
-        localStorage.removeItem("previousSelectedMusic");
-      }
-      if (dataMusicUser.length === 0) {
-        localStorage.removeItem("selectedMusic");
+        if (dataMusicUser.length <= 1) {
+          localStorage.removeItem("nextSelectedMusic");
+          localStorage.removeItem("previousSelectedMusic");
+        }
+        if (dataMusicUser.length === 0) {
+          localStorage.removeItem("selectedMusic");
+        }
       }
     }
   }, [dataMusic, dataMusicUser, isPlayingPlaylist]);
   useEffect(() => {}, [isPlayingPlaylist]);
 
   useEffect(() => {
-    if (currentMusic) {
+    if (!Array.isArray(currentMusic)) {
       const menuPre = document.querySelectorAll(".menu-pre");
       if (menuPre && menuPre.length > 0) {
         menuPre.forEach((item) => {
@@ -185,14 +189,25 @@ const MenuRight = (props) => {
 
   // Delete Music From Playlist
   const hanldeDeleteMusic = (musicId, e) => {
+    const loadingView = document.querySelector(".loading-opacity");
     e.stopPropagation();
     if (accessAccount) {
-      if (currentMusic && currentMusic._id !== musicId) {
+      if (!Array.isArray(currentMusic) && musicId === currentMusic._id) {
+        return toast.error("Can't remove current music");
+      }
+
+      if (currentMusic._id !== musicId) {
         const DeletePlayListFromDB = async (userId) => {
           try {
+            if (loadingView) {
+              loadingView.style.display = "block";
+            }
             const response = await axios.delete(
               `https://random-musics.herokuapp.com/api/v1/playlists/${userId}/${musicId}`
             );
+            if (loadingView) {
+              loadingView.style.display = "none";
+            }
             const dataStorage = localStorage.getItem("MyPlayListMusicFromDB");
             if (dataStorage) {
               const dataStorageParse = JSON.parse(dataStorage);
@@ -201,17 +216,22 @@ const MenuRight = (props) => {
                 dataStorageParse.splice(findIndexMusic, 1);
                 localStorage.setItem("MyPlayListMusicFromDB", JSON.stringify(dataStorageParse));
                 dispatch(removeMyPlaylistUser()); /// REMOVE MUSIC FROM PLAYLIST
-                const nextMusicId = findNextMusic(currentMusic, dataMusicUser, dataMusic);
-                const previousMusicId = findPreviousMusic(currentMusic, dataMusicUser, dataMusic);
-                if (nextMusicId !== undefined && previousMusicId !== undefined) {
-                  const nextMusic = dataMusicUser[nextMusicId];
-                  const previousMusic = dataMusicUser[previousMusicId];
-                  dispatch(setNextSelectedMusic(nextMusic));
-                  dispatch(setPreviousSelectedMusic(previousMusic));
+                if (!Array.isArray(currentMusic)) {
+                  const nextMusicId = findNextMusic(currentMusic, dataMusicUser, dataMusic);
+                  const previousMusicId = findPreviousMusic(currentMusic, dataMusicUser, dataMusic);
+                  if (nextMusicId !== undefined && previousMusicId !== undefined) {
+                    const nextMusic = dataMusicUser[nextMusicId];
+                    const previousMusic = dataMusicUser[previousMusicId];
+                    dispatch(setNextSelectedMusic(nextMusic));
+                    dispatch(setPreviousSelectedMusic(previousMusic));
+                  }
                 }
               }
             }
           } catch (err) {
+            if (loadingView) {
+              loadingView.style.display = "none";
+            }
             if (err.response) {
               toast.error(err.response.data.message);
               errorAuth(err);
@@ -219,34 +239,29 @@ const MenuRight = (props) => {
           }
         };
         DeletePlayListFromDB(currentUser._id);
-      } else {
-        toast.error("Playlist must have one music!!");
       }
     } else {
-      if (currentMusic) {
-        if (musicId === currentMusic._id && isPlayingPlaylist) {
-          return toast.error("Can't remove current music");
-        }
-        const dataStorage = localStorage.getItem("MyPlayListMusic");
-        if (dataStorage) {
-          const dataStorageParse = JSON.parse(dataStorage);
-          const findIndexMusic = dataStorageParse.findIndex((item) => item._id === musicId);
-          if (findIndexMusic !== -1) {
-            dataStorageParse.splice(findIndexMusic, 1);
-            localStorage.setItem("MyPlayListMusic", JSON.stringify(dataStorageParse));
-            dispatch(removeMyPlaylist()); /// REMOVE MUSIC FROM PLAYLIST
-            const nextMusicId = findNextMusic(currentMusic, dataMusicUser, dataMusic);
-            const previousMusicId = findPreviousMusic(currentMusic, dataMusicUser, dataMusic);
-            if (nextMusicId !== undefined && previousMusicId !== undefined) {
-              const nextMusic = dataMusic[nextMusicId];
-              const previousMusic = dataMusic[previousMusicId];
-              dispatch(setNextSelectedMusic(nextMusic));
-              dispatch(setPreviousSelectedMusic(previousMusic));
-            }
+      if (!Array.isArray(currentMusic) && musicId === currentMusic._id) {
+        return toast.error("Can't remove current music");
+      }
+
+      const dataStorage = localStorage.getItem("MyPlayListMusic");
+      if (dataStorage) {
+        const dataStorageParse = JSON.parse(dataStorage);
+        const findIndexMusic = dataStorageParse.findIndex((item) => item._id === musicId);
+        if (findIndexMusic !== -1) {
+          dataStorageParse.splice(findIndexMusic, 1);
+          localStorage.setItem("MyPlayListMusic", JSON.stringify(dataStorageParse));
+          dispatch(removeMyPlaylist()); /// REMOVE MUSIC FROM PLAYLIST
+          const nextMusicId = findNextMusic(currentMusic, dataMusicUser, dataMusic);
+          const previousMusicId = findPreviousMusic(currentMusic, dataMusicUser, dataMusic);
+          if (nextMusicId !== undefined && previousMusicId !== undefined) {
+            const nextMusic = dataMusic[nextMusicId];
+            const previousMusic = dataMusic[previousMusicId];
+            dispatch(setNextSelectedMusic(nextMusic));
+            dispatch(setPreviousSelectedMusic(previousMusic));
           }
         }
-      } else {
-        toast.error("Something went wrong!!");
       }
     }
   };
@@ -287,7 +302,7 @@ const MenuRight = (props) => {
                   className="menu-pre"
                   onClick={(e) => handleChangeMusic(item, e)}
                   style={
-                    isPlayingPlaylist && currentMusic && currentMusic._id === item._id
+                    isPlayingPlaylist && !Array.isArray(currentMusic) && currentMusic._id === item._id
                       ? {
                           backgroundColor: "#7200a1",
                           borderRadius: "5px",
@@ -327,7 +342,7 @@ const MenuRight = (props) => {
                   className="menu-pre"
                   onClick={(e) => handleChangeMusic(item, e)}
                   style={
-                    isPlayingPlaylist === true && currentMusic && currentMusic._id === item._id
+                    isPlayingPlaylist === true && !Array.isArray(currentMusic) && currentMusic._id === item._id
                       ? {
                           backgroundColor: "#7200a1",
                           borderRadius: "5px",

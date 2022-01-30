@@ -9,6 +9,8 @@ import APIMusic from "../api/APIMusic";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import errorAuth from "./utils/errorAuth";
+import axios from "axios";
 import {
   getStatusSelectedMusic,
   setSelectedMusic,
@@ -16,12 +18,15 @@ import {
   getDuration,
   setNextSelectedMusic,
   setPreviousSelectedMusic,
+  getMyListHearts,
+  getUserLogin,
 } from "../redux/actions";
 import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
 const MusicPlayer = () => {
   const dataListMusic = useSelector((state) => state.listMusic.data);
   const dataMusicUser = useSelector((state) => state.addMyPlaylistUser);
   const dataMusic = useSelector((state) => state.addMyPlaylist);
+  const myListHearts = useSelector((state) => state.getMyListHearts);
   const [isChooseMusic, setIsChooseMusic] = useState(false);
   const [isFullView, setIsFullView] = useState(false);
   const [fullView, setFullView] = useState();
@@ -44,6 +49,7 @@ const MusicPlayer = () => {
   const isPlayingPlaylist = useSelector((state) => state.isPlayingPlaylist);
   const nextMusic = useSelector((state) => state.setNextSelectedMusic.data);
   const previousMusic = useSelector((state) => state.setPreviousSelectedMusic.data);
+  const getUserLogin = useSelector((state) => state.getUserLogin);
   const dispatch = useDispatch();
   const audioPlay = document.querySelector("audio");
 
@@ -66,13 +72,13 @@ const MusicPlayer = () => {
     //Have current music
     if (Array.isArray(currentMusic) === false && navi && musicPlayer) {
       //Set LocalStorage Music Heart
-      const getStore = JSON.parse(localStorage.getItem(currentMusic.id));
-      if (getStore === null) {
-        const newStore = {
-          heart: 0,
-        };
-        localStorage.setItem(currentMusic.id, JSON.stringify(newStore));
-      }
+      // const getStore = JSON.parse(localStorage.getItem(currentMusic.id));
+      // if (getStore === null) {
+      //   const newStore = {
+      //     heart: 0,
+      //   };
+      //   localStorage.setItem(currentMusic.id, JSON.stringify(newStore));
+      // }
 
       //Set Show Music Bar
       musicPlayer.style = `transform: translateY(0px);`;
@@ -159,31 +165,53 @@ const MusicPlayer = () => {
       // dispatch(getDuration(newStoreRedux));
     }
   };
-
-  const handleClickHeart = (e) => {
-    e.stopPropagation();
-
-    if (Array.isArray(currentMusic) === false) {
-      const heartContainer = document.querySelector(".heart-opacity");
-      if (heartContainer) {
-        heartContainer.style.opacity = 1;
-        heartContainer.style.visibility = "visible";
-        setTimeout(() => {
-          heartContainer.style.opacity = 0;
-          heartContainer.style.visibility = "hidden";
-        }, 500);
+  const checkMusicHearted = (id) => {
+    let hasHeart = false;
+    myListHearts.map((item) => {
+      if (item === id) {
+        hasHeart = true;
       }
-
-      // const heart = document.querySelector(".fa-heart");
-      // let getStore = JSON.parse(localStorage.getItem(currentMusic.id));
-      // if (heart && getStore) {
-      //   heart.classList.add("clicked");
-      //   const countHeart = getStore.heart + 1;
-      //   const newStore = {
-      //     heart: countHeart,
-      //   };
-      //   localStorage.setItem(currentMusic.id, JSON.stringify(newStore));
-      // }
+    });
+    return hasHeart;
+  };
+  const handleClickHeart = async (data, e) => {
+    e.stopPropagation();
+    const loadingView = document.querySelector(".loading-opacity");
+    const checkMusic = checkMusicHearted(data._id);
+    if (!getUserLogin) {
+      return toast.error("You must login to heart this music!!");
+    } else if (getUserLogin && checkMusic === true) {
+      console.log(checkMusic);
+      return toast.error("You have hearted this music!!");
+    }
+    try {
+      if (Array.isArray(currentMusic) === false) {
+        if (loadingView) {
+          loadingView.style.display = "block";
+        }
+        const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/hearts`);
+        dispatch(getMyListHearts(data._id));
+        if (loadingView) {
+          loadingView.style.display = "none";
+        }
+        const heartContainer = document.querySelector(".heart-opacity");
+        if (heartContainer) {
+          heartContainer.style.opacity = 1;
+          heartContainer.style.visibility = "visible";
+          setTimeout(() => {
+            heartContainer.style.opacity = 0;
+            heartContainer.style.visibility = "hidden";
+          }, 500);
+        }
+      }
+    } catch (err) {
+      if (loadingView) {
+        loadingView.style.display = "none";
+      }
+      if (err.response) {
+        toast.error(err.response.data.message);
+        errorAuth(err);
+      }
     }
   };
   // useEffect(() => {
@@ -258,7 +286,12 @@ const MusicPlayer = () => {
                 <span className="music-info__desc--author">{currentMusic.artist[0].name}</span>
               </div>
               <div className="music-info__icon">
-                <i className="fa fa-heart" onClick={(e) => handleClickHeart(e)}></i>
+                <i
+                  className={!isAudioPlay ? "fa play-icon fa-play" : "fa play-icon fa-pause"}
+                  aria-hidden="true"
+                  onClick={(e) => handleOnOffMusic(e)}
+                ></i>
+                <i className="fa fa-heart" onClick={(e) => handleClickHeart(currentMusic, e)}></i>
                 <AiOutlinePlus />
               </div>
             </div>

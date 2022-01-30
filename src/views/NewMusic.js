@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "../styles/newmusic.scss";
-import { Bars } from "react-loading-icons";
+import { Audio } from "react-loading-icons";
 import axios from "axios";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -133,6 +133,7 @@ const NewMusic = () => {
     return hasHeart;
   };
   const handleClickHeart = async (data) => {
+    const loadingView = document.querySelector(".loading-opacity");
     const checkMusic = checkMusicHearted(data._id);
     if (!getUserLogin) {
       return toast.error("You must login to heart this music!!");
@@ -142,21 +143,14 @@ const NewMusic = () => {
     }
 
     try {
-      let currentUser;
-      if (localStorage.getItem("currentUser")) {
-        currentUser = JSON.parse(localStorage.getItem("currentUser"))._id;
+      if (loadingView) {
+        loadingView.style.display = "block";
       }
-      const axiosData = {
-        user: currentUser,
-        music: data._id,
-      };
-      const updateHeart = await axios.post(
-        `https://random-musics.herokuapp.com/api/v1/musics/${data._id}/hearts`,
-        axiosData
-      );
-      const test = dispatch(getMyListHearts(data.id));
-      console.log(test);
-
+      const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/hearts`);
+      dispatch(getMyListHearts(data.id));
+      if (loadingView) {
+        loadingView.style.display = "none";
+      }
       const heartContainer = document.querySelector(".heart-opacity");
       if (heartContainer) {
         heartContainer.style.opacity = 1;
@@ -167,6 +161,9 @@ const NewMusic = () => {
         }, 500);
       }
     } catch (err) {
+      if (loadingView) {
+        loadingView.style.display = "none";
+      }
       if (err.response) {
         toast.error(err.response.data.message);
         errorAuth(err);
@@ -174,14 +171,24 @@ const NewMusic = () => {
     }
   };
   const addPlayListToDB = async (data, userId) => {
+    const loadingView = document.querySelector(".loading-opacity");
     try {
+      if (loadingView) {
+        loadingView.style.display = "block";
+      }
       const response = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/playlists`, {
         user: [userId],
       });
 
       toast.success("Added your playlist!");
       dispatch(addMyPlaylistUser(data));
+      if (loadingView) {
+        loadingView.style.display = "none";
+      }
     } catch (err) {
+      if (loadingView) {
+        loadingView.style.display = "none";
+      }
       if (err.response) {
         toast.error(err.response.data.message);
         errorAuth(err);
@@ -309,7 +316,12 @@ const NewMusic = () => {
                             <i className="fa fa-heart" onClick={() => handleClickHeart(item)}></i>
                             <div className="item-thumbnail__icon--play">
                               {currentMusic._id === item._id && isAudioPlay ? (
-                                <Bars />
+                                <Audio
+                                  style={{
+                                    width: "50%",
+                                    height: "50%",
+                                  }}
+                                />
                               ) : (
                                 <i
                                   className="fa fa-play"

@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 const TokenAccount = localStorage.getItem("jwt");
 export const findNextMusic = (data, dataMusicUser, dataMusic) => {
   let indexNextMusic;
-  if (TokenAccount) {
+  if (TokenAccount && data) {
     if (dataMusicUser && dataMusicUser.length >= 2) {
       const findIndexCurrentMusic = dataMusicUser.findIndex((item) => item._id === data._id);
       if (findIndexCurrentMusic === dataMusicUser.length - 1) {

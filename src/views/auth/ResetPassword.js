@@ -78,7 +78,7 @@ const ResetPassword = () => {
   }, [password, confirmPassword]);
 
   const fetchAPI = async () => {
-    console.log(status);
+    const loadingView = document.querySelector(".loading-opacity");
     if (password.length < 6) {
       passwordError.current.style.display = "block";
       passwordInputError.current.style = InputErrorStyle();
@@ -96,6 +96,9 @@ const ResetPassword = () => {
     }
     if (password.length >= 6 && confirmPassword.length >= 6 && password === confirmPassword && status === 200) {
       try {
+        if (loadingView) {
+          loadingView.style.display = "block";
+        }
         Btn.current.style = `opacity: 0.7; pointer-events: none;`;
         Btn.current.textContent = "Sending...";
 
@@ -109,7 +112,13 @@ const ResetPassword = () => {
         setTimeout(() => {
           history.replace("/");
         }, 3000);
+        if (loadingView) {
+          loadingView.style.display = "none";
+        }
       } catch (err) {
+        if (loadingView) {
+          loadingView.style.display = "none";
+        }
         Btn.current.textContent = "Send";
         Btn.current.style = ``;
         if (err.response) {

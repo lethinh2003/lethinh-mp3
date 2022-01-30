@@ -70,6 +70,7 @@ const Profile = () => {
   }, [name]);
 
   const handleClickEdit = () => {
+    const loadingView = document.querySelector(".loading-opacity");
     if (!accessAccount) {
       return window.location.replace("/");
     }
@@ -83,6 +84,9 @@ const Profile = () => {
         const handleUploadAvatar = async () => {
           const checkFile = avatarInput.current.files[0];
           try {
+            if (loadingView) {
+              loadingView.style.display = "block";
+            }
             setIsClickBtn(true);
             nameInput.current.classList.add("disabled");
             nameInput.current.disabled = true;
@@ -121,6 +125,9 @@ const Profile = () => {
             nameInput.current.classList.remove("disabled");
             nameInput.current.disabled = false;
             setIsClickBtn(false);
+            if (loadingView) {
+              loadingView.style.display = "none";
+            }
 
             toast.success("Updated!!");
             profileBtn.current.style = ``;
@@ -130,6 +137,9 @@ const Profile = () => {
             avatarInput.current.value = null;
             fileName.current.textContent = "";
           } catch (err) {
+            if (loadingView) {
+              loadingView.style.display = "none";
+            }
             if (err.response) {
               toast.error(err.response.data.message);
               errorAuth(err);

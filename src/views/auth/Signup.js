@@ -136,12 +136,13 @@ const Signup = () => {
         });
         Btn.current.style = ``;
         Btn.current.textContent = "Signup";
-
+        localStorage.removeItem("selectedMusic");
+        localStorage.removeItem("musicTime");
         localStorage.setItem("accessAccount", true);
         localStorage.setItem("jwt", response.data.token);
         localStorage.setItem("currentUser", JSON.stringify(response.data.data));
         toast.success("Signup success");
-        window.location.reload();
+        window.location.replace("/");
       } catch (err) {
         Btn.current.textContent = "Signup";
         Btn.current.style = ``;
