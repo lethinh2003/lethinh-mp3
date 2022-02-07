@@ -143,12 +143,14 @@ const NewMusic = () => {
 
     try {
       if (loadingView) {
-        loadingView.style.display = "block";
+        loadingView.classList.remove("is-hide");
+        loadingView.classList.add("is-show");
       }
       const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/hearts`);
       dispatch(getMyListHearts(data.id));
       if (loadingView) {
-        loadingView.style.display = "none";
+        loadingView.classList.add("is-hide");
+        loadingView.classList.remove("is-show");
       }
       const heartContainer = document.querySelector(".heart-opacity");
       if (heartContainer) {
@@ -161,7 +163,8 @@ const NewMusic = () => {
       }
     } catch (err) {
       if (loadingView) {
-        loadingView.style.display = "none";
+        loadingView.classList.add("is-hide");
+        loadingView.classList.remove("is-show");
       }
       if (err.response) {
         toast.error(err.response.data.message);
@@ -173,7 +176,8 @@ const NewMusic = () => {
     const loadingView = document.querySelector(".loading-opacity");
     try {
       if (loadingView) {
-        loadingView.style.display = "block";
+        loadingView.classList.remove("is-hide");
+        loadingView.classList.add("is-show");
       }
       const response = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/playlists`, {
         user: [userId],
@@ -182,11 +186,13 @@ const NewMusic = () => {
       toast.success("Added your playlist!");
       dispatch(addMyPlaylistUser(data));
       if (loadingView) {
-        loadingView.style.display = "none";
+        loadingView.classList.add("is-hide");
+        loadingView.classList.remove("is-show");
       }
     } catch (err) {
       if (loadingView) {
-        loadingView.style.display = "none";
+        loadingView.classList.add("is-hide");
+        loadingView.classList.remove("is-show");
       }
       if (err.response) {
         toast.error(err.response.data.message);

@@ -197,13 +197,15 @@ const MenuRight = (props) => {
         const DeletePlayListFromDB = async (userId) => {
           try {
             if (loadingView) {
-              loadingView.style.display = "block";
+              loadingView.classList.remove("is-hide");
+              loadingView.classList.add("is-show");
             }
             const response = await axios.delete(
               `https://random-musics.herokuapp.com/api/v1/playlists/${userId}/${musicId}`
             );
             if (loadingView) {
-              loadingView.style.display = "none";
+              loadingView.classList.add("is-hide");
+              loadingView.classList.remove("is-show");
             }
             const dataStorage = localStorage.getItem("MyPlayListMusicFromDB");
             if (dataStorage) {
@@ -227,7 +229,8 @@ const MenuRight = (props) => {
             }
           } catch (err) {
             if (loadingView) {
-              loadingView.style.display = "none";
+              loadingView.classList.add("is-hide");
+              loadingView.classList.remove("is-show");
             }
             if (err.response) {
               toast.error(err.response.data.message);

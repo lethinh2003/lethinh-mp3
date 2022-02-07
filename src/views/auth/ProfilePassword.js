@@ -114,7 +114,8 @@ const ProfilePassword = () => {
         const loadingView = document.querySelector(".loading-opacity");
         try {
           if (loadingView) {
-            loadingView.style.display = "block";
+            loadingView.classList.remove("is-hide");
+            loadingView.classList.add("is-show");
           }
           setIsClickBtn(true);
           passwordInputError.current.classList.add("disabled");
@@ -141,7 +142,8 @@ const ProfilePassword = () => {
           // dispatch(getUserLogin(updateUser.data.data));
           setIsClickBtn(false);
           if (loadingView) {
-            loadingView.style.display = "none";
+            loadingView.classList.add("is-hide");
+            loadingView.classList.remove("is-show");
           }
           toast.success("Updated!!");
           ChangePasswordBtn.current.style = ``;
@@ -155,7 +157,8 @@ const ProfilePassword = () => {
           history.replace("/");
         } catch (err) {
           if (loadingView) {
-            loadingView.style.display = "none";
+            loadingView.classList.add("is-hide");
+            loadingView.classList.remove("is-show");
           }
           setIsClickBtn(false);
           passwordInputError.current.classList.remove("disabled");

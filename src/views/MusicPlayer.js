@@ -188,12 +188,14 @@ const MusicPlayer = () => {
     try {
       if (Array.isArray(currentMusic) === false) {
         if (loadingView) {
-          loadingView.style.display = "block";
+          loadingView.classList.remove("is-hide");
+          loadingView.classList.add("is-show");
         }
         const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/hearts`);
         dispatch(getMyListHearts(data._id));
         if (loadingView) {
-          loadingView.style.display = "none";
+          loadingView.classList.add("is-hide");
+          loadingView.classList.remove("is-show");
         }
         const heartContainer = document.querySelector(".heart-opacity");
         if (heartContainer) {
@@ -207,7 +209,8 @@ const MusicPlayer = () => {
       }
     } catch (err) {
       if (loadingView) {
-        loadingView.style.display = "none";
+        loadingView.classList.add("is-hide");
+        loadingView.classList.remove("is-show");
       }
       if (err.response) {
         toast.error(err.response.data.message);

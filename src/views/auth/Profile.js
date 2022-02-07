@@ -85,7 +85,8 @@ const Profile = () => {
           const checkFile = avatarInput.current.files[0];
           try {
             if (loadingView) {
-              loadingView.style.display = "block";
+              loadingView.classList.remove("is-hide");
+              loadingView.classList.add("is-show");
             }
             setIsClickBtn(true);
             nameInput.current.classList.add("disabled");
@@ -126,7 +127,8 @@ const Profile = () => {
             nameInput.current.disabled = false;
             setIsClickBtn(false);
             if (loadingView) {
-              loadingView.style.display = "none";
+              loadingView.classList.add("is-hide");
+              loadingView.classList.remove("is-show");
             }
 
             toast.success("Updated!!");
@@ -138,7 +140,8 @@ const Profile = () => {
             fileName.current.textContent = "";
           } catch (err) {
             if (loadingView) {
-              loadingView.style.display = "none";
+              loadingView.classList.add("is-hide");
+              loadingView.classList.remove("is-show");
             }
             if (err.response) {
               toast.error(err.response.data.message);

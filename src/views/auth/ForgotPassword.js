@@ -53,7 +53,8 @@ const ForgotPassword = () => {
     if (emailValidate) {
       try {
         if (loadingView) {
-          loadingView.style.display = "block";
+          loadingView.classList.remove("is-hide");
+          loadingView.classList.add("is-show");
         }
         setIsClickBtn(true);
         Btn.current.style = `opacity: 0.7; pointer-events: none;`;
@@ -72,11 +73,13 @@ const ForgotPassword = () => {
         emailInputError.current.disabled = false;
         emailInputError.current.value = "";
         if (loadingView) {
-          loadingView.style.display = "none";
+          loadingView.classList.add("is-hide");
+          loadingView.classList.remove("is-show");
         }
       } catch (err) {
         if (loadingView) {
-          loadingView.style.display = "none";
+          loadingView.classList.add("is-hide");
+          loadingView.classList.remove("is-show");
         }
         Btn.current.textContent = "Send";
         Btn.current.style = ``;
