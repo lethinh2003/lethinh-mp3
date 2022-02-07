@@ -5,6 +5,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useSelector, useDispatch } from "react-redux";
 import { AiFillDelete } from "react-icons/ai";
+import { Audio } from "react-loading-icons";
 import {
   setSelectedMusic,
   removeSelectedMusic,
@@ -141,7 +142,7 @@ const MenuRight = (props) => {
   }
 
   // Set Background Selected Music
-  const handleChangeMusic = (data, e) => {
+  const handleChangeMusic = async (data, e) => {
     localStorage.setItem("isPlayingPlaylist", true);
     dispatch(setIsPlayingPlaylist(true));
     const menuPre = document.querySelectorAll(".menu-pre");
@@ -152,18 +153,7 @@ const MenuRight = (props) => {
       e.target.classList.add("active");
     }
     // Update View Music
-    if (data) {
-      // if (currentMusic.id !== data.id) {
-      //   const updateView = axios
-      //     .post("http://localhost:8000/api/music/update_view", {
-      //       id: data.id,
-      //     })
-
-      //     .catch(function (error) {
-      //       console.log(error);
-      //     });
-      // }
-
+    if (!Array.isArray(data)) {
       const nextMusicId = findNextMusic(data, dataMusicUser, dataMusic);
       const previousMusicId = findPreviousMusic(data, dataMusicUser, dataMusic);
       if (nextMusicId !== undefined && previousMusicId !== undefined) {
@@ -184,6 +174,13 @@ const MenuRight = (props) => {
       dispatch(removeSelectedMusic());
       dispatch(setSelectedMusic(data));
       handleUpdateCurrentMusic(data);
+      try {
+        const updateView = await axios.post(
+          `https://random-musics.herokuapp.com/api/v1/musics/${data._id}/update-views`
+        );
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -253,13 +250,15 @@ const MenuRight = (props) => {
           dataStorageParse.splice(findIndexMusic, 1);
           localStorage.setItem("MyPlayListMusic", JSON.stringify(dataStorageParse));
           dispatch(removeMyPlaylist()); /// REMOVE MUSIC FROM PLAYLIST
-          const nextMusicId = findNextMusic(currentMusic, dataMusicUser, dataMusic);
-          const previousMusicId = findPreviousMusic(currentMusic, dataMusicUser, dataMusic);
-          if (nextMusicId !== undefined && previousMusicId !== undefined) {
-            const nextMusic = dataMusic[nextMusicId];
-            const previousMusic = dataMusic[previousMusicId];
-            dispatch(setNextSelectedMusic(nextMusic));
-            dispatch(setPreviousSelectedMusic(previousMusic));
+          if (!Array.isArray(currentMusic)) {
+            const nextMusicId = findNextMusic(currentMusic, dataMusicUser, dataMusic);
+            const previousMusicId = findPreviousMusic(currentMusic, dataMusicUser, dataMusic);
+            if (nextMusicId !== undefined && previousMusicId !== undefined) {
+              const nextMusic = dataMusic[nextMusicId];
+              const previousMusic = dataMusic[previousMusicId];
+              dispatch(setNextSelectedMusic(nextMusic));
+              dispatch(setPreviousSelectedMusic(previousMusic));
+            }
           }
         }
       }
@@ -320,10 +319,10 @@ const MenuRight = (props) => {
                     <div className="pre-icon_play">
                       <i className="fa fa-play" aria-hidden="true"></i>
                     </div>
-                    <img src={item.info[0].thumbnail} alt="" />
+                    <img src={item.thumbnail} alt="" />
                   </div>
                   <div className="pre-info">
-                    <span className="pre-name">{item.info[0].name}</span>
+                    <span className="pre-name">{item.name}</span>
                     <span className="pre-artis">{item.artist[0].name}</span>
                   </div>
                   <div className="pre-features">
@@ -360,10 +359,10 @@ const MenuRight = (props) => {
                     <div className="pre-icon_play">
                       <i className="fa fa-play" aria-hidden="true"></i>
                     </div>
-                    <img src={item.info[0].thumbnail} alt="" />
+                    <img src={item.thumbnail} alt="" />
                   </div>
                   <div className="pre-info">
-                    <span className="pre-name">{item.info[0].name}</span>
+                    <span className="pre-name">{item.name}</span>
                     <span className="pre-artis">{item.artist[0].name}</span>
                   </div>
                   <div className="pre-features">

@@ -1,4 +1,5 @@
 import "../styles/musicplayer.scss";
+import { Audio } from "react-loading-icons";
 import MenuRight from "../views/MenuRight";
 import FullView from "./FullView";
 import { MdQueueMusic } from "react-icons/md";
@@ -279,10 +280,21 @@ const MusicPlayer = () => {
             {/* Music Information */}
             <div className="music-info">
               <div className="music-info__image">
-                <img src={currentMusic.info[0].thumbnail} alt="" />
+                <div
+                  className="music-info__image--icon-play"
+                  style={isAudioPlay ? { display: "block" } : { display: "none" }}
+                >
+                  <Audio
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  />
+                </div>
+                <img src={currentMusic.thumbnail} alt="" />
               </div>
               <div className="music-info__desc">
-                <span className="music-info__desc--name">{currentMusic.info[0].name}</span>
+                <span className="music-info__desc--name">{currentMusic.name}</span>
                 <span className="music-info__desc--author">{currentMusic.artist[0].name}</span>
               </div>
               <div className="music-info__icon">
@@ -296,7 +308,7 @@ const MusicPlayer = () => {
               </div>
             </div>
             {/* Music Process Bar */}
-            <audio id="audio" src={currentMusic.info[0].link}></audio>
+            <audio id="audio" src={currentMusic.link}></audio>
             <div className="music-process">
               <div className="playbar-top">
                 <i className="fa fa-step-backward" aria-hidden="true" onClick={(e) => handleClickPrevious(e)}></i>

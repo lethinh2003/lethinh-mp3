@@ -8,12 +8,21 @@ import Playlists from "./Playlists";
 import Artists from "./Artists";
 import Heart from "./Heart";
 import Layout from "./Layout";
+import Login from "./auth/Login";
+import Signup from "./auth/Signup";
+import Upload from "./auth/Upload";
+import CreateArtists from "./auth/CreateArtists";
+import CreateGenres from "./auth/CreateGenres";
 
 const MainPage = () => {
   return (
     <>
       <Heart />
-
+      <Login />
+      <Signup />
+      <Upload />
+      <CreateGenres />
+      <CreateArtists />
       {/* MAINPAGE */}
       <div className="ms-mainpage">
         <Artists />

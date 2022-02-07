@@ -26,7 +26,8 @@ const Artists = () => {
       .get("https://random-musics.herokuapp.com/api/v1/artists")
       .catch((err) => console.log(err));
     if (response) {
-      dispatch(getArtists(response.data.data.data));
+      console.log(response.data.data.data);
+      dispatch(getArtists(response.data.data.data.slice(-5)));
     }
   };
   useEffect(() => {

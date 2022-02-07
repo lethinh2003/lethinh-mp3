@@ -11,11 +11,9 @@ const Category = () => {
   const dataCategoryMusic = useSelector((state) => state.categoryMusic.data);
   const dispatch = useDispatch();
   const fetchAPI = async () => {
-    const response = await axios
-      .get("http://localhost:8000/api/music/category")
-      .catch((err) => console.log(err));
+    const response = await axios.get("http://localhost:8000/api/music/category").catch((err) => console.log(err));
     if (response) {
-      dispatch(getCategory(response.data.data));
+      dispatch(getCategory(response.data.data.slice(-4)));
       setIsLoading(false);
     }
   };

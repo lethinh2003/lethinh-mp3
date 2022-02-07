@@ -1,4 +1,4 @@
-import Search from "../Search";
+
 import "./getcategory.scss";
 import APIMusic from "../../api/APIMusic";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
@@ -11,11 +11,7 @@ const GetCateGory = () => {
   let history = useHistory();
 
   const { data, isLoading } = APIMusic("getMusicCategory", 1000, category);
-  const { data: dataCategory, isLoading: loading2 } = APIMusic(
-    "getMusicCategoryDetail",
-    1000,
-    category
-  );
+  const { data: dataCategory, isLoading: loading2 } = APIMusic("getMusicCategoryDetail", 1000, category);
 
   const [dataCategoryMusic, setDataCategoryMusic] = useState([]);
 
@@ -31,8 +27,6 @@ const GetCateGory = () => {
 
   return (
     <div className="mainpage">
-      <Search />
-
       <div className="category-container mg-20px">
         <div className="box-left">
           {loading2 && (

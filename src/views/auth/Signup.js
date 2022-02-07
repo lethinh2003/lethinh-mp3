@@ -1,10 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineCloseSquare } from "react-icons/ai";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import validator from "validator";
+import { FiEye } from "react-icons/fi";
+import { FiEyeOff } from "react-icons/fi";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserLogin, removeUserLogin, accessAccount, btnSignup } from "../../redux/actions";
 const Signup = () => {
+  const isBtnSignup = useSelector((state) => state.btnSignup);
   const accountError = useRef(null);
   const accountInputError = useRef(null);
   const passwordError = useRef(null);
@@ -28,18 +34,24 @@ const Signup = () => {
   const [passwordStatus, setPasswordStatus] = useState(false);
   const [confirmPasswordStatus, setConfirmPasswordStatus] = useState(false);
   const [emailStatus, setEmailStatus] = useState(false);
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
+  const [isClickBtn, setIsClickBtn] = useState(false);
+  const dispatch = useDispatch();
   const currentUser = localStorage.getItem("currentUser");
 
-  if (currentUser) {
-    history.replace("/");
-  }
+  useEffect(() => {
+    if (currentUser) {
+      history.replace("/");
+    }
+  }, []);
   const InputErrorStyle = () => {
     return "color: red; border-color: rgb(253 5 37);";
   };
   const emailValidate = validator.isEmail(email);
 
   useEffect(() => {
-    if (accountStatus === true) {
+    if (accountStatus === true && accountInputError.current && accountError.current) {
       if (account.length < 6) {
         accountInputError.current.style = InputErrorStyle();
         accountError.current.style.display = "block";
@@ -48,7 +60,7 @@ const Signup = () => {
         accountError.current.style.display = "none";
       }
     }
-    if (nameStatus === true) {
+    if (nameStatus === true && nameInputError.current && nameError.current) {
       if (name.length < 2) {
         nameInputError.current.style = InputErrorStyle();
         nameError.current.style.display = "block";
@@ -57,7 +69,7 @@ const Signup = () => {
         nameInputError.current.style = "";
       }
     }
-    if (passwordStatus === true) {
+    if (passwordStatus === true && passwordInputError.current && passwordError.current) {
       if (password.length < 6) {
         passwordInputError.current.style = InputErrorStyle();
         passwordError.current.style.display = "block";
@@ -66,7 +78,7 @@ const Signup = () => {
         passwordInputError.current.style = "";
       }
     }
-    if (confirmPasswordStatus === true) {
+    if (confirmPasswordStatus === true && confirmPasswordInputError.current && confirmPasswordError.current) {
       if (confirmPassword.length < 6) {
         confirmPasswordInputError.current.style = InputErrorStyle();
         confirmPasswordError.current.style.display = "block";
@@ -82,7 +94,7 @@ const Signup = () => {
         confirmPasswordInputError.current.style = "";
       }
     }
-    if (emailStatus === true) {
+    if (emailStatus === true && emailInputError.current && emailError.current) {
       if (!emailValidate) {
         emailInputError.current.style = InputErrorStyle();
         emailError.current.style.display = "block";
@@ -93,6 +105,7 @@ const Signup = () => {
     }
   }, [account, name, password, confirmPassword, email]);
   const fetchAPI = async () => {
+    const loadingView = document.querySelector(".loading-opacity");
     if (account.length < 6) {
       accountError.current.style.display = "block";
       accountInputError.current.style = InputErrorStyle();
@@ -125,6 +138,11 @@ const Signup = () => {
       password === confirmPassword
     ) {
       try {
+        setIsClickBtn(true);
+        if (loadingView) {
+          loadingView.classList.remove("is-hide");
+          loadingView.classList.add("is-show");
+        }
         Btn.current.style = `opacity: 0.7; pointer-events: none;`;
         Btn.current.textContent = "Signing up...";
         const response = await axios.post("https://random-musics.herokuapp.com/api/v1/users/signup", {
@@ -142,8 +160,18 @@ const Signup = () => {
         localStorage.setItem("jwt", response.data.token);
         localStorage.setItem("currentUser", JSON.stringify(response.data.data));
         toast.success("Signup success");
+        setIsClickBtn(false);
+        if (loadingView) {
+          loadingView.classList.add("is-hide");
+          loadingView.classList.remove("is-show");
+        }
         window.location.replace("/");
       } catch (err) {
+        setIsClickBtn(false);
+        if (loadingView) {
+          loadingView.classList.add("is-hide");
+          loadingView.classList.remove("is-show");
+        }
         Btn.current.textContent = "Signup";
         Btn.current.style = ``;
         if (err.response) {
@@ -154,131 +182,184 @@ const Signup = () => {
   };
 
   const handleChangeAccount = (e) => {
-    setAccountStatus(true);
-    setAccount(e.target.value);
+    if (!isClickBtn) {
+      setAccountStatus(true);
+      setAccount(e.target.value);
+    }
   };
   const handleChangeName = (e) => {
-    setNameStatus(true);
-    setName(e.target.value);
+    if (!isClickBtn) {
+      setNameStatus(true);
+      setName(e.target.value);
+    }
   };
   const handleChangePassword = (e) => {
-    setPasswordStatus(true);
-    setPassword(e.target.value);
+    if (!isClickBtn) {
+      setPasswordStatus(true);
+      setPassword(e.target.value);
+    }
   };
   const handleChangeConfirmPassword = (e) => {
-    setConfirmPasswordStatus(true);
-    setConfirmPassword(e.target.value);
+    if (!isClickBtn) {
+      setConfirmPasswordStatus(true);
+      setConfirmPassword(e.target.value);
+    }
   };
   const handleChangeEmail = (e) => {
-    setEmailStatus(true);
-    setEmail(e.target.value);
+    if (!isClickBtn) {
+      setEmailStatus(true);
+      setEmail(e.target.value);
+    }
   };
+  const handleCloseModal = () => {
+    dispatch(btnSignup(false));
+    setAccount("");
+    setPassword("");
+    setConfirmPassword("");
+    setName("");
+    setEmail("");
+  };
+  const handleHideShowPassword = () => {
+    if (!isClickBtn) {
+      if (!isShowPassword) {
+        passwordInputError.current.type = "text";
+      } else {
+        passwordInputError.current.type = "password";
+      }
+      setIsShowPassword(!isShowPassword);
+    }
+  };
+  const handleHideShowConfirmPassword = () => {
+    if (!isClickBtn) {
+      if (!isShowConfirmPassword) {
+        confirmPasswordInputError.current.type = "text";
+      } else {
+        confirmPasswordInputError.current.type = "password";
+      }
+      setIsShowConfirmPassword(!isShowConfirmPassword);
+    }
+  };
+  function useOutsideAlerter(ref) {
+    useEffect(() => {
+      /**
+       * Alert if clicked on outside of element
+       */
+      function handleClickOutside(event) {
+        const loadingView = document.querySelector(".loading-opacity");
+        const checkIsLoading = loadingView.classList.contains("is-show");
+        if (ref.current && !ref.current.contains(event.target) && !checkIsLoading) {
+          setAccount("");
+          setPassword("");
+          setConfirmPassword("");
+          setName("");
+          setEmail("");
+          handleCloseModal();
+        }
+      }
+      // Bind the event listener
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref]);
+  }
+  const wrapperRef = useRef(null);
+  // useOutsideAlerter(wrapperRef);
 
   return (
     <>
-      <div className="modal-opacity">
-        <div className="box-modal">
-          <div className="modal__header">
-            <div className="modal__header--title">Sign up</div>
-            <Link to="/">
-              <div className="modal__header--icon">X</div>
-            </Link>
-          </div>
-          <div className="modal__body">
-            <div className="modal__body--message">
-              <span className="message--error" ref={accountError}>
-                Tài khoản phải từ 6 kí tự trở lên
-              </span>
-              <span className="message--error" ref={nameError}>
-                Tên hiển thị phải từ 2 kí tự trở lên
-              </span>
-              <span className="message--error" ref={passwordError}>
-                Mật khẩu phải từ 6 kí tự trở lên
-              </span>
-              <span className="message--error" ref={confirmPasswordError}>
-                Nhập lại mật khẩu phải từ 6 kí tự trở lên
-              </span>
-              <span className="message--error" ref={confirmPasswordEqualError}>
-                Vui lòng nhập đúng xác nhận mật khẩu
-              </span>
-              <span className="message--error" ref={emailError}>
-                Vui lòng nhập Email hợp lệ
-              </span>
-            </div>
+      {isBtnSignup && (
+        <div className="modal-opacity">
+          <div className="box-modal" ref={wrapperRef}>
+            <div className="modal__header">
+              <div className="modal__header--title">Sign up</div>
 
-            <div className="field-container" ref={accountInputError}>
-              <input
-                className="field-input"
-                name="account"
-                type="text"
-                placeholder=" "
-                autoComplete="off"
-                value={account}
-                onChange={(e) => handleChangeAccount(e)}
-              />
-              <label className="field-placeholder" htmlFor="account">
-                Account
-              </label>
+              <div className="modal__header--icon" onClick={() => handleCloseModal()}>
+                {" "}
+                <AiOutlineCloseSquare />
+              </div>
             </div>
-            <div className="field-container" ref={nameInputError}>
-              <input
-                className="field-input"
-                name="name"
-                type="text"
-                placeholder=" "
-                value={name}
-                onChange={(e) => handleChangeName(e)}
-              />
-              <label className="field-placeholder" htmlFor="name">
-                Name
-              </label>
-            </div>
-            <div className="field-container" ref={passwordInputError}>
-              <input
-                className="field-input"
-                name="password"
-                type="password"
-                placeholder=" "
-                value={password}
-                onChange={(e) => handleChangePassword(e)}
-              />
-              <label className="field-placeholder" htmlFor="password">
-                Password
-              </label>
-            </div>
-            <div className="field-container" ref={confirmPasswordInputError}>
-              <input
-                className="field-input"
-                name="confirmPassword"
-                type="password"
-                placeholder=" "
-                value={confirmPassword}
-                onChange={(e) => handleChangeConfirmPassword(e)}
-              />
-              <label className="field-placeholder" htmlFor="confirmPassword">
-                Confirm Password
-              </label>
-            </div>
-            <div className="field-container" ref={emailInputError}>
-              <input
-                className="field-input"
-                name="email"
-                type="email"
-                placeholder=" "
-                value={email}
-                onChange={(e) => handleChangeEmail(e)}
-              />
-              <label className="field-placeholder" htmlFor="email">
-                Email
-              </label>
-            </div>
+            <div className="modal__body">
+              <div className="modal__body--message">
+                <span className="message--error" ref={accountError}>
+                  Tài khoản phải từ 6 kí tự trở lên
+                </span>
+                <span className="message--error" ref={nameError}>
+                  Tên hiển thị phải từ 2 kí tự trở lên
+                </span>
+                <span className="message--error" ref={passwordError}>
+                  Mật khẩu phải từ 6 kí tự trở lên
+                </span>
+                <span className="message--error" ref={confirmPasswordError}>
+                  Nhập lại mật khẩu phải từ 6 kí tự trở lên
+                </span>
+                <span className="message--error" ref={confirmPasswordEqualError}>
+                  Vui lòng nhập đúng xác nhận mật khẩu
+                </span>
+                <span className="message--error" ref={emailError}>
+                  Vui lòng nhập Email hợp lệ
+                </span>
+              </div>
+              <div className="modal__body--input">
+                <input
+                  type="text"
+                  value={account}
+                  ref={accountInputError}
+                  placeholder="Account"
+                  onChange={(e) => handleChangeAccount(e)}
+                />
+              </div>
+              <div className="modal__body--input">
+                <input
+                  type="text"
+                  value={name}
+                  ref={nameInputError}
+                  placeholder="Name"
+                  onChange={(e) => handleChangeName(e)}
+                />
+              </div>
+              <div className="modal__body--input">
+                <input
+                  type="password"
+                  value={password}
+                  ref={passwordInputError}
+                  placeholder="Password"
+                  onChange={(e) => handleChangePassword(e)}
+                />
+                <label className="password-option" onClick={() => handleHideShowPassword()}>
+                  {isShowPassword ? <FiEye /> : <FiEyeOff />}
+                </label>
+              </div>
+              <div className="modal__body--input">
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  ref={confirmPasswordInputError}
+                  placeholder="Confirm Password"
+                  onChange={(e) => handleChangeConfirmPassword(e)}
+                />
+                <label className="password-option" onClick={() => handleHideShowConfirmPassword()}>
+                  {isShowConfirmPassword ? <FiEye /> : <FiEyeOff />}
+                </label>
+              </div>
+              <div className="modal__body--input">
+                <input
+                  type="text"
+                  value={email}
+                  ref={emailInputError}
+                  placeholder="Email"
+                  onChange={(e) => handleChangeEmail(e)}
+                />
+              </div>
 
-            <div className="modal__body--button" ref={Btn} onClick={() => fetchAPI()}>
-              Signup
+              <div className="modal__body--button" ref={Btn} onClick={() => fetchAPI()}>
+                Signup
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

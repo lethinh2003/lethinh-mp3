@@ -14,6 +14,11 @@ import getUserLogin from "./getUserLogin";
 import accessAccount from "./accessAccount";
 import isPlayingPlaylist from "./isPlayingPlaylist";
 import getMyListHearts from "./getMyListHearts";
+import btnLogin from "./btnLogin";
+import btnSignup from "./btnSignup";
+import btnUpload from "./btnUpload";
+import btnCreateArtist from "./btnCreateArtists";
+import btnCreateGenres from "./btnCreateGenres";
 
 export default combineReducers({
   listMusic,
@@ -31,4 +36,9 @@ export default combineReducers({
   accessAccount,
   isPlayingPlaylist,
   getMyListHearts,
+  btnLogin,
+  btnSignup,
+  btnUpload,
+  btnCreateArtist,
+  btnCreateGenres,
 });

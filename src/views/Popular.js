@@ -108,18 +108,10 @@ const Popular = () => {
       dispatch(addMyPlaylist(data));
     }
   };
-  const handleChangeMusic = (data) => {
+  const handleChangeMusic = async (data) => {
     localStorage.setItem("isPlayingPlaylist", false);
     dispatch(setIsPlayingPlaylist(false));
     if (currentMusic._id !== data._id) {
-      // const updateView = axios
-      //   .post("http://localhost:8000/api/music/update_view", {
-      //     id: data.id,
-      //   })
-
-      //   .catch(function (error) {
-      //     console.log(error);
-      //   });
       const findIndexCurrentMusic = dataMyPlaylistUser.findIndex((item) => item._id === data._id);
       if (findIndexCurrentMusic === -1) {
         localStorage.removeItem("nextSelectedMusic");
@@ -146,6 +138,13 @@ const Popular = () => {
             dispatch(setPreviousSelectedMusic(previousMusic));
           }
         }
+      }
+      try {
+        const updateView = await axios.post(
+          `https://random-musics.herokuapp.com/api/v1/musics/${data._id}/update-views`
+        );
+      } catch (err) {
+        console.log(err);
       }
     }
   };
@@ -211,10 +210,10 @@ const Popular = () => {
                         <i className="fa fa-play" aria-hidden="true" style={{ fontSize: "20px" }}></i>
                       )}
                     </div>
-                    <img src={item.info[0].thumbnail} alt="" />
+                    <img src={item.thumbnail} alt="" />
                   </div>
                   <div className="popular-item__desc">
-                    <span className="popular-item__desc--name">{item.info[0].name}</span>
+                    <span className="popular-item__desc--name">{item.name}</span>
                     <span className="popular-item__desc--author">{item.artist[0].name}</span>
                   </div>
                   <div className="popular-item__icon">

@@ -82,18 +82,10 @@ const NewMusic = () => {
     fetchAPI();
   }, []);
 
-  const handleChangeMusic = (data) => {
+  const handleChangeMusic = async (data) => {
     localStorage.setItem("isPlayingPlaylist", false);
     dispatch(setIsPlayingPlaylist(false));
     if (currentMusic._id !== data._id) {
-      // const updateView = axios
-      //   .post("http://localhost:8000/api/music/update_view", {
-      //     id: data.id,
-      //   })
-
-      //   .catch(function (error) {
-      //     console.log(error);
-      //   });
       const findIndexCurrentMusic = dataMyPlaylistUser.findIndex((item) => item._id === data._id);
       if (findIndexCurrentMusic === -1) {
         localStorage.removeItem("nextSelectedMusic");
@@ -120,6 +112,13 @@ const NewMusic = () => {
             dispatch(setPreviousSelectedMusic(previousMusic));
           }
         }
+      }
+      try {
+        const updateView = await axios.post(
+          `https://random-musics.herokuapp.com/api/v1/musics/${data._id}/update-views`
+        );
+      } catch (err) {
+        console.log(err);
       }
     }
   };
@@ -226,6 +225,8 @@ const NewMusic = () => {
           }
         }
         toast.success("Added your playlist!");
+      } else {
+        toast.error("You have added this music to your playlist!");
       }
     } else {
       if (dataMyPlaylistUser && dataMyPlaylistUser.length > 0) {
@@ -237,6 +238,8 @@ const NewMusic = () => {
       }
       if (check) {
         addPlayListToDB(data, currentUser._id);
+      } else {
+        toast.error("You have added this music to your playlist!");
       }
     }
   };
@@ -332,11 +335,11 @@ const NewMusic = () => {
                             </div>
                             <AiOutlinePlus onClick={() => handleClickAddMusic(item)} />
                           </div>
-                          <img src={item.info[0].thumbnail} alt="" />
+                          <img src={item.thumbnail} alt="" />
                         </div>
                         <div className="item-desc">
                           <span className="item-name">
-                            <a title={item.info[0].name}>{item.info[0].name}</a>
+                            <a title={item.name}>{item.name}</a>
                           </span>
                           <span className="item_desc">{item.artist[0].name}</span>
                         </div>

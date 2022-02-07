@@ -13,9 +13,10 @@ $label-padding: $field-container-padding !default;
   z-index: 9999999;
 }
 .box-modal {
-  @include widthHeight(100%, 100%);
+  box-shadow: 1px 3px 4px 1px $text-color;
+  @include widthHeight(100%, 600px);
   max-width: 350px;
-  max-height: 600px;
+  max-height: calc(100% - 20px);
   background-color: #fff;
   @include center;
   border-radius: 30px;
@@ -35,6 +36,10 @@ $label-padding: $field-container-padding !default;
   &--title {
     font-family: "Indie Flower", cursive;
     font-size: 30px;
+  }
+
+  &--icon {
+    cursor: pointer;
   }
 }
 .modal__body {
@@ -66,6 +71,11 @@ $label-padding: $field-container-padding !default;
     @include flex(center, center);
     cursor: pointer;
     font-size: $font-size-first;
+    box-shadow: 2px 2px 2px 2px #d3d1d1;
+
+    &:hover {
+      opacity: 0.95;
+    }
   }
 
   &--message {
@@ -88,7 +98,8 @@ $label-padding: $field-container-padding !default;
     position: relative;
     margin-top: 10px;
     @include widthHeight(100%, 40px);
-    input {
+    input,
+    select {
       font-size: $font-size-first;
       @include widthHeight(100%, 100%);
       color: #130d21;
@@ -96,9 +107,60 @@ $label-padding: $field-container-padding !default;
       border-radius: 4px;
       font-weight: 700;
       padding: 5px 30px 5px 5px;
+      box-shadow: 2px 2px 2px 2px #ccc;
 
       &:focus {
         outline: none;
+      }
+    }
+
+    .input-select {
+      @include widthHeight(100%, 100%);
+      box-shadow: 2px 2px 2px 2px #ccc;
+      border: 1px solid #6121ac;
+      border-radius: 4px;
+
+      &__body {
+        @include widthHeight(100%, 100%);
+        padding: 10px;
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        overflow-y: auto;
+
+        &--tag {
+          cursor: pointer;
+          @include widthHeight(auto, 20px);
+          padding: 5px;
+          font-size: $font-size-second;
+          border-radius: 20px;
+          border: 1px solid black;
+          @include flex(center, center);
+          color: black;
+          transition: all 0.2s linear;
+          box-shadow: 2px 2px 2px 2px #d9c8c8;
+          position: relative;
+
+          &.selected {
+            border-color: red;
+
+            &::after {
+              display: flex;
+              color: white;
+              width: 15px;
+              content: ">";
+              position: absolute;
+              height: 15px;
+              right: -4px;
+              background-color: #77d777;
+              border-radius: 50%;
+              justify-content: center;
+              align-items: center;
+              transform: rotate(122deg);
+              top: -7px;
+            }
+          }
+        }
       }
     }
   }
@@ -168,6 +230,7 @@ input.field-input {
   height: 100%;
   position: absolute;
   color: black;
+  cursor: pointer;
 }
 .disabled {
   cursor: not-allowed;

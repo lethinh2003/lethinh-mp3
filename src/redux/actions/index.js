@@ -76,3 +76,23 @@ export const getMyListHearts = (data) => ({
   type: "ADD_MY_LIST_HEARTS",
   payload: data,
 });
+export const btnLogin = (data) => ({
+  type: "BTN_LOGIN",
+  payload: data,
+});
+export const btnSignup = (data) => ({
+  type: "BTN_SIGNUP",
+  payload: data,
+});
+export const btnUpload = (data) => ({
+  type: "BTN_UPLOAD",
+  payload: data,
+});
+export const btnCreateArtist = (data) => ({
+  type: "BTN_CREATE_ARTIST",
+  payload: data,
+});
+export const btnCreateGenres = (data) => ({
+  type: "BTN_CREATE_GENRES",
+  payload: data,
+});

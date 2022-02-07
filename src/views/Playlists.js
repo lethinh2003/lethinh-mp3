@@ -14,7 +14,7 @@ const Playlists = () => {
       .get("https://random-musics.herokuapp.com/api/v1/genres")
       .catch((err) => console.log(err));
     if (response) {
-      dispatch(getCategory(response.data.data.data));
+      dispatch(getCategory(response.data.data.data.slice(-4)));
     }
   };
   useEffect(() => {
@@ -30,11 +30,7 @@ const Playlists = () => {
               dataCategoryMusic.length === 0 &&
               Array.from({ length: 4 }).map((item, i) => {
                 return (
-                  <SkeletonTheme
-                    baseColor="#464646"
-                    highlightColor="#191420"
-                    key={i}
-                  >
+                  <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
                     <div className="playlists-item">
                       <Skeleton height={115} width={290} />
                       <span className="playlists-item__title">

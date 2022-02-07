@@ -30,6 +30,12 @@
     box-shadow: 0px 2px 9px 2px #0e0a0c;
     overflow: hidden;
     object-fit: cover;
+    position: relative;
+
+    &--icon-play {
+      position: absolute;
+      @include center;
+    }
 
     & img {
       height: 100%;

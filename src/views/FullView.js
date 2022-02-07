@@ -14,6 +14,7 @@ import {
 const FullView = (props) => {
   let { handleSetCurrentMusic, currentMusic, handleCloseFullView, handleUpdateStatusAudio, listCurrentMusic } = props;
 
+  const [count, setCount] = useState(0);
   const [minutesCurrent, setMinutesCurrent] = useState(0);
   const [secondsCurrent, setSecondsCurrent] = useState(0);
   const [minutesDuration, setMinutesDuration] = useState(0);
@@ -62,7 +63,7 @@ const FullView = (props) => {
   }, [currentMusic]);
   useEffect(() => {
     if (isAudioPlay) {
-      document.title = "You are listening " + currentMusic.info[0].name;
+      document.title = "You are listening " + currentMusic.name;
     }
   }, [isAudioPlay]);
 
@@ -149,6 +150,16 @@ const FullView = (props) => {
 
     //Update Real Time
     const updateRealTime = setInterval(updateTime, 100);
+
+    if (isAutoNext && valueCurrent >= 100) {
+      if (count === 0) {
+        clearInterval(updateRealTime);
+        console.log("clear");
+        handleSetCurrentMusic(nextMusic);
+        setCount(1);
+        // setIsAutoNext(true);
+      }
+    }
 
     return () => {
       clearInterval(updateRealTime);
@@ -239,7 +250,7 @@ const FullView = (props) => {
 
         {Array.isArray(currentMusic) === false && (
           <>
-            <audio id="audio" src={currentMusic.info[0].link} ref={audioPlay}></audio>
+            <audio id="audio" src={currentMusic.link} ref={audioPlay}></audio>
             <div className="list_music_current">
               {/* Previous Music */}
               {/* {(dataMusicUser.length >= 2 || dataMusic.length >= 2) &&
@@ -260,11 +271,11 @@ const FullView = (props) => {
                           aria-hidden="true"
                         ></i>
                       </div>
-                      <img src={previousMusic.info[0].thumbnail} />
+                      <img src={previousMusic.thumbnail} />
                     </div>
                     <div className="desc-current">
                       <span className="music_name">
-                        {previousMusic.info[0].name}
+                        {previousMusic.name}
                       </span>
                       <span className="music_author">
                         {previousMusic.artist[0].name}
@@ -295,11 +306,11 @@ const FullView = (props) => {
                     {isAudioPlay === false && <i className="fa fa-play big-icon" aria-hidden="true"></i>}
                     {isAudioPlay === true && <i className="fa fa-pause big-icon" aria-hidden="true"></i>}
                   </div>
-                  <img src={currentMusic.info[0].thumbnail} />
+                  <img src={currentMusic.thumbnail} />
                 </div>
 
                 <div className="desc-current">
-                  <span className="music_name">{currentMusic.info[0].name}</span>
+                  <span className="music_name">{currentMusic.name}</span>
                   <span className="music_author">{currentMusic.artist[0].name}</span>
                 </div>
               </div>
@@ -323,11 +334,11 @@ const FullView = (props) => {
                           aria-hidden="true"
                         ></i>
                       </div>
-                      <img src={nextMusic.info[0].thumbnail} />
+                      <img src={nextMusic.thumbnail} />
                     </div>
                     <div className="desc-current">
                       <span className="music_name">
-                        {nextMusic.info[0].name}
+                        {nextMusic.name}
                       </span>
                       <span className="music_author">
                         {nextMusic.artist[0].name}

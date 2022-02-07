@@ -1,10 +1,11 @@
 import "../styles/navigation.scss";
-import { MdFeaturedPlayList } from "react-icons/md";
+import { MdFeaturedPlayList, MdHorizontalSplit } from "react-icons/md";
 import { FaMicrophone, FaStore } from "react-icons/fa";
 import { GiLoveSong } from "react-icons/gi";
-import { FiRadio } from "react-icons/fi";
+import { FiRadio, FiUpload } from "react-icons/fi";
 import { BsHeartFill } from "react-icons/bs";
 import { GoBrowser } from "react-icons/go";
+
 import { RiCloseCircleLine } from "react-icons/ri";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import { IoIosArrowRoundBack } from "react-icons/io";
@@ -13,15 +14,20 @@ import { FaBars } from "react-icons/fa";
 import { RiBarChartHorizontalLine } from "react-icons/ri";
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { getUserLogin, removeUserLogin, accessAccount } from "../redux/actions";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserLogin, removeUserLogin, accessAccount, btnLogin, btnUpload } from "../redux/actions";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+
+import Search from "./Search";
 const Navigation = () => {
+  const dispatch = useDispatch();
   const [isNavOpen, setIsNavOpen] = useState(false);
+
   const nav = useRef(null);
+
   const dataUser = useSelector((state) => state.getUserLogin);
   const dataSelectedMusic = useSelector((state) => state.selectedMusic.data);
-  console.log(dataSelectedMusic);
+
   let history = useHistory();
   useEffect(() => {
     if (Array.isArray(dataSelectedMusic)) {
@@ -46,6 +52,13 @@ const Navigation = () => {
   const hanldeClickForwardHistory = () => {
     history.goForward();
   };
+  const handleClickLogin = () => {
+    dispatch(btnLogin(true));
+  };
+  const handleClickUpload = () => {
+    dispatch(btnUpload(true));
+  };
+
   return (
     <>
       {/* SIDEBAR */}
@@ -133,21 +146,31 @@ const Navigation = () => {
       <header className="ms-header">
         <div className="level">
           <div className="level-left">
-            <span className="ms-btn" onClick={() => hanldeClickBackHistory()}>
+            <span className="ms-btn back" onClick={() => hanldeClickBackHistory()}>
               <IoIosArrowRoundBack />
             </span>
-            <span className="ms-btn" onClick={() => hanldeClickForwardHistory()}>
+            <span className="ms-btn next" onClick={() => hanldeClickForwardHistory()}>
               <IoIosArrowRoundForward />
             </span>
-            <div className="search"></div>
+
+            <Search />
           </div>
           <div className="level-right">
             <span className="ms-btn navbar" onClick={() => hanldeOnOffNavbar()}>
               {isNavOpen ? <RiBarChartHorizontalLine /> : <FaBars />}
             </span>
+            {dataUser && (
+              <span className="ms-btn" onClick={() => handleClickUpload()}>
+                <FiUpload />
+              </span>
+            )}
 
-            <div className="login-btn">
-              {!dataUser ? <Link to="/auth/login">Login</Link> : <Link to="/auth/logout">Logout</Link>}
+            <div className="header-btn">
+              {!dataUser ? (
+                <span onClick={() => handleClickLogin()}>Login</span>
+              ) : (
+                <Link to="/auth/logout">Logout</Link>
+              )}
             </div>
           </div>
         </div>

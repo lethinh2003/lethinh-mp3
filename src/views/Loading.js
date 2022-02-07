@@ -3,7 +3,7 @@ import "../styles/loading.scss";
 const Loading = () => {
   return (
     <>
-      <div className="loading-opacity" style={{ display: "none" }}>
+      <div className="loading-opacity is-hide">
         <div className="loading-icon">
           <ThreeDots />
         </div>
