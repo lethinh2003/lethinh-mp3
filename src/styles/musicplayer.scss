@@ -14,7 +14,7 @@
   left: 0;
   display: flex;
   padding: 10px;
-  color: white;
+  color: $text-color;
   justify-content: space-between;
 }
 .music-info {
@@ -70,6 +70,7 @@
     display: flex;
     justify-content: space-around;
     width: 80px;
+    color: $text-color;
 
     .play-icon {
       display: none;
@@ -99,6 +100,7 @@
 
     &__icon {
       &--play {
+        color: #ffffff;
         @include widthHeight(60px, 60px);
         background-color: #ff448e;
         border-radius: $border-radius + 10px;

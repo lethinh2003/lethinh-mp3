@@ -4,19 +4,23 @@ import "./styles/modal.scss";
 import Navigation from "./views/Navigation";
 import MusicPlayer from "./views/MusicPlayer";
 import MainPage from "./views/MainPage";
-
+import TopPopular from "./views/TopPopular";
 // AUTH
 import Login from "./views/auth/Login";
 import Logout from "./views/auth/Logout";
 import Signup from "./views/auth/Signup";
+import Upload from "./views/auth/Upload";
 import Profile from "./views/auth/Profile";
 import ForgotPassword from "./views/auth/ForgotPassword";
 import ResetPassword from "./views/auth/ResetPassword";
 import ProfilePassword from "./views/auth/ProfilePassword";
+import CreateArtists from "./views/auth/CreateArtists";
+import CreateGenres from "./views/auth/CreateGenres";
 
 import Layout from "./views/Layout";
 import GetCateGory from "./views/category/GetCategory";
 
+import Heart from "./views/Heart";
 import Loading from "./views/Loading";
 import "./styles/loading.scss";
 import axios from "axios";
@@ -40,57 +44,61 @@ function App() {
   if (!AccessAccount) {
     localStorage.setItem("accessAccount", false);
   }
+  const currentUser = localStorage.getItem("currentUser");
   return (
     <>
       <div className="ms-layout">
-        <Router>
-          <Navigation />
-          <Loading />
+        <Navigation />
+        {!currentUser && <Login />}
+        {!currentUser && <Signup />}
+        {currentUser && <Upload />}
+        {currentUser && <CreateGenres />}
+        {currentUser && <CreateArtists />}
+        <Loading />
+        <Heart />
 
-          <Switch>
-            <Route path="/" exact={true}>
-              <MainPage />
-            </Route>
-            <Route path="/category/:category" exact={true}>
-              <GetCateGory />
-            </Route>
-            <Route path="/auth/login" exact={true}>
-              <Login />
-            </Route>
-            <Route path="/auth/logout" exact={true}>
-              <Logout />
-            </Route>
-            <Route path="/auth/signup" exact={true}>
-              <Signup />
-            </Route>
-            <Route path="/auth/me" exact={true}>
-              <Profile />
-            </Route>
-            <Route path="/auth/me/password" exact={true}>
-              <ProfilePassword />
-            </Route>
-            <Route path="/auth/forgot-password" exact={true}>
-              <ForgotPassword />
-            </Route>
-            <Route path="/auth/reset-password/:token" exact={true}>
-              <ResetPassword />
-            </Route>
-          </Switch>
+        <Switch>
+          <Route path="/" exact={true}>
+            <MainPage />
+          </Route>
+          <Route path="/category/:category" exact={true}>
+            <GetCateGory />
+          </Route>
+          <Route path="/bang-xep-hang/">
+            <TopPopular />
+          </Route>
 
-          <MusicPlayer />
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss={false}
-            draggable
-            pauseOnHover={false}
-            theme="dark"
-          />
-        </Router>
+          <Route path="/auth/logout" exact={true}>
+            <Logout />
+          </Route>
+
+          <Route path="/auth/me" exact={true}>
+            <Profile />
+          </Route>
+          <Route path="/auth/me/password" exact={true}>
+            <ProfilePassword />
+          </Route>
+          <Route path="/auth/forgot-password" exact={true}>
+            <ForgotPassword />
+          </Route>
+          <Route path="/auth/reset-password/:token" exact={true}>
+            <ResetPassword />
+          </Route>
+        </Switch>
+
+        <MusicPlayer />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable
+          pauseOnHover={false}
+          theme="dark"
+        />
       </div>
     </>
   );

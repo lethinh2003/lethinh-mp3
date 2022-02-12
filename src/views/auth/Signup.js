@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { AiOutlinePlus } from "react-icons/ai";
-import { AiOutlineCloseSquare } from "react-icons/ai";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import validator from "validator";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserLogin, removeUserLogin, accessAccount, btnSignup } from "../../redux/actions";
+import { btnSignup } from "../../redux/actions";
+import { Modal, ModalHeader, ModalBody } from "../utils/Modal";
 const Signup = () => {
   const isBtnSignup = useSelector((state) => state.btnSignup);
   const accountError = useRef(null);
@@ -44,7 +43,7 @@ const Signup = () => {
     if (currentUser) {
       history.replace("/");
     }
-  }, []);
+  }, [isBtnSignup]);
   const InputErrorStyle = () => {
     return "color: red; border-color: rgb(253 5 37);";
   };
@@ -270,95 +269,86 @@ const Signup = () => {
   return (
     <>
       {isBtnSignup && (
-        <div className="modal-opacity">
-          <div className="box-modal" ref={wrapperRef}>
-            <div className="modal__header">
-              <div className="modal__header--title">Sign up</div>
-
-              <div className="modal__header--icon" onClick={() => handleCloseModal()}>
-                {" "}
-                <AiOutlineCloseSquare />
-              </div>
+        <Modal>
+          <ModalHeader title="Sign up" handleCloseModal={handleCloseModal} />
+          <ModalBody>
+            <div className="modal__body--message">
+              <span className="message--error" ref={accountError}>
+                Tài khoản phải từ 6 kí tự trở lên
+              </span>
+              <span className="message--error" ref={nameError}>
+                Tên hiển thị phải từ 2 kí tự trở lên
+              </span>
+              <span className="message--error" ref={passwordError}>
+                Mật khẩu phải từ 6 kí tự trở lên
+              </span>
+              <span className="message--error" ref={confirmPasswordError}>
+                Nhập lại mật khẩu phải từ 6 kí tự trở lên
+              </span>
+              <span className="message--error" ref={confirmPasswordEqualError}>
+                Vui lòng nhập đúng xác nhận mật khẩu
+              </span>
+              <span className="message--error" ref={emailError}>
+                Vui lòng nhập Email hợp lệ
+              </span>
             </div>
-            <div className="modal__body">
-              <div className="modal__body--message">
-                <span className="message--error" ref={accountError}>
-                  Tài khoản phải từ 6 kí tự trở lên
-                </span>
-                <span className="message--error" ref={nameError}>
-                  Tên hiển thị phải từ 2 kí tự trở lên
-                </span>
-                <span className="message--error" ref={passwordError}>
-                  Mật khẩu phải từ 6 kí tự trở lên
-                </span>
-                <span className="message--error" ref={confirmPasswordError}>
-                  Nhập lại mật khẩu phải từ 6 kí tự trở lên
-                </span>
-                <span className="message--error" ref={confirmPasswordEqualError}>
-                  Vui lòng nhập đúng xác nhận mật khẩu
-                </span>
-                <span className="message--error" ref={emailError}>
-                  Vui lòng nhập Email hợp lệ
-                </span>
-              </div>
-              <div className="modal__body--input">
-                <input
-                  type="text"
-                  value={account}
-                  ref={accountInputError}
-                  placeholder="Account"
-                  onChange={(e) => handleChangeAccount(e)}
-                />
-              </div>
-              <div className="modal__body--input">
-                <input
-                  type="text"
-                  value={name}
-                  ref={nameInputError}
-                  placeholder="Name"
-                  onChange={(e) => handleChangeName(e)}
-                />
-              </div>
-              <div className="modal__body--input">
-                <input
-                  type="password"
-                  value={password}
-                  ref={passwordInputError}
-                  placeholder="Password"
-                  onChange={(e) => handleChangePassword(e)}
-                />
-                <label className="password-option" onClick={() => handleHideShowPassword()}>
-                  {isShowPassword ? <FiEye /> : <FiEyeOff />}
-                </label>
-              </div>
-              <div className="modal__body--input">
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  ref={confirmPasswordInputError}
-                  placeholder="Confirm Password"
-                  onChange={(e) => handleChangeConfirmPassword(e)}
-                />
-                <label className="password-option" onClick={() => handleHideShowConfirmPassword()}>
-                  {isShowConfirmPassword ? <FiEye /> : <FiEyeOff />}
-                </label>
-              </div>
-              <div className="modal__body--input">
-                <input
-                  type="text"
-                  value={email}
-                  ref={emailInputError}
-                  placeholder="Email"
-                  onChange={(e) => handleChangeEmail(e)}
-                />
-              </div>
-
-              <div className="modal__body--button" ref={Btn} onClick={() => fetchAPI()}>
-                Signup
-              </div>
+            <div className="modal__body--input">
+              <input
+                type="text"
+                value={account}
+                ref={accountInputError}
+                placeholder="Account"
+                onChange={(e) => handleChangeAccount(e)}
+              />
             </div>
-          </div>
-        </div>
+            <div className="modal__body--input">
+              <input
+                type="text"
+                value={name}
+                ref={nameInputError}
+                placeholder="Name"
+                onChange={(e) => handleChangeName(e)}
+              />
+            </div>
+            <div className="modal__body--input">
+              <input
+                type="password"
+                value={password}
+                ref={passwordInputError}
+                placeholder="Password"
+                onChange={(e) => handleChangePassword(e)}
+              />
+              <label className="password-option" onClick={() => handleHideShowPassword()}>
+                {isShowPassword ? <FiEye /> : <FiEyeOff />}
+              </label>
+            </div>
+            <div className="modal__body--input">
+              <input
+                type="password"
+                value={confirmPassword}
+                ref={confirmPasswordInputError}
+                placeholder="Confirm Password"
+                onChange={(e) => handleChangeConfirmPassword(e)}
+              />
+              <label className="password-option" onClick={() => handleHideShowConfirmPassword()}>
+                {isShowConfirmPassword ? <FiEye /> : <FiEyeOff />}
+              </label>
+            </div>
+            <div className="modal__body--input">
+              <input
+                type="text"
+                value={email}
+                ref={emailInputError}
+                placeholder="Email"
+                onChange={(e) => handleChangeEmail(e)}
+              />
+            </div>
+
+            <div className="modal__body--button" ref={Btn} onClick={() => fetchAPI()}>
+              Signup
+            </div>
+          </ModalBody>
+        </Modal>
       )}
     </>
   );

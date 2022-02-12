@@ -14,7 +14,7 @@ body {
   color: $text-color;
   // background: linear-gradient(to bottom, $body-bg-first, $body-bg-second);
   // background-color: $body-bg-first;
-  background-color: #0a0a0a;
+  background-color: #f1f1f1;
 
   @include mobile {
     height: 1000px;

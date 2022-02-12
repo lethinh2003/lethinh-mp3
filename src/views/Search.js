@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineConsoleSql, AiOutlineSearch } from "react-icons/ai";
 import { AiOutlineClose } from "react-icons/ai";
-
+import { Oval } from "react-loading-icons";
 const Search = () => {
   const [isSearch, setIsSearch] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
   const searchResult = useRef(null);
   const hanldeChangeValueSearch = (e) => {
@@ -12,11 +13,30 @@ const Search = () => {
     searchResult.current.classList.add("is-show");
     searchResult.current.classList.remove("is-hide");
   };
+  useEffect(() => {
+    console.log("search-changed");
+    const countLoading = setTimeout(() => {
+      if (loadingSearch.current) {
+        loadingSearch.current.classList.add("is-dpb");
+        loadingSearch.current.classList.remove("is-dpn");
+      }
+      setIsLoading(true);
+    }, 500);
+    return () => {
+      clearTimeout(countLoading);
+      setIsLoading(false);
+      if (loadingSearch.current) {
+        loadingSearch.current.classList.remove("is-dpb");
+        loadingSearch.current.classList.add("is-dpn");
+      }
+    };
+  }, [search]);
   const handleCloseSearch = () => {
     setSearch("");
     setIsSearch(false);
     searchResult.current.classList.add("is-hide");
     searchResult.current.classList.remove("is-show");
+    searchRef.current.classList.remove("is-show");
   };
   function useOutsideAlerter(ref) {
     useEffect(() => {
@@ -37,13 +57,18 @@ const Search = () => {
     }, [ref]);
   }
   const wrapperRef = useRef(null);
+  const searchRef = useRef(null);
+  const loadingSearch = useRef(null);
   useOutsideAlerter(wrapperRef);
+  const handleClickMobileSearch = () => {
+    searchRef.current.classList.add("is-show");
+  };
 
   return (
     <>
       <div ref={wrapperRef}>
-        <div className="search">
-          <div className="search__icon">
+        <div className="search" ref={searchRef}>
+          <div className="search__icon" onClick={() => handleClickMobileSearch()}>
             <AiOutlineSearch />
           </div>
           <div className="search__input">
@@ -58,28 +83,34 @@ const Search = () => {
             <span className="header__text">Result for {search}</span>
           </div>
           <div className="search-result__container">
-            <div className="container__wrapper">
-              <div className="container__wrapper--header">Musics</div>
-              <div className="container__wrapper--data">
-                <img className="data__img" src="https://i.imgur.com/3B2eBcK.jpg" />
-                <span className="data__content">Em cua ngay hom qua</span>
+            <span className="is-dpn" ref={loadingSearch} style={{ alignSelf: "center" }}>
+              <Oval style={{ width: "20px" }} />
+            </span>
+
+            <>
+              <div className="container__wrapper">
+                <div className="container__wrapper--header">Musics</div>
+                <div className="container__wrapper--data">
+                  <img className="data__img" src="https://i.imgur.com/3B2eBcK.jpg" />
+                  <span className="data__content">Em cua ngay hom qua</span>
+                </div>
+                <div className="container__wrapper--data">
+                  <img className="data__img" src="https://i.imgur.com/uJxbqaC.jpg" />
+                  <span className="data__content">Toi cua ngay hom nay</span>
+                </div>
               </div>
-              <div className="container__wrapper--data">
-                <img className="data__img" src="https://i.imgur.com/uJxbqaC.jpg" />
-                <span className="data__content">Toi cua ngay hom nay</span>
+              <div className="container__wrapper">
+                <div className="container__wrapper--header">Artist</div>
+                <div className="container__wrapper--data">
+                  <img className="data__img" src="https://i.imgur.com/3B2eBcK.jpg" />
+                  <span className="data__content">Em cua ngay hom qua</span>
+                </div>
+                <div className="container__wrapper--data">
+                  <img className="data__img" src="https://i.imgur.com/uJxbqaC.jpg" />
+                  <span className="data__content">Toi cua ngay hom nay</span>
+                </div>
               </div>
-            </div>
-            <div className="container__wrapper">
-              <div className="container__wrapper--header">Artist</div>
-              <div className="container__wrapper--data">
-                <img className="data__img" src="https://i.imgur.com/3B2eBcK.jpg" />
-                <span className="data__content">Em cua ngay hom qua</span>
-              </div>
-              <div className="container__wrapper--data">
-                <img className="data__img" src="https://i.imgur.com/uJxbqaC.jpg" />
-                <span className="data__content">Toi cua ngay hom nay</span>
-              </div>
-            </div>
+            </>
           </div>
         </div>
       </div>

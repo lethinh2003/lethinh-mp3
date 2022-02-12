@@ -1,4 +1,7 @@
+@import "../scss/_variables.scss";
+@import "../scss/_mixin.scss";
 .menu-right {
+  box-shadow: 3px 0px 18px 5px #9b9b9b;
   transform: translateX(100%);
   transition: 0.25s linear;
   position: fixed;
@@ -6,23 +9,27 @@
   width: 300px;
   top: 0;
   bottom: 0;
-  background-color: #120822;
+  background-color: #ffffff;
   z-index: 99;
   display: flex;
   flex-direction: column;
   height: calc(100% - 0px);
+
+  &.has-player {
+    height: calc(100% - 90px);
+  }
 }
 .menu-pre {
   cursor: pointer;
   gap: 0 20px;
-  opacity: 0.7;
+  opacity: 0.95;
   display: flex;
   align-items: center;
   height: 60px;
   padding: 5px 30px;
 }
 .menu-pre:hover {
-  background-color: #2a2139;
+  background-color: #ebeaec;
   opacity: 1;
 }
 .menu-pre:hover .pre-icon_play {
@@ -65,7 +72,7 @@
   height: 100%;
   width: 100%;
   pointer-events: none;
-  color: white;
+  color: $text-color;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -76,6 +76,10 @@ export const getMyListHearts = (data) => ({
   type: "ADD_MY_LIST_HEARTS",
   payload: data,
 });
+export const removeMyListHearts = (data) => ({
+  type: "REMOVE_MY_LIST_HEARTS",
+  payload: data,
+});
 export const btnLogin = (data) => ({
   type: "BTN_LOGIN",
   payload: data,

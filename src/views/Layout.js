@@ -39,7 +39,7 @@ const Layout = () => {
         {/* SIDEBAR */}
         {/* <aside className="ms-sidebar" ref={nav}>
           <div className="ms-sidebar__logo">
-            <img src="https://i.imgur.com/O784N6i.png" />
+            <img src="https://i.imgur.com/U0BdIic.png" />
           </div>
 
           <div className="ms-sidebar__wrapper">

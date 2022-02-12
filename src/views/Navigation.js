@@ -5,6 +5,8 @@ import { GiLoveSong } from "react-icons/gi";
 import { FiRadio, FiUpload } from "react-icons/fi";
 import { BsHeartFill } from "react-icons/bs";
 import { GoBrowser } from "react-icons/go";
+import { CgProfile } from "react-icons/cg";
+import { MdUpload } from "react-icons/md";
 
 import { RiCloseCircleLine } from "react-icons/ri";
 import { BsArrowsAngleExpand } from "react-icons/bs";
@@ -63,10 +65,7 @@ const Navigation = () => {
     <>
       {/* SIDEBAR */}
       <aside className="ms-sidebar" ref={nav}>
-        <div className="ms-sidebar__logo">
-          <img src="https://i.imgur.com/O784N6i.png" />
-        </div>
-        {dataUser && (
+        {/* {dataUser && (
           <div className="userlogin-info">
             <div className="userlogin-info__avatar">
               <Link to="/auth/me">
@@ -78,13 +77,17 @@ const Navigation = () => {
               <span className="userlogin-info__desc--level">{dataUser.role}</span>
             </div>
           </div>
-        )}
+        )} */}
 
         <div className="ms-sidebar__wrapper">
           <div className="ms-navbar">
-            <div className="ms-navbar__item">
-              <span className="ms-navbar__item--title">Library</span>
-            </div>
+            {dataUser && (
+              <div className="ms-navbar__item">
+                <span className="ms-navbar__item--icon upload">
+                  <MdUpload className="icon-upload" onClick={() => handleClickUpload()} />
+                </span>
+              </div>
+            )}
             <NavLink to="/" activeClassName="active" exact>
               <div className="ms-navbar__item">
                 <span className="ms-navbar__item--icon">
@@ -93,6 +96,16 @@ const Navigation = () => {
                 <span className="ms-navbar__item--title">Home</span>
               </div>
             </NavLink>
+            {dataUser && (
+              <NavLink to="/auth/me" activeClassName="active" exact>
+                <div className="ms-navbar__item">
+                  <span className="ms-navbar__item--icon">
+                    <CgProfile />
+                  </span>
+                  <span className="ms-navbar__item--title">Profile</span>
+                </div>
+              </NavLink>
+            )}
 
             <div className="ms-navbar__item">
               <span className="ms-navbar__item--icon">
@@ -114,7 +127,7 @@ const Navigation = () => {
             </div>
           </div>
 
-          <div className="ms-navbar">
+          {/* <div className="ms-navbar">
             <div className="ms-navbar__item">
               <span className="ms-navbar__item--title">Discover</span>
             </div>
@@ -138,7 +151,7 @@ const Navigation = () => {
               </span>
               <span className="ms-navbar__item--title">For You</span>
             </div>
-          </div>
+          </div> */}
         </div>
       </aside>
 
@@ -146,24 +159,21 @@ const Navigation = () => {
       <header className="ms-header">
         <div className="level">
           <div className="level-left">
-            <span className="ms-btn back" onClick={() => hanldeClickBackHistory()}>
+            <div className="ms-sidebar__logo">
+              <img src="https://i.imgur.com/U0BdIic.png" />
+            </div>
+            {/* <span className="ms-btn back" onClick={() => hanldeClickBackHistory()}>
               <IoIosArrowRoundBack />
             </span>
             <span className="ms-btn next" onClick={() => hanldeClickForwardHistory()}>
               <IoIosArrowRoundForward />
-            </span>
-
-            <Search />
+            </span> */}
           </div>
           <div className="level-right">
+            <Search />
             <span className="ms-btn navbar" onClick={() => hanldeOnOffNavbar()}>
               {isNavOpen ? <RiBarChartHorizontalLine /> : <FaBars />}
             </span>
-            {dataUser && (
-              <span className="ms-btn" onClick={() => handleClickUpload()}>
-                <FiUpload />
-              </span>
-            )}
 
             <div className="header-btn">
               {!dataUser ? (

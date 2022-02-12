@@ -27,12 +27,13 @@
 
 .box-title {
   color: $text-color;
-  font-size: $font-size-first;
+  font-size: 24px;
   font-weight: $font-weight;
 }
 
 .playlists-item {
   @include widthHeight(290px, 115px);
+  box-shadow: 2px 2px 4px 5px #d3d3d3;
   border-radius: $border-radius;
   background-color: #fff;
   overflow: hidden;
@@ -50,7 +51,7 @@
   &__title {
     @include threeDots;
     position: absolute;
-    color: $text-color;
+    color: #f3f3f3;
     font-size: $font-size-first;
     font-weight: $font-weight;
     left: 0;

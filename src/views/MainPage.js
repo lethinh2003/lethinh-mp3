@@ -13,19 +13,16 @@ import Signup from "./auth/Signup";
 import Upload from "./auth/Upload";
 import CreateArtists from "./auth/CreateArtists";
 import CreateGenres from "./auth/CreateGenres";
+import TopPopular from "./TopPopular";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const MainPage = () => {
   return (
     <>
-      <Heart />
-      <Login />
-      <Signup />
-      <Upload />
-      <CreateGenres />
-      <CreateArtists />
       {/* MAINPAGE */}
+
       <div className="ms-mainpage">
-        <Artists />
+        {/* <Artists /> */}
         <NewMusic />
         <div className="box-two-col">
           <Popular />

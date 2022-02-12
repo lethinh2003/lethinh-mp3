@@ -1,24 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { AiOutlinePlus } from "react-icons/ai";
+
 import { AiOutlineCloseSquare } from "react-icons/ai";
 import { BsCloudUpload } from "react-icons/bs";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
-import validator from "validator";
-import { FiEye } from "react-icons/fi";
-import { FiEyeOff } from "react-icons/fi";
+
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  getUserLogin,
-  removeUserLogin,
-  accessAccount,
-  btnUpload,
-  btnCreateArtist,
-  btnCreateGenres,
-} from "../../redux/actions";
+import { btnUpload, btnCreateArtist, btnCreateGenres } from "../../redux/actions";
+import { Modal, ModalHeader, ModalBody } from "../utils/Modal";
 const Upload = () => {
   const isBtnUpload = useSelector((state) => state.btnUpload);
   const isBtnCreateArtist = useSelector((state) => state.btnCreateArtist);
@@ -362,148 +354,140 @@ const Upload = () => {
   return (
     <>
       {isBtnUpload && (
-        <div className="modal-opacity">
-          <div className="box-modal" ref={wrapperRef} style={{ height: "650px" }}>
-            <div className="modal__header">
-              <div className="modal__header--title">Upload MP3</div>
-
-              <div className="modal__header--icon" onClick={() => handleCloseModal()}>
-                <AiOutlineCloseSquare />
-              </div>
+        <Modal maxHeight="750px">
+          <ModalHeader title="Upload MP3" handleCloseModal={handleCloseModal} />
+          <ModalBody>
+            <div className="modal__body--message">
+              <span className="message--error" ref={nameError}>
+                Tên bài hát phải từ 2 kí tự trở lên
+              </span>
+              <span className="message--error" ref={thumbnailError}>
+                Vui lòng chọn ảnh thumbnail
+              </span>
+              <span className="message--error" ref={linkError}>
+                Vui lòng chọn bài hát
+              </span>
+              <span className="message--error" ref={artistError}>
+                Vui lòng chọn nghệ sĩ
+              </span>
+              <span className="message--error" ref={genresError}>
+                Vui lòng chọn thể loại
+              </span>
             </div>
-            <div className="modal__body">
-              <div className="modal__body--message">
-                <span className="message--error" ref={nameError}>
-                  Tên bài hát phải từ 2 kí tự trở lên
-                </span>
-                <span className="message--error" ref={thumbnailError}>
-                  Vui lòng chọn ảnh thumbnail
-                </span>
-                <span className="message--error" ref={linkError}>
-                  Vui lòng chọn bài hát
-                </span>
-                <span className="message--error" ref={artistError}>
-                  Vui lòng chọn nghệ sĩ
-                </span>
-                <span className="message--error" ref={genresError}>
-                  Vui lòng chọn thể loại
-                </span>
-              </div>
 
-              <div className="modal__body--input">
-                <input
-                  type="text"
-                  value={name}
-                  ref={nameInputError}
-                  placeholder="Name"
-                  onChange={(e) => handleChangeName(e)}
-                />
-              </div>
-              <h6 style={styleH6()}>
-                Nghệ sĩ (Artist) <span style={{ color: "red" }}>* </span>
-                <span onClick={() => handleClickCreateArtists()} style={{ color: "#3765bb", cursor: "pointer" }}>
-                  Thêm
-                </span>
-              </h6>
-              <div className="modal__body--input">
-                {isLoadingArtists && (
-                  <SkeletonTheme baseColor="#c3c1c1" highlightColor="#aaa9ab">
-                    <Skeleton height={40} width={"100%"} style={{ border: "unset" }} />
-                  </SkeletonTheme>
-                )}
-                {!isLoadingArtists && (
-                  <select onChange={(e) => handleChangeArtist(e)} ref={artistInputError}>
-                    <option value="null">Nghệ sĩ (Artist)</option>
-                    {listArtists &&
-                      listArtists.length > 0 &&
-                      listArtists.map((item, index) => (
-                        <option key={index} value={item._id}>
-                          {item.name}
-                        </option>
-                      ))}
-                  </select>
-                )}
-              </div>
-              <h6 style={styleH6()}>
-                Thể loại (Genres) <span style={{ color: "red" }}>* </span>
-                <span onClick={() => handleClickCreateGenres()} style={{ color: "#3765bb", cursor: "pointer" }}>
-                  Thêm
-                </span>
-              </h6>
-              <div className="modal__body--input" style={{ height: "100px" }}>
-                <div className="input-select" ref={genresInputError}>
-                  <div className="input-select__body">
-                    {isLoadingGenres &&
-                      Array.from({ length: 4 }).map((item, i) => {
-                        return (
-                          <SkeletonTheme baseColor="#c3c1c1" highlightColor="#aaa9ab" key={i}>
-                            <Skeleton
-                              className="input-select__body--tag"
-                              height={20}
-                              width={60}
-                              style={{ border: "unset" }}
-                            />
-                          </SkeletonTheme>
-                        );
-                      })}
-                    {!isLoadingGenres &&
-                      listGenres &&
-                      listGenres.length > 0 &&
-                      listGenres.map((item, i) => (
-                        <span
-                          key={i}
-                          onClick={() => handleAddGenres(item._id)}
-                          className={
-                            !checkExistGenres(item._id) ? "input-select__body--tag" : "input-select__body--tag selected"
-                          }
-                        >
-                          {item.name}
-                        </span>
-                      ))}
-                  </div>
+            <div className="modal__body--input">
+              <input
+                type="text"
+                value={name}
+                ref={nameInputError}
+                placeholder="Name"
+                onChange={(e) => handleChangeName(e)}
+              />
+            </div>
+            <h6 style={styleH6()}>
+              Nghệ sĩ (Artist) <span style={{ color: "red" }}>* </span>
+              <span onClick={() => handleClickCreateArtists()} style={{ color: "#3765bb", cursor: "pointer" }}>
+                Thêm
+              </span>
+            </h6>
+            <div className="modal__body--input">
+              {isLoadingArtists && (
+                <SkeletonTheme baseColor="#c3c1c1" highlightColor="#aaa9ab">
+                  <Skeleton height={40} width={"100%"} style={{ border: "unset" }} />
+                </SkeletonTheme>
+              )}
+              {!isLoadingArtists && (
+                <select onChange={(e) => handleChangeArtist(e)} ref={artistInputError}>
+                  <option value="null">Nghệ sĩ (Artist)</option>
+                  {listArtists &&
+                    listArtists.length > 0 &&
+                    listArtists.map((item, index) => (
+                      <option key={index} value={item._id}>
+                        {item.name}
+                      </option>
+                    ))}
+                </select>
+              )}
+            </div>
+            <h6 style={styleH6()}>
+              Thể loại (Genres) <span style={{ color: "red" }}>* </span>
+              <span onClick={() => handleClickCreateGenres()} style={{ color: "#3765bb", cursor: "pointer" }}>
+                Thêm
+              </span>
+            </h6>
+            <div className="modal__body--input" style={{ height: "100px" }}>
+              <div className="input-select" ref={genresInputError}>
+                <div className="input-select__body">
+                  {isLoadingGenres &&
+                    Array.from({ length: 4 }).map((item, i) => {
+                      return (
+                        <SkeletonTheme baseColor="#c3c1c1" highlightColor="#aaa9ab" key={i}>
+                          <Skeleton
+                            className="input-select__body--tag"
+                            height={20}
+                            width={60}
+                            style={{ border: "unset" }}
+                          />
+                        </SkeletonTheme>
+                      );
+                    })}
+                  {!isLoadingGenres &&
+                    listGenres &&
+                    listGenres.length > 0 &&
+                    listGenres.map((item, i) => (
+                      <span
+                        key={i}
+                        onClick={() => handleAddGenres(item._id)}
+                        className={
+                          !checkExistGenres(item._id) ? "input-select__body--tag" : "input-select__body--tag selected"
+                        }
+                      >
+                        {item.name}
+                      </span>
+                    ))}
                 </div>
               </div>
-
-              <h6 style={styleH6()}>
-                Thumbnail <span style={{ color: "red" }}>*</span>
-              </h6>
-              <div className="input-file">
-                <input
-                  type="file"
-                  name="file"
-                  ref={thumbnailInput}
-                  id="fileThumbnailUpload"
-                  onChange={(e) => handleChangeThumbnail(e)}
-                />
-                <label htmlFor="fileThumbnailUpload" className="input-label">
-                  <BsCloudUpload />
-                </label>
-                <label className="file_name" ref={thumbnail}></label>
-              </div>
-
-              <h6 style={styleH6()}>
-                Link <span style={{ color: "red" }}>*</span>
-              </h6>
-              <div className="input-file">
-                <input
-                  type="file"
-                  name="file"
-                  ref={linkInput}
-                  id="fileLinkUpload"
-                  onChange={(e) => handleChangeLink(e)}
-                />
-                <label htmlFor="fileLinkUpload" className="input-label">
-                  <BsCloudUpload />
-                </label>
-                <label className="file_name" ref={link}></label>
-              </div>
-
-              <div className="modal__body--button" ref={Btn} onClick={() => fetchAPI()}>
-                Upload
-              </div>
             </div>
-          </div>
-        </div>
+
+            <h6 style={styleH6()}>
+              Thumbnail <span style={{ color: "red" }}>*</span>
+            </h6>
+            <div className="input-file">
+              <input
+                type="file"
+                name="file"
+                ref={thumbnailInput}
+                id="fileThumbnailUpload"
+                onChange={(e) => handleChangeThumbnail(e)}
+              />
+              <label htmlFor="fileThumbnailUpload" className="input-label">
+                <BsCloudUpload />
+              </label>
+              <label className="file_name" ref={thumbnail}></label>
+            </div>
+
+            <h6 style={styleH6()}>
+              Link <span style={{ color: "red" }}>*</span>
+            </h6>
+            <div className="input-file">
+              <input
+                type="file"
+                name="file"
+                ref={linkInput}
+                id="fileLinkUpload"
+                onChange={(e) => handleChangeLink(e)}
+              />
+              <label htmlFor="fileLinkUpload" className="input-label">
+                <BsCloudUpload />
+              </label>
+              <label className="file_name" ref={link}></label>
+            </div>
+
+            <div className="modal__body--button" ref={Btn} onClick={() => fetchAPI()}>
+              Upload
+            </div>
+          </ModalBody>
+        </Modal>
       )}
     </>
   );

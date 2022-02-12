@@ -1,8 +1,9 @@
-import "../styles/popular.scss";
+import "../styles/topPopular.scss";
 import { useSelector, useDispatch } from "react-redux";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { Link } from "react-router-dom";
 import "react-loading-skeleton/dist/skeleton.css";
+import { Link } from "react-router-dom";
+
 import {
   getUserLogin,
   getPopular,
@@ -20,7 +21,7 @@ import {
   removeMyListHearts,
   getStatusSelectedMusic,
 } from "../redux/actions";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { AiOutlinePlus } from "react-icons/ai";
 import { toast } from "react-toastify";
@@ -28,10 +29,13 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import errorAuth from "./utils/errorAuth";
 import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
 import { Audio } from "react-loading-icons";
-const Popular = () => {
+const TopPopular = () => {
   let history = useHistory();
   const TokenAccount = localStorage.getItem("jwt");
-  const dataMusic = useSelector((state) => state.popularMusic.data);
+  const [dataTopPopular, setDataTopPopular] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isClickLoadMore, setIsClickLoadMore] = useState(false);
+
   const currentMusic = useSelector((state) => state.selectedMusic.data);
   const dataMyPlaylist = useSelector((state) => state.addMyPlaylist);
   const dataMyPlaylistUser = useSelector((state) => state.addMyPlaylistUser);
@@ -39,27 +43,49 @@ const Popular = () => {
   const myListHearts = useSelector((state) => state.getMyListHearts);
   const isAudioPlay = useSelector((state) => state.getStatusSelectedMusic.data.status);
   const isPlayingPlaylist = localStorage.getItem("isPlayingPlaylist") || "false";
+  const loadBtn = useRef(null);
   const dispatch = useDispatch();
-  const fetchAPI = async () => {
-    const response = await axios
-      .get("https://random-musics.herokuapp.com/api/v1/musics/top-views-day")
-      .catch((err) => console.log(err));
-    if (response) {
-      dispatch(getPopular(response.data.data.data));
-    }
-  };
+
   useEffect(() => {
+    const fetchAPI = async () => {
+      try {
+        if (isClickLoadMore && loadBtn.current) {
+          loadBtn.current.style = "opacity: 0.5; pointer-events: none;";
+          loadBtn.current.textContent = "Loading...";
+        }
+        const response = await axios.get(
+          `https://random-musics.herokuapp.com/api/v1/musics/top-views-day/?page=${currentPage}&limit=10`
+        );
+        setIsClickLoadMore(false);
+        if (loadBtn.current) {
+          loadBtn.current.style = "cursor: pointer;";
+          loadBtn.current.textContent = "Load more";
+        }
+        setDataTopPopular([...dataTopPopular, ...response.data.data.data]);
+      } catch (err) {
+        setIsClickLoadMore(false);
+        if (err.response) {
+          toast.error(err.response.data.message);
+        }
+        if (loadBtn.current) {
+          loadBtn.current.style = "cursor: pointer;";
+          loadBtn.current.textContent = "Load more";
+        }
+      }
+    };
     fetchAPI();
-  }, []);
+  }, [currentPage]);
+  const handleClickLoadMore = () => {
+    setIsClickLoadMore(true);
+    setCurrentPage(currentPage + 1);
+  };
   const checkMusicHearted = (id) => {
     let hasHeart = false;
-    if (currentMusic) {
-      myListHearts.map((item) => {
-        if (item === id) {
-          hasHeart = true;
-        }
-      });
-    }
+    myListHearts.map((item) => {
+      if (item === id) {
+        hasHeart = true;
+      }
+    });
     return hasHeart;
   };
   const handleClickHeart = async (data) => {
@@ -83,7 +109,6 @@ const Popular = () => {
       }
       const heartContainer = document.querySelector(".heart-opacity");
       if (heartContainer) {
-        fetchAPI();
         heartContainer.style.opacity = 1;
         heartContainer.style.visibility = "visible";
         setTimeout(() => {
@@ -102,6 +127,7 @@ const Popular = () => {
       }
     }
   };
+
   // UNHEART
   const handleClickUnHeart = async (data) => {
     const loadingView = document.querySelector(".loading-opacity");
@@ -258,95 +284,98 @@ const Popular = () => {
   };
   return (
     <>
-      <div className="box-popular">
-        <span className="box-title">Popular</span>
-        <div className="box-popular__">
-          {dataMusic &&
-            dataMusic.length === 0 &&
-            Array.from({ length: 4 }).map((item, i) => {
-              return (
-                <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
-                  <div className="popular-item">
-                    <div className="popular-item__image">
-                      <Skeleton height={40} width={40} />
+      <div className="ms-mainpage">
+        <div className="box-top-popular">
+          <span className="box-top-title"># Popular</span>
+          <div className="box-top-popular__">
+            {dataTopPopular &&
+              dataTopPopular.length === 0 &&
+              Array.from({ length: 4 }).map((item, i) => {
+                return (
+                  <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
+                    <div className="popular-item">
+                      <div className="popular-item__image">
+                        <Skeleton height={40} width={40} />
+                      </div>
+                      <div className="popular-item__desc " style={{ flex: 1 }}>
+                        <span className="popular-item__desc--name">
+                          <Skeleton />
+                        </span>
+                        <span className="popular-item__desc--author">
+                          <Skeleton />
+                        </span>
+                      </div>
+                      <div className="popular-item__icon">
+                        <Skeleton />
+                      </div>
                     </div>
-                    <div className="popular-item__desc">
-                      <span className="popular-item__desc--name">
-                        <Skeleton />
-                      </span>
-                      <span className="popular-item__desc--author">
-                        <Skeleton />
-                      </span>
+                  </SkeletonTheme>
+                );
+              })}
+
+            {dataTopPopular &&
+              dataTopPopular.length > 0 &&
+              dataTopPopular.map((item, i) => {
+                return (
+                  <div
+                    className="popular-item"
+                    key={i}
+                    style={currentMusic.id === item.id ? { backgroundColor: "rgb(80 76 78)" } : {}}
+                  >
+                    <div className={i + 1 <= 3 ? `popular-item__number top${i + 1}` : "popular-item__number"}>
+                      {i + 1}
+                    </div>
+                    <div className="popular-item__-"> ─ </div>
+                    <div className="popular-item__image" onClick={() => handleChangeMusic(item)}>
+                      <div
+                        className="popular-item__image--active"
+                        style={currentMusic.id === item.id ? { opacity: "1" } : {}}
+                      ></div>
+                      <div
+                        className="item-play_icon"
+                        style={currentMusic.id === item.id ? { opacity: "1", border: "unset" } : {}}
+                      >
+                        {isAudioPlay ? (
+                          <Audio
+                            style={{
+                              width: "50%",
+                              height: "50%",
+                            }}
+                          />
+                        ) : (
+                          <i className="fa fa-play" aria-hidden="true" style={{ fontSize: "20px" }}></i>
+                        )}
+                      </div>
+                      <img src={item.thumbnail} alt="" />
+                    </div>
+                    <div className="popular-item__desc top">
+                      <span className="popular-item__desc--name">{item.name}</span>
+                      <span className="popular-item__desc--author">{item.artist[0].name}</span>
                     </div>
                     <div className="popular-item__icon">
-                      <Skeleton />
+                      <i
+                        className="fa fa-heart heart-icon"
+                        style={checkMusicHearted(item._id) ? { color: "#ff6e6e" } : { color: "" }}
+                        onClick={() => handleClickHeart(item)}
+                      >
+                        {/* <div className="heart-icon__value">
+                          <span>{item.hearts.length >= 9 ? "9+" : item.hearts.length}</span>
+                        </div> */}
+                      </i>
+                      <AiOutlinePlus className="cursor-pointer" onClick={() => handleClickAddMusic(item)} />
                     </div>
                   </div>
-                </SkeletonTheme>
-              );
-            })}
-
-          {dataMusic &&
-            dataMusic.length > 0 &&
-            dataMusic.map((item, i) => {
-              return (
-                <div
-                  className="popular-item"
-                  key={i}
-                  style={currentMusic.id === item.id ? { backgroundColor: "#dbdbdb" } : null}
-                >
-                  <div className={i + 1 <= 3 ? `popular-item__number top${i + 1}` : "popular-item__number"}>
-                    {i + 1}
-                  </div>
-                  <div className="popular-item__image" onClick={() => handleChangeMusic(item)}>
-                    <div
-                      className="popular-item__image--active"
-                      style={currentMusic.id === item.id ? { opacity: "1" } : {}}
-                    ></div>
-                    <div
-                      className="item-play_icon"
-                      style={currentMusic.id === item.id ? { opacity: "1", border: "unset" } : {}}
-                    >
-                      {isAudioPlay ? (
-                        <Audio
-                          style={{
-                            width: "50%",
-                            height: "50%",
-                          }}
-                        />
-                      ) : (
-                        <i className="fa fa-play" aria-hidden="true" style={{ fontSize: "20px" }}></i>
-                      )}
-                    </div>
-                    <img src={item.thumbnail} alt="" />
-                  </div>
-                  <div className="popular-item__desc">
-                    <span className="popular-item__desc--name">{item.name}</span>
-                    <span className="popular-item__desc--author">{item.artist[0].name}</span>
-                  </div>
-                  <div className="popular-item__icon">
-                    <i
-                      className="fa fa-heart heart-icon"
-                      style={checkMusicHearted(item._id) ? { color: "#ff6e6e" } : { color: "" }}
-                      onClick={() => handleClickHeart(item)}
-                    >
-                      {/* <div className="heart-icon__value">
-                        <span>{item.hearts.length >= 9 ? "9+" : item.hearts.length}</span>
-                      </div> */}
-                    </i>
-                    <AiOutlinePlus className="cursor-pointer" onClick={() => handleClickAddMusic(item)} />
-                  </div>
-                </div>
-              );
-            })}
-          <div className="is-center">
-            <Link className="more" to="/bang-xep-hang">
-              Xem Thêm
-            </Link>
+                );
+              })}
+            <div className="is-center">
+              <span className="more" ref={loadBtn} onClick={() => handleClickLoadMore()}>
+                Load more
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </>
   );
 };
-export default Popular;
+export default TopPopular;

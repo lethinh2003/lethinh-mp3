@@ -2,9 +2,12 @@
 @import "../scss/_mixin.scss";
 a.active {
   background-color: $nav-selected-bg;
-  color: #50d493;
-  border-left: 5px solid #50d493;
+  border-radius: 15px;
   display: block;
+  opacity: 1;
+  & .ms-navbar__item {
+    opacity: 1;
+  }
 }
 .active > .nav__item {
   color: unset;

@@ -20,6 +20,7 @@ import {
   setNextSelectedMusic,
   setPreviousSelectedMusic,
   getMyListHearts,
+  removeMyListHearts,
   getUserLogin,
 } from "../redux/actions";
 import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
@@ -72,15 +73,6 @@ const MusicPlayer = () => {
   useEffect(() => {
     //Have current music
     if (Array.isArray(currentMusic) === false && navi && musicPlayer) {
-      //Set LocalStorage Music Heart
-      // const getStore = JSON.parse(localStorage.getItem(currentMusic.id));
-      // if (getStore === null) {
-      //   const newStore = {
-      //     heart: 0,
-      //   };
-      //   localStorage.setItem(currentMusic.id, JSON.stringify(newStore));
-      // }
-
       //Set Show Music Bar
       musicPlayer.style = `transform: translateY(0px);`;
       navi.style.height = "calc(100% - 90px)";
@@ -182,8 +174,7 @@ const MusicPlayer = () => {
     if (!getUserLogin) {
       return toast.error("You must login to heart this music!!");
     } else if (getUserLogin && checkMusic === true) {
-      console.log(checkMusic);
-      return toast.error("You have hearted this music!!");
+      return handleClickUnHeart(data);
     }
     try {
       if (Array.isArray(currentMusic) === false) {
@@ -231,6 +222,43 @@ const MusicPlayer = () => {
   //     }
   //   }
   // });
+
+  // UNHEART
+  const handleClickUnHeart = async (data) => {
+    const loadingView = document.querySelector(".loading-opacity");
+    const checkMusic = checkMusicHearted(data._id);
+    if (!getUserLogin) {
+      return toast.error("You must login to unheart this music!!");
+    } else if (getUserLogin && checkMusic === false) {
+      return toast.error("You must heart this music!!");
+    }
+
+    try {
+      if (loadingView) {
+        loadingView.classList.remove("is-hide");
+        loadingView.classList.add("is-show");
+      }
+      const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/hearts/delete`, {
+        user: getUserLogin._id,
+        music: data._id,
+      });
+      dispatch(removeMyListHearts(data._id));
+      if (loadingView) {
+        loadingView.classList.add("is-hide");
+        loadingView.classList.remove("is-show");
+      }
+    } catch (err) {
+      if (loadingView) {
+        loadingView.classList.add("is-hide");
+        loadingView.classList.remove("is-show");
+      }
+      if (err.response) {
+        toast.error(err.response.data.message);
+        errorAuth(err);
+      }
+    }
+  };
+
   //On/Off music
   const handleOnOffMusic = (e) => {
     e.stopPropagation();
@@ -306,7 +334,11 @@ const MusicPlayer = () => {
                   aria-hidden="true"
                   onClick={(e) => handleOnOffMusic(e)}
                 ></i>
-                <i className="fa fa-heart" onClick={(e) => handleClickHeart(currentMusic, e)}></i>
+                <i
+                  className="fa fa-heart"
+                  style={checkMusicHearted(currentMusic._id) ? { color: "#ff6e6e" } : { color: "" }}
+                  onClick={(e) => handleClickHeart(currentMusic, e)}
+                ></i>
                 <AiOutlinePlus />
               </div>
             </div>

@@ -1,0 +1,19 @@
+@import "../scss/_variables.scss";
+@import "../scss/_mixin.scss";
+
+.box-top-popular {
+  margin-top: 70px;
+  padding: 0 30px;
+}
+.box-top-title {
+  color: #ffffff;
+  font-size: 35px;
+  font-weight: 600;
+}
+.box-top-popular__ {
+  margin-top: 20px;
+  margin-bottom: 100px;
+}
+.top {
+  flex: 1;
+}

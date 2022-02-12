@@ -125,6 +125,9 @@ const MenuRight = (props) => {
 
   useEffect(() => {
     if (!Array.isArray(currentMusic)) {
+      if (menuRight.current) {
+        menuRight.current.classList.add("has-player");
+      }
       const menuPre = document.querySelectorAll(".menu-pre");
       if (menuPre && menuPre.length > 0) {
         menuPre.forEach((item) => {
@@ -136,9 +139,9 @@ const MenuRight = (props) => {
 
   // Open/Close Menu Right
   if (isOpenMenuRight === true && menuRight.current) {
-    menuRight.current.style = `transform: translateX(0); height: 100%`;
+    menuRight.current.style = `transform: translateX(0)`;
   } else if (isOpenMenuRight === false && menuRight.current) {
-    menuRight.current.style = `transform: translateX(100%); height: 100%`;
+    menuRight.current.style = `transform: translateX(100%)`;
   }
 
   // Set Background Selected Music
@@ -306,15 +309,11 @@ const MenuRight = (props) => {
                   style={
                     isPlayingPlaylist && !Array.isArray(currentMusic) && currentMusic._id === item._id
                       ? {
-                          backgroundColor: "#7200a1",
+                          backgroundColor: "#ebeaec",
                           borderRadius: "5px",
                           opacity: "1",
                         }
-                      : {
-                          backgroundColor: "",
-                          borderRadius: "",
-                          opacity: "",
-                        }
+                      : null
                   }
                   key={i}
                 >

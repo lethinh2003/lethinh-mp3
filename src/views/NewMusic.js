@@ -22,6 +22,7 @@ import {
   removePreviousSelectedMusic,
   setIsPlayingPlaylist,
   getMyListHearts,
+  removeMyListHearts,
 } from "../redux/actions";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -62,7 +63,7 @@ const NewMusic = () => {
       setIsLoading(false);
       if (getUserLogin) {
         let data = [];
-        const response = await axios.get("https://random-musics.herokuapp.com/api/v1/hearts/" + getUserLogin._id);
+        const response = await axios.get("https://random-musics.herokuapp.com/api/v1/hearts/user/" + getUserLogin._id);
         const dataFromDB = response.data.data.data;
         dataFromDB.map((item) => {
           data.push(item.music[0]);
@@ -137,8 +138,7 @@ const NewMusic = () => {
     if (!getUserLogin) {
       return toast.error("You must login to heart this music!!");
     } else if (getUserLogin && checkMusic === true) {
-      console.log(checkMusic);
-      return toast.error("You have hearted this music!!");
+      return handleClickUnHeart(data);
     }
 
     try {
@@ -147,7 +147,7 @@ const NewMusic = () => {
         loadingView.classList.add("is-show");
       }
       const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/hearts`);
-      dispatch(getMyListHearts(data.id));
+      dispatch(getMyListHearts(data._id));
       if (loadingView) {
         loadingView.classList.add("is-hide");
         loadingView.classList.remove("is-show");
@@ -172,6 +172,43 @@ const NewMusic = () => {
       }
     }
   };
+
+  // UNHEART
+  const handleClickUnHeart = async (data) => {
+    const loadingView = document.querySelector(".loading-opacity");
+    const checkMusic = checkMusicHearted(data._id);
+    if (!getUserLogin) {
+      return toast.error("You must login to unheart this music!!");
+    } else if (getUserLogin && checkMusic === false) {
+      return toast.error("You must heart this music!!");
+    }
+
+    try {
+      if (loadingView) {
+        loadingView.classList.remove("is-hide");
+        loadingView.classList.add("is-show");
+      }
+      const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/hearts/delete`, {
+        user: getUserLogin._id,
+        music: data._id,
+      });
+      dispatch(removeMyListHearts(data._id));
+      if (loadingView) {
+        loadingView.classList.add("is-hide");
+        loadingView.classList.remove("is-show");
+      }
+    } catch (err) {
+      if (loadingView) {
+        loadingView.classList.add("is-hide");
+        loadingView.classList.remove("is-show");
+      }
+      if (err.response) {
+        toast.error(err.response.data.message);
+        errorAuth(err);
+      }
+    }
+  };
+
   const addPlayListToDB = async (data, userId) => {
     const loadingView = document.querySelector(".loading-opacity");
     try {
@@ -251,13 +288,9 @@ const NewMusic = () => {
   };
   return (
     <>
-      <div className="box-new_music">
+      <div className="box-new_music" style={{ marginTop: "100px" }}>
         <div className="box-header">
           <span className="box-title">New Music</span>
-          <div className="box-right_icon">
-            <FiArrowLeft />
-            <FiArrowRight />
-          </div>
         </div>
 
         <div className="new-music">
@@ -322,7 +355,11 @@ const NewMusic = () => {
                         <div className="item-thumbnail">
                           <div className="item-thumbnail_hover"></div>
                           <div className="item-play_icon">
-                            <i className="fa fa-heart" onClick={() => handleClickHeart(item)}></i>
+                            <i
+                              className="fa fa-heart"
+                              style={checkMusicHearted(item._id) ? { color: "#ff6e6e" } : { color: "" }}
+                              onClick={() => handleClickHeart(item)}
+                            ></i>
                             <div className="item-thumbnail__icon--play">
                               {currentMusic._id === item._id && isAudioPlay ? (
                                 <Audio

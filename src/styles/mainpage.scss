@@ -167,6 +167,7 @@ $margin-primary: 52px;
   margin-top: 5px;
 }
 .item-name {
+  color: $text-color;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -214,17 +215,20 @@ $margin-primary: 52px;
 .ms-sidebar {
   align-items: center;
   z-index: 98;
-  width: 200px;
-  background-color: #020001;
+  width: 90px;
+  background-color: #ffffff;
   position: fixed;
   display: flex;
   flex-direction: column;
   transition: all 0.25s linear;
-  height: 100vh;
+  height: calc(100vh - 70px);
+  margin-top: 70px;
+  opacity: 1;
+  visibility: visible;
 
   &__logo {
-    @include widthHeight(120px, 50px);
-    margin: 5px;
+    @include widthHeight(50px, 50px);
+    object-fit: cover;
 
     img {
       @include widthHeight(100%, 100%);
@@ -232,6 +236,7 @@ $margin-primary: 52px;
   }
 
   &__wrapper {
+    padding: 0 5px;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -248,32 +253,46 @@ $margin-primary: 52px;
 .ms-navbar {
   display: flex;
   flex-direction: column;
+  gap: 5px;
 
   &__item {
-    height: 50px;
-    color: #848283;
+    @include widthHeight(80px, 80px);
+    font-weight: bold;
+    cursor: pointer;
+    color: #1a1a1a;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0.85;
 
     &--title {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      width: 115px;
+
       font-size: 14px;
     }
     &--icon {
-      font-size: 30px;
+      font-size: 37px;
       width: 42px;
       height: 42px;
       display: flex;
       align-items: center;
       justify-content: center;
+
+      &.upload {
+        border-radius: 50%;
+        background-color: #1473e6;
+        @include widthHeight(60px, 60px);
+        color: #ffffff;
+      }
     }
 
     &:hover {
-      color: $text-hover-color;
+      background-color: #e8ebed;
+      border-radius: 15px;
+      opacity: 1;
     }
   }
 }
@@ -283,11 +302,11 @@ $margin-primary: 52px;
   display: flex;
   align-items: center;
   position: fixed;
-  left: 200px;
+  width: 100%;
   top: 0;
   right: 0;
   height: 70px;
-  padding: 0 30px;
+  padding: 0 21px;
   z-index: 97;
 
   .level {
@@ -295,7 +314,6 @@ $margin-primary: 52px;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 40px;
 
     &-left,
     &-right {
@@ -323,13 +341,17 @@ $margin-primary: 52px;
 }
 
 .search {
+  transition: all 0.2s linear;
   overflow: hidden;
   width: 420px;
   border-radius: 20px;
-  display: flex;
   @include flex(center, center);
-  background-color: rgb(47, 39, 57);
+  border: 2px solid #e8e8e8;
   position: relative;
+
+  &:focus-within {
+    border-color: #444;
+  }
 
   &__icon {
     font-size: 25px;
@@ -360,6 +382,15 @@ $margin-primary: 52px;
 
   @include mobile {
     width: 40px;
+    &.is-show {
+      transition: all 0.25s linear;
+      position: fixed;
+
+      width: 300px;
+    }
+    // position: fixed;
+    // z-index: 999;
+    // width: 300px;
   }
 }
 .is-show {
@@ -376,10 +407,10 @@ $margin-primary: 52px;
   border-radius: $border-radius;
   position: absolute;
   transform: translate(0px, 15px);
-  box-shadow: 1px 0px 4px 1px #2e2a2a;
+  box-shadow: 1px 0px 16px 5px #ffffff;
   width: 420px;
   position: absolute;
-  background-color: #2f2739;
+  background-color: #ffffff;
   max-height: 500px;
   display: flex;
   flex-direction: column;
@@ -428,6 +459,11 @@ $margin-primary: 52px;
       }
     }
   }
+
+  @include mobile {
+    transform: translate(0px, 47px);
+    width: 300px;
+  }
 }
 .header-btn {
   cursor: pointer;
@@ -436,15 +472,15 @@ $margin-primary: 52px;
   color: #ffffff;
   font-weight: 600;
   width: 145px;
-  height: 36px;
+
   background-color: #50d493;
   border-radius: 30px;
 }
 
 .ms-mainpage {
-  left: 200px;
+  left: 80px;
   position: relative;
-  width: calc(100% - 200px);
+  width: calc(100% - 80px);
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -463,4 +499,7 @@ $margin-primary: 52px;
     opacity: 1;
     visibility: visible;
   }
+}
+.is-center {
+  @include flex(center, center);
 }

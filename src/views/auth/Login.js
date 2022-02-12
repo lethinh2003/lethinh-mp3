@@ -1,15 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { AiOutlinePlus } from "react-icons/ai";
-import { AiOutlineCloseSquare } from "react-icons/ai";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Oval } from "react-loading-icons";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserLogin, removeUserLogin, accessAccount, btnLogin, btnSignup } from "../../redux/actions";
-
+import { getUserLogin, accessAccount, btnLogin, btnSignup } from "../../redux/actions";
+import { Modal, ModalHeader, ModalBody } from "../utils/Modal";
 const Login = () => {
   const isBtnLogin = useSelector((state) => state.btnLogin);
   const dispatch = useDispatch();
@@ -31,8 +28,14 @@ const Login = () => {
     if (currentUser) {
       history.replace("/");
     }
-  }, []);
-
+  }, [isBtnLogin]);
+  useEffect(() => {
+    if (isBtnLogin) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = null;
+    }
+  }, [isBtnLogin]);
   const InputErrorStyle = () => {
     return "color: red; border-color: rgb(253 5 37);";
   };
@@ -198,62 +201,54 @@ const Login = () => {
   return (
     <>
       {isBtnLogin && (
-        <div className="modal-opacity">
-          <div className="box-modal" ref={wrapperRef} style={{ maxHeight: "400px" }}>
-            <div className="modal__header">
-              <div className="modal__header--title">Login</div>
-
-              <div className="modal__header--icon" onClick={() => handleCloseModal()}>
-                <AiOutlineCloseSquare />
-              </div>
+        <Modal maxHeight="400px">
+          <ModalHeader title="Login" handleCloseModal={handleCloseModal} />
+          <ModalBody>
+            <div className="modal__body--message">
+              <span className="message--error" ref={accountError}>
+                Tài khoản phải từ 6 kí tự trở lên
+              </span>
+              <span className="message--error" ref={passwordError}>
+                Mật khẩu phải từ 6 kí tự trở lên
+              </span>
             </div>
-            <div className="modal__body">
-              <div className="modal__body--message">
-                <span className="message--error" ref={accountError}>
-                  Tài khoản phải từ 6 kí tự trở lên
-                </span>
-                <span className="message--error" ref={passwordError}>
-                  Mật khẩu phải từ 6 kí tự trở lên
-                </span>
-              </div>
-              <div className="modal__body--input">
-                <input
-                  type="text"
-                  value={account}
-                  ref={accountInputError}
-                  placeholder="Account"
-                  onChange={(e) => handleChangeAccount(e)}
-                />
-              </div>
-              <div className="modal__body--input">
-                <input
-                  type="password"
-                  value={password}
-                  ref={passwordInputError}
-                  placeholder="Password"
-                  onChange={(e) => handleChangePassword(e)}
-                />
-                <label className="password-option" onClick={() => handleHideShowPassword()}>
-                  {isShowPassword ? <FiEye /> : <FiEyeOff />}
-                </label>
-              </div>
-              <div className="modal__body--button" ref={Btn} onClick={() => fetchAPI()}>
-                Login
-              </div>
-              <div className="modal__body--message">
-                <span className="message--info">
-                  No account?{" "}
-                  <span style={{ cursor: "pointer" }} onClick={() => handleClickSignup()}>
-                    Sign up
-                  </span>
-                </span>
-                <span className="message--info">
-                  <Link to="/auth/forgot-password">Forgot password</Link>
-                </span>
-              </div>
+            <div className="modal__body--input">
+              <input
+                type="text"
+                value={account}
+                ref={accountInputError}
+                placeholder="Account"
+                onChange={(e) => handleChangeAccount(e)}
+              />
             </div>
-          </div>
-        </div>
+            <div className="modal__body--input">
+              <input
+                type="password"
+                value={password}
+                ref={passwordInputError}
+                placeholder="Password"
+                onChange={(e) => handleChangePassword(e)}
+              />
+              <label className="password-option" onClick={() => handleHideShowPassword()}>
+                {isShowPassword ? <FiEye /> : <FiEyeOff />}
+              </label>
+            </div>
+            <div className="modal__body--button" ref={Btn} onClick={() => fetchAPI()}>
+              Login
+            </div>
+            <div className="modal__body--message">
+              <span className="message--info">
+                No account?{" "}
+                <span style={{ cursor: "pointer" }} onClick={() => handleClickSignup()}>
+                  Sign up
+                </span>
+              </span>
+              <span className="message--info">
+                <Link to="/auth/forgot-password">Forgot password</Link>
+              </span>
+            </div>
+          </ModalBody>
+        </Modal>
       )}
     </>
   );

@@ -13,3 +13,12 @@ code {
   position: relative;
   overflow: hidden;
 }
+.cursor-pointer {
+  cursor: pointer;
+}
+.is-dpn {
+  display: none;
+}
+.is-dpb {
+  display: block;
+}
