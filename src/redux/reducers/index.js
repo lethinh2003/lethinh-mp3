@@ -19,6 +19,8 @@ import btnSignup from "./btnSignup";
 import btnUpload from "./btnUpload";
 import btnCreateArtist from "./btnCreateArtists";
 import btnCreateGenres from "./btnCreateGenres";
+import btnProfile from "./btnProfile";
+import btnChangePassword from "./btnChangePassword";
 
 export default combineReducers({
   listMusic,
@@ -41,4 +43,6 @@ export default combineReducers({
   btnUpload,
   btnCreateArtist,
   btnCreateGenres,
+  btnProfile,
+  btnChangePassword,
 });

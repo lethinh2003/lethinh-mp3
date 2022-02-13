@@ -6,6 +6,8 @@
   flex-direction: column;
   margin-bottom: 200px;
   gap: 20px;
+  align-items: flex-end;
+  flex: 1;
 
   &__scroll {
     max-height: 300px;

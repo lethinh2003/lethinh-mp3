@@ -189,7 +189,6 @@ const NewMusic = () => {
         loadingView.classList.add("is-show");
       }
       const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/hearts/delete`, {
-        user: getUserLogin._id,
         music: data._id,
       });
       dispatch(removeMyListHearts(data._id));
@@ -216,9 +215,7 @@ const NewMusic = () => {
         loadingView.classList.remove("is-hide");
         loadingView.classList.add("is-show");
       }
-      const response = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/playlists`, {
-        user: [userId],
-      });
+      const response = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/playlists`);
 
       toast.success("Added your playlist!");
       dispatch(addMyPlaylistUser(data));
@@ -328,6 +325,11 @@ const NewMusic = () => {
                   slidesPerGroup: 2,
                 },
 
+                540: {
+                  slidesPerView: 3,
+                  spaceBetween: 15,
+                  slidesPerGroup: 3,
+                },
                 640: {
                   slidesPerView: 1,
                   spaceBetween: 5,
@@ -338,9 +340,24 @@ const NewMusic = () => {
                   spaceBetween: 20,
                   slidesPerGroup: 2,
                 },
+                820: {
+                  slidesPerView: 3,
+                  spaceBetween: 20,
+                  slidesPerGroup: 3,
+                },
+                912: {
+                  slidesPerView: 4,
+                  spaceBetween: 20,
+                  slidesPerGroup: 4,
+                },
                 1024: {
+                  slidesPerView: 4,
+                  spaceBetween: 20,
+                  slidesPerGroup: 4,
+                },
+                1280: {
                   slidesPerView: 5,
-                  spaceBetween: 30,
+
                   slidesPerGroup: 5,
                 },
               }}

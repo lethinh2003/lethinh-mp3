@@ -1,7 +1,6 @@
 @import "../scss/_variables.scss";
 @import "../scss/_mixin.scss";
 .menu-right {
-  box-shadow: 3px 0px 18px 5px #9b9b9b;
   transform: translateX(100%);
   transition: 0.25s linear;
   position: fixed;

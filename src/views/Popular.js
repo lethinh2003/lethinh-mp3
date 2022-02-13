@@ -118,7 +118,6 @@ const Popular = () => {
         loadingView.classList.add("is-show");
       }
       const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/hearts/delete`, {
-        user: getUserLogin._id,
         music: data._id,
       });
       dispatch(removeMyListHearts(data._id));
@@ -145,9 +144,7 @@ const Popular = () => {
         loadingView.classList.remove("is-hide");
         loadingView.classList.add("is-show");
       }
-      const response = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/playlists`, {
-        user: [userId],
-      });
+      const response = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/playlists`);
 
       toast.success("Added your playlist!");
       dispatch(addMyPlaylistUser(data));

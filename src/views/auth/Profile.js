@@ -3,14 +3,14 @@ import axios from "axios";
 import { BsCloudUpload } from "react-icons/bs";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Oval } from "react-loading-icons";
-import cloudinaryUpload from "../utils/uploads";
-import { getUserLogin, removeUserLogin, accessAccount } from "../../redux/actions";
+import { getUserLogin, btnProfile, btnChangePassword } from "../../redux/actions";
 import { useSelector, useDispatch } from "react-redux";
 import errorAuth from "../utils/errorAuth";
+import { Modal, ModalHeader, ModalBody } from "../utils/Modal";
+import { isImage } from "../utils/checkFileType";
 const Profile = () => {
   const dataUser = useSelector((state) => state.getUserLogin);
-  const removeDataUser = useSelector((state) => state.removeUserLogin);
+  const isBtnProfile = useSelector((state) => state.btnProfile);
   const accessAccount = useSelector((state) => state.accessAccount);
   const dispatch = useDispatch();
   const nameError = useRef(null);
@@ -21,12 +21,10 @@ const Profile = () => {
   const fileName = useRef(null);
   const [isClickBtn, setIsClickBtn] = useState(false);
   let history = useHistory();
-  const currentUser = localStorage.getItem("currentUser");
-  const currentUserParse = JSON.parse(currentUser);
   if (!accessAccount) {
     window.location.replace("/");
   }
-  const [name, setName] = useState(currentUser ? currentUserParse.name : "");
+  const [name, setName] = useState(dataUser ? dataUser.name : "");
   const [nameStatus, setNameStatus] = useState(false);
   const [isEditClick, setIsEditClick] = useState(false);
 
@@ -34,7 +32,14 @@ const Profile = () => {
     return "color: red; border-color: rgb(253 5 37);";
   };
   useEffect(() => {
-    if (accessAccount) {
+    if (isBtnProfile) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = null;
+    }
+  }, [isBtnProfile]);
+  useEffect(() => {
+    if (accessAccount && accountInput.current && nameInput.current && avatarInput.current) {
       if (!isEditClick) {
         accountInput.current.classList.add("disabled");
         nameInput.current.classList.add("disabled");
@@ -48,16 +53,18 @@ const Profile = () => {
     }
   }, [isEditClick]);
   useEffect(() => {
-    if (isClickBtn) {
-      avatarInput.current.disabled = true;
-    } else {
-      avatarInput.current.disabled = false;
+    if (avatarInput.current) {
+      if (isClickBtn) {
+        avatarInput.current.disabled = true;
+      } else {
+        avatarInput.current.disabled = false;
+      }
     }
   }, [isClickBtn]);
 
   useEffect(() => {
     if (accessAccount) {
-      if (nameStatus === true) {
+      if (nameStatus === true && nameError.current && nameInput.current) {
         if (name.length < 2) {
           nameError.current.style.display = "block";
           nameInput.current.style = InputErrorStyle();
@@ -76,13 +83,14 @@ const Profile = () => {
     }
 
     if (isEditClick) {
-      if (name.length < 2) {
+      if (name.length < 2 && nameError.current && nameInput.current) {
         nameError.current.style.display = "block";
         nameInput.current.style = InputErrorStyle();
         nameInput.current.focus();
-      } else if (name.length >= 2) {
+      } else if (name.length >= 2 && nameError.current && nameInput.current) {
         const handleUploadAvatar = async () => {
           const checkFile = avatarInput.current.files[0];
+          console.log(isImage(checkFile));
           try {
             if (loadingView) {
               loadingView.classList.remove("is-hide");
@@ -93,7 +101,7 @@ const Profile = () => {
             nameInput.current.disabled = true;
             profileBtn.current.style = `opacity: 0.7; pointer-events: none;`;
             profileBtn.current.textContent = "Updating...";
-            if (checkFile) {
+            if (checkFile && isImage(checkFile)) {
               const uploadData = new FormData();
               uploadData.append("file", avatarInput.current.files[0], "file");
 
@@ -107,7 +115,6 @@ const Profile = () => {
               });
               const path = response.data.data;
               const updateUser = await axios.post("https://random-musics.herokuapp.com/api/v1/users/update", {
-                _id: dataUser._id,
                 name: name,
                 avatar: path,
               });
@@ -116,7 +123,6 @@ const Profile = () => {
             } else {
               const path = dataUser.avatar;
               const updateUser = await axios.post("https://random-musics.herokuapp.com/api/v1/users/update", {
-                _id: dataUser._id,
                 name: name,
                 avatar: path,
               });
@@ -167,85 +173,77 @@ const Profile = () => {
     }
   };
   const handleChangeFileUpload = (e) => {
-    if (e.target.files.length > 0) {
+    if (e.target.files.length > 0 && fileName.current) {
       fileName.current.textContent = e.target.files[0].name;
     } else {
       fileName.current.textContent = "";
     }
   };
+  const handleCloseModal = () => {
+    dispatch(btnProfile(false));
+    setIsClickBtn(false);
+    setIsEditClick(false);
+    setName(dataUser.name);
+  };
+  const handleClickChangePassword = () => {
+    dispatch(btnChangePassword(true));
+  };
 
   return (
     <>
-      {currentUser && (
-        <div className="modal-opacity">
-          <div className="box-modal" style={{ maxHeight: "400px" }}>
-            <div className="modal__header">
-              <div className="modal__header--title">Profile</div>
-              <Link to="/">
-                <div className="modal__header--icon">X</div>
-              </Link>
-            </div>
-            <div className="modal__body">
-              <div className="modal__body--info">
-                <div className="info--avatar">
-                  <img src={currentUserParse.avatar} />
-                </div>
-                {/* <div className="modal__body--input" style={{ display: "none" }}>
-                  <input type="file"  />
-                </div> */}
+      {isBtnProfile && (
+        <Modal maxHeight="400px">
+          <ModalHeader title="Profile" handleCloseModal={handleCloseModal} />
+          <ModalBody>
+            <div className="modal__body--info">
+              <div className="info--avatar">
+                <img src={dataUser.avatar} />
+              </div>
 
-                <div className="input-file" style={{ display: "none" }}>
-                  <input
-                    type="file"
-                    name="file"
-                    ref={avatarInput}
-                    id="file"
-                    onChange={(e) => handleChangeFileUpload(e)}
-                  />
-                  <label htmlFor="file" className="input-label">
-                    <BsCloudUpload />
-                  </label>
-                  <label className="file_name" ref={fileName}></label>
-                </div>
-
-                <div className="modal__body--input">
-                  <input
-                    type="text"
-                    className="disabled"
-                    ref={accountInput}
-                    value={currentUserParse.account}
-                    disabled
-                  />
-                </div>
-                <div className="modal__body--input">
-                  <input
-                    type="text"
-                    className="disabled"
-                    ref={nameInput}
-                    value={name}
-                    name="name"
-                    onChange={(e) => handleChangeName(e)}
-                    disabled
-                  />
-                </div>
+              <div className="input-file" style={{ display: "none" }}>
+                <input
+                  type="file"
+                  name="file"
+                  ref={avatarInput}
+                  id="file"
+                  onChange={(e) => handleChangeFileUpload(e)}
+                />
+                <label htmlFor="file" className="input-label">
+                  <BsCloudUpload />
+                </label>
+                <label className="file_name" ref={fileName}></label>
               </div>
               <div className="modal__body--message">
                 <span className="message--error" ref={nameError}>
                   Tên phải từ 2 kí tự trở lên
                 </span>
               </div>
-
-              <div className="modal__body--button" ref={profileBtn} onClick={() => handleClickEdit()}>
-                Edit
+              <div className="modal__body--input">
+                <input type="text" className="disabled" ref={accountInput} value={dataUser.account} disabled />
               </div>
-              <div className="modal__body--message">
-                <span className="message--info">
-                  <Link to="/auth/me/password">Change password </Link>
-                </span>
+              <div className="modal__body--input">
+                <input
+                  type="text"
+                  className="disabled"
+                  ref={nameInput}
+                  value={name}
+                  name="name"
+                  onChange={(e) => handleChangeName(e)}
+                  disabled
+                />
               </div>
             </div>
-          </div>
-        </div>
+
+            <div className="modal__body--button" ref={profileBtn} onClick={() => handleClickEdit()}>
+              Edit
+            </div>
+            <div className="modal__body--message">
+              <span className="message--info" style={{ cursor: "pointer" }} onClick={() => handleClickChangePassword()}>
+                Change password
+              </span>
+            </div>
+          </ModalBody>
+        </Modal>
       )}
     </>
   );

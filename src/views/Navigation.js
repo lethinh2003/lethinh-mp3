@@ -4,7 +4,7 @@ import { FaMicrophone, FaStore } from "react-icons/fa";
 import { GiLoveSong } from "react-icons/gi";
 import { FiRadio, FiUpload } from "react-icons/fi";
 import { BsHeartFill } from "react-icons/bs";
-import { GoBrowser } from "react-icons/go";
+import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { MdUpload } from "react-icons/md";
 
@@ -60,25 +60,39 @@ const Navigation = () => {
   const handleClickUpload = () => {
     dispatch(btnUpload(true));
   };
-
+  const accountDetail = useRef();
+  const accountBtn = useRef();
+  const [isAccountDetail, setIsAccountDetail] = useState(false);
+  const handleClickAccountBtn = () => {
+    if (dataUser && accountDetail.current && accountBtn.current) {
+      if (!isAccountDetail) {
+        accountDetail.current.classList.add("is-show");
+        accountBtn.current.style = "background-color: #282828";
+        setIsAccountDetail(true);
+      } else {
+        accountDetail.current.classList.remove("is-show");
+        accountBtn.current.style = null;
+        setIsAccountDetail(false);
+      }
+    }
+  };
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (accountBtn.current && accountDetail.current) {
+        if (!accountBtn.current.contains(e.target)) {
+          handleClickAccountBtn();
+        }
+      }
+    };
+    document.addEventListener("click", handleClick);
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, []);
   return (
     <>
       {/* SIDEBAR */}
       <aside className="ms-sidebar" ref={nav}>
-        {/* {dataUser && (
-          <div className="userlogin-info">
-            <div className="userlogin-info__avatar">
-              <Link to="/auth/me">
-                <img src={dataUser.avatar} />
-              </Link>
-            </div>
-            <div className="userlogin-info__desc">
-              <span className="userlogin-info__desc--name">{dataUser.name}</span>
-              <span className="userlogin-info__desc--level">{dataUser.role}</span>
-            </div>
-          </div>
-        )} */}
-
         <div className="ms-sidebar__wrapper">
           <div className="ms-navbar">
             {dataUser && (
@@ -97,7 +111,7 @@ const Navigation = () => {
               </div>
             </NavLink>
             {dataUser && (
-              <NavLink to="/auth/me" activeClassName="active" exact>
+              <NavLink to={`/user/${dataUser._id}`} activeClassName="active" exact>
                 <div className="ms-navbar__item">
                   <span className="ms-navbar__item--icon">
                     <CgProfile />
@@ -162,12 +176,6 @@ const Navigation = () => {
             <div className="ms-sidebar__logo">
               <img src="https://i.imgur.com/U0BdIic.png" />
             </div>
-            {/* <span className="ms-btn back" onClick={() => hanldeClickBackHistory()}>
-              <IoIosArrowRoundBack />
-            </span>
-            <span className="ms-btn next" onClick={() => hanldeClickForwardHistory()}>
-              <IoIosArrowRoundForward />
-            </span> */}
           </div>
           <div className="level-right">
             <Search />
@@ -175,13 +183,34 @@ const Navigation = () => {
               {isNavOpen ? <RiBarChartHorizontalLine /> : <FaBars />}
             </span>
 
-            <div className="header-btn">
-              {!dataUser ? (
+            {!dataUser && (
+              <div className="header-btn">
                 <span onClick={() => handleClickLogin()}>Login</span>
-              ) : (
-                <Link to="/auth/logout">Logout</Link>
-              )}
-            </div>
+              </div>
+            )}
+            {dataUser && (
+              <>
+                <div className="account__header-btn" ref={accountBtn}>
+                  <div className="account__header-btn--wrapper" onClick={() => handleClickAccountBtn()}>
+                    <img className="account--avatar" src={dataUser.avatar} />
+
+                    <span className="account--name">{dataUser.name}</span>
+                    <span className="account--icon">
+                      {isAccountDetail ? <AiOutlineArrowUp /> : <AiOutlineArrowDown />}
+                    </span>
+                  </div>
+                  <div className="account__header-btn--detail" ref={accountDetail}>
+                    <Link to={`/user/${dataUser._id}`} className="detail-title">
+                      Profile
+                    </Link>
+
+                    <span className="detail-title">
+                      <Link to="/auth/logout">Logout</Link>
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </header>

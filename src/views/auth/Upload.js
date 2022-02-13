@@ -1,16 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-
-import { AiOutlineCloseSquare } from "react-icons/ai";
 import { BsCloudUpload } from "react-icons/bs";
 import { Link, useHistory, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useSelector, useDispatch } from "react-redux";
 import { btnUpload, btnCreateArtist, btnCreateGenres } from "../../redux/actions";
 import { Modal, ModalHeader, ModalBody } from "../utils/Modal";
+import { isImage, isAudio } from "../utils/checkFileType";
 const Upload = () => {
   const isBtnUpload = useSelector((state) => state.btnUpload);
   const isBtnCreateArtist = useSelector((state) => state.btnCreateArtist);
@@ -51,6 +49,13 @@ const Upload = () => {
       history.replace("/");
     }
   }, [isClickBtn]);
+  useEffect(() => {
+    if (isBtnUpload) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = null;
+    }
+  }, [isBtnUpload]);
   const getListArtistsAndGenres = async () => {
     setIsLoadingGenres(true);
     setIsLoadingArtists(true);
@@ -209,7 +214,6 @@ const Upload = () => {
               genres: genres,
               uploadBy: [dataUser._id],
             });
-            console.log(createMusic.data.data);
           }
         });
 
@@ -234,20 +238,6 @@ const Upload = () => {
           toast.error(err.response.data.message);
         }
       }
-    }
-  };
-  const isImage = (file) => {
-    if (file) {
-      return !!file.type.match("image.*");
-    } else {
-      return false;
-    }
-  };
-  const isAudio = (file) => {
-    if (file) {
-      return !!file.type.match("audio.*");
-    } else {
-      return false;
     }
   };
 

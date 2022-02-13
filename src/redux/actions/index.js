@@ -84,6 +84,14 @@ export const btnLogin = (data) => ({
   type: "BTN_LOGIN",
   payload: data,
 });
+export const btnProfile = (data) => ({
+  type: "BTN_PROFILE",
+  payload: data,
+});
+export const btnChangePassword = (data) => ({
+  type: "BTN_CHANGEPASSWORD",
+  payload: data,
+});
 export const btnSignup = (data) => ({
   type: "BTN_SIGNUP",
   payload: data,

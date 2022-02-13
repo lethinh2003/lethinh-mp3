@@ -138,10 +138,19 @@ const MenuRight = (props) => {
   }, [currentMusic]);
 
   // Open/Close Menu Right
+
   if (isOpenMenuRight === true && menuRight.current) {
     menuRight.current.style = `transform: translateX(0)`;
+    const overlay = document.querySelector(".overlay");
+    if (overlay) {
+      overlay.style.display = "block";
+    }
   } else if (isOpenMenuRight === false && menuRight.current) {
     menuRight.current.style = `transform: translateX(100%)`;
+    const overlay = document.querySelector(".overlay");
+    if (overlay) {
+      overlay.style.display = "none";
+    }
   }
 
   // Set Background Selected Music

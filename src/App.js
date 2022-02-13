@@ -16,10 +16,11 @@ import ResetPassword from "./views/auth/ResetPassword";
 import ProfilePassword from "./views/auth/ProfilePassword";
 import CreateArtists from "./views/auth/CreateArtists";
 import CreateGenres from "./views/auth/CreateGenres";
+import User from "./views/User";
+import Overlay from "./views/Overlay";
 
 import Layout from "./views/Layout";
 import GetCateGory from "./views/category/GetCategory";
-
 import Heart from "./views/Heart";
 import Loading from "./views/Loading";
 import "./styles/loading.scss";
@@ -27,8 +28,8 @@ import axios from "axios";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "react-notifications/lib/notifications.css";
-import { NotificationContainer, NotificationManager } from "react-notifications";
+import { useSelector, useDispatch } from "react-redux";
+
 function App() {
   ////CONFIG DEFAULT AXIOS
   const AuthToken = localStorage.getItem("jwt");
@@ -44,9 +45,10 @@ function App() {
   if (!AccessAccount) {
     localStorage.setItem("accessAccount", false);
   }
-  const currentUser = localStorage.getItem("currentUser");
+  const currentUser = useSelector((state) => state.getUserLogin);
   return (
     <>
+      <Overlay />
       <div className="ms-layout">
         <Navigation />
         {!currentUser && <Login />}
@@ -54,6 +56,8 @@ function App() {
         {currentUser && <Upload />}
         {currentUser && <CreateGenres />}
         {currentUser && <CreateArtists />}
+        {currentUser && <Profile />}
+        {currentUser && <ProfilePassword />}
         <Loading />
         <Heart />
 
@@ -72,12 +76,10 @@ function App() {
             <Logout />
           </Route>
 
-          <Route path="/auth/me" exact={true}>
-            <Profile />
+          <Route path="/user/:id">
+            <User />
           </Route>
-          <Route path="/auth/me/password" exact={true}>
-            <ProfilePassword />
-          </Route>
+
           <Route path="/auth/forgot-password" exact={true}>
             <ForgotPassword />
           </Route>
