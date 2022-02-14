@@ -7,27 +7,28 @@ import { getPopular } from "../redux/actions";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { AiOutlinePlus } from "react-icons/ai";
-// Import Swiper React components
+import { toast } from "react-toastify";
+
 import { Swiper, SwiperSlide } from "swiper/react";
-// import Swiper core and required modules
+
 import SwiperCore, { Autoplay, Pagination, Navigation } from "swiper";
-// Import Swiper styles
-// import "swiper/swiper.scss";
-// import "swiper/swiper-bundle.min.css";
-// import "swiper/swiper.min.css";
-// install Swiper modules
-SwiperCore.use([Autoplay, Pagination, Navigation]);
+
+SwiperCore.use([Pagination, Navigation]);
 
 const Artists = () => {
-  const data = useSelector((state) => state.getArtists.data);
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState([]);
   const dispatch = useDispatch();
   const fetchAPI = async () => {
-    const response = await axios
-      .get("https://random-musics.herokuapp.com/api/v1/artists")
-      .catch((err) => console.log(err));
-    if (response) {
-      console.log(response.data.data.data);
-      dispatch(getArtists(response.data.data.data.slice(-5)));
+    try {
+      const response = await axios.get("https://random-musics.herokuapp.com/api/v1/artists");
+      setIsLoading(false);
+      setData(response.data.data.data.slice(-10));
+    } catch (err) {
+      setIsLoading(false);
+      if (err.response) {
+        toast.error(err.response.data.message);
+      }
     }
   };
   useEffect(() => {
@@ -35,37 +36,97 @@ const Artists = () => {
   }, []);
   return (
     <>
-      <Swiper
-        spaceBetween={30}
-        centeredSlides={true}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-        }}
-        className="box-artists-sliders"
-      >
-        {data &&
-          data.length > 0 &&
-          data.map((item, i) => {
-            return (
-              <SwiperSlide key={i}>
-                <div className="box-artists">
-                  <div className="artists-info">
-                    <span className="artists-info__name">{item.name}</span>
-                    <span className="artists-info__desc">{item.desc}</span>
-                    <div className="artists-info__btn">
-                      <div className="artists-info__btn--play">Play</div>
-                      <div className="artists-info__btn--follow">Follow</div>
+      <div className="box-new_music" style={{ marginTop: "0px" }}>
+        <div className="box-header">
+          <span className="box-title">Artists</span>
+        </div>
+
+        <div className="new-music">
+          {isLoading &&
+            Array.from({ length: 5 }).map((item, i) => {
+              return (
+                <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
+                  <div className="category-item" style={{ width: "unset" }}>
+                    <div className="item-thumbnail">
+                      <Skeleton height={178} width={188} />
+                    </div>
+                    <div className="item-desc">
+                      <span className="item-name">
+                        <Skeleton />
+                      </span>
+                      <span className="item_desc">
+                        <Skeleton />
+                      </span>
                     </div>
                   </div>
-                  <div className="artists-image">
-                    <img src={item.thumbnail} />
-                  </div>
-                </div>
-              </SwiperSlide>
-            );
-          })}
-      </Swiper>
+                </SkeletonTheme>
+              );
+            })}
+          {!isLoading && (
+            <Swiper
+              loop={false}
+              loopFillGroupWithBlank={true}
+              breakpoints={{
+                0: {
+                  slidesPerView: 1,
+                  spaceBetween: 10,
+                  slidesPerGroup: 1,
+                },
+                390: {
+                  slidesPerView: 2,
+                  spaceBetween: 10,
+                  slidesPerGroup: 2,
+                },
+                540: {
+                  slidesPerView: 3,
+                  spaceBetween: 10,
+                  slidesPerGroup: 3,
+                },
+
+                1024: {
+                  slidesPerView: 4,
+                  spaceBetween: 10,
+                  slidesPerGroup: 4,
+                },
+                1280: {
+                  slidesPerView: 6,
+                  spaceBetween: 10,
+                  slidesPerGroup: 6,
+                },
+              }}
+              className="new-music_slider"
+            >
+              {data &&
+                data.length > 0 &&
+                data.map((item, i) => {
+                  return (
+                    <SwiperSlide key={i}>
+                      <div className="new-music-item">
+                        <div className="item-thumbnail">
+                          <div className="item-thumbnail_hover"></div>
+                          <div className="item-play_icon">
+                            <i className="fa fa-heart"></i>
+                            <div className="item-thumbnail__icon--play">
+                              <i className="fa fa-play" aria-hidden="true"></i>
+                            </div>
+                            <AiOutlinePlus />
+                          </div>
+                          <img src={item.thumbnail} alt="" />
+                        </div>
+                        <div className="item-desc">
+                          <span className="item-name">
+                            <a title={item.name}>{item.name}</a>
+                          </span>
+                          <span className="item_desc">{item.desc}</span>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  );
+                })}
+            </Swiper>
+          )}
+        </div>
+      </div>
     </>
   );
 };

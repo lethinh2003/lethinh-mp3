@@ -23,6 +23,8 @@ import {
   setIsPlayingPlaylist,
   getMyListHearts,
   removeMyListHearts,
+  getMyListHeartsDetail,
+  removeMyListHeartsDetail,
 } from "../redux/actions";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -57,21 +59,35 @@ const NewMusic = () => {
 
   const fetchAPI = async () => {
     try {
-      const response = await axios.get("https://random-musics.herokuapp.com/api/v1/musics/new-musics");
-      console.log(response.data.data.data);
-      dispatch(getListMusic(response.data.data.data));
+      const getNewMusics = axios.get("https://random-musics.herokuapp.com/api/v1/musics/new-musics");
+      const getAllMusics = axios.get("https://random-musics.herokuapp.com/api/v1/musics/");
+      await Promise.all([getNewMusics, getAllMusics]).then((data) => {
+        localStorage.setItem("AllMusics", JSON.stringify(data[1].data.data.data));
+        dispatch(getListMusic(data[0].data.data.data));
+      });
+
       setIsLoading(false);
       if (getUserLogin) {
         let data = [];
+        let dataListHeartsDetail = [];
         const response = await axios.get("https://random-musics.herokuapp.com/api/v1/hearts/user/" + getUserLogin._id);
         const dataFromDB = response.data.data.data;
+        const myListHearts = localStorage.getItem("AllMusics") ? JSON.parse(localStorage.getItem("AllMusics")) : null;
+
         dataFromDB.map((item) => {
+          let filterListHearts;
+          if (myListHearts) {
+            filterListHearts = myListHearts.filter((data) => data._id === item.music[0]);
+            dataListHeartsDetail = [...dataListHeartsDetail, filterListHearts[0]];
+          }
           data.push(item.music[0]);
-          if (!checkMusicHearted(item.music[0])) {
+          if (!checkMusicHearted(item.music[0]) && filterListHearts) {
             dispatch(getMyListHearts(item.music[0]));
+            dispatch(getMyListHeartsDetail(filterListHearts[0]));
           }
         });
         localStorage.setItem("MyListHearts", JSON.stringify(data));
+        localStorage.setItem("MyListHeartsDetail", JSON.stringify(dataListHeartsDetail));
       }
     } catch (err) {
       if (err.response) {
@@ -82,6 +98,15 @@ const NewMusic = () => {
   useEffect(() => {
     fetchAPI();
   }, []);
+
+  const filterListHeartsDetail = (id) => {
+    const myListHearts = localStorage.getItem("AllMusics") ? JSON.parse(localStorage.getItem("AllMusics")) : null;
+    let filterListHearts;
+    if (myListHearts) {
+      filterListHearts = myListHearts.filter((data) => data._id === id);
+    }
+    return filterListHearts;
+  };
 
   const handleChangeMusic = async (data) => {
     localStorage.setItem("isPlayingPlaylist", false);
@@ -148,6 +173,10 @@ const NewMusic = () => {
       }
       const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/hearts`);
       dispatch(getMyListHearts(data._id));
+      const musicHeartsDetail = filterListHeartsDetail(data._id);
+      if (musicHeartsDetail) {
+        dispatch(getMyListHeartsDetail(musicHeartsDetail[0]));
+      }
       if (loadingView) {
         loadingView.classList.add("is-hide");
         loadingView.classList.remove("is-show");
@@ -192,6 +221,7 @@ const NewMusic = () => {
         music: data._id,
       });
       dispatch(removeMyListHearts(data._id));
+      dispatch(removeMyListHeartsDetail(data._id));
       if (loadingView) {
         loadingView.classList.add("is-hide");
         loadingView.classList.remove("is-show");
@@ -285,7 +315,7 @@ const NewMusic = () => {
   };
   return (
     <>
-      <div className="box-new_music" style={{ marginTop: "100px" }}>
+      <div className="box-new_music" style={{ marginTop: "0px" }}>
         <div className="box-header">
           <span className="box-title">New Music</span>
         </div>
@@ -295,7 +325,7 @@ const NewMusic = () => {
             Array.from({ length: 5 }).map((item, i) => {
               return (
                 <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
-                  <div className="category-item">
+                  <div className="category-item" style={{ width: "unset" }}>
                     <div className="item-thumbnail">
                       <Skeleton height={178} width={188} />
                     </div>
@@ -313,52 +343,34 @@ const NewMusic = () => {
             })}
           {!isLoading && (
             <Swiper
-              // slidesPerView={5}
-              // spaceBetween={30}
-              // slidesPerGroup={5}
               loop={false}
               loopFillGroupWithBlank={true}
               breakpoints={{
                 0: {
-                  slidesPerView: 2,
-                  spaceBetween: 20,
-                  slidesPerGroup: 2,
-                },
-
-                540: {
-                  slidesPerView: 3,
-                  spaceBetween: 15,
-                  slidesPerGroup: 3,
-                },
-                640: {
                   slidesPerView: 1,
-                  spaceBetween: 5,
+                  spaceBetween: 10,
                   slidesPerGroup: 1,
                 },
-                780: {
+                390: {
                   slidesPerView: 2,
-                  spaceBetween: 20,
+                  spaceBetween: 10,
                   slidesPerGroup: 2,
                 },
-                820: {
+                540: {
                   slidesPerView: 3,
-                  spaceBetween: 20,
+                  spaceBetween: 10,
                   slidesPerGroup: 3,
                 },
-                912: {
-                  slidesPerView: 4,
-                  spaceBetween: 20,
-                  slidesPerGroup: 4,
-                },
+
                 1024: {
                   slidesPerView: 4,
-                  spaceBetween: 20,
+                  spaceBetween: 10,
                   slidesPerGroup: 4,
                 },
                 1280: {
-                  slidesPerView: 5,
-
-                  slidesPerGroup: 5,
+                  slidesPerView: 6,
+                  spaceBetween: 10,
+                  slidesPerGroup: 6,
                 },
               }}
               className="new-music_slider"

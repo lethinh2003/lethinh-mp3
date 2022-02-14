@@ -22,3 +22,6 @@ code {
 .is-dpb {
   display: block;
 }
+.unset-padding {
+  padding: unset;
+}

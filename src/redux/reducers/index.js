@@ -21,6 +21,7 @@ import btnCreateArtist from "./btnCreateArtists";
 import btnCreateGenres from "./btnCreateGenres";
 import btnProfile from "./btnProfile";
 import btnChangePassword from "./btnChangePassword";
+import getMyListHeartsDetail from "./getMyListHeartsDetail";
 
 export default combineReducers({
   listMusic,
@@ -45,4 +46,5 @@ export default combineReducers({
   btnCreateGenres,
   btnProfile,
   btnChangePassword,
+  getMyListHeartsDetail,
 });

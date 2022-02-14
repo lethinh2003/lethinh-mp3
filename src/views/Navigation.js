@@ -76,11 +76,18 @@ const Navigation = () => {
       }
     }
   };
+  const handleCloseAccountBtn = () => {
+    if (dataUser && accountDetail.current && accountBtn.current) {
+      setIsAccountDetail(false);
+      accountDetail.current.classList.remove("is-show");
+      accountBtn.current.style = null;
+    }
+  };
   useEffect(() => {
     const handleClick = (e) => {
       if (accountBtn.current && accountDetail.current) {
         if (!accountBtn.current.contains(e.target)) {
-          handleClickAccountBtn();
+          handleCloseAccountBtn();
         }
       }
     };
@@ -184,8 +191,8 @@ const Navigation = () => {
             </span>
 
             {!dataUser && (
-              <div className="header-btn">
-                <span onClick={() => handleClickLogin()}>Login</span>
+              <div className="header-btn" onClick={() => handleClickLogin()}>
+                Login
               </div>
             )}
             {dataUser && (
@@ -200,13 +207,13 @@ const Navigation = () => {
                     </span>
                   </div>
                   <div className="account__header-btn--detail" ref={accountDetail}>
-                    <Link to={`/user/${dataUser._id}`} className="detail-title">
+                    <Link to={`/user/${dataUser._id}`} className="detail-title" onClick={handleCloseAccountBtn}>
                       Profile
                     </Link>
 
-                    <span className="detail-title">
-                      <Link to="/auth/logout">Logout</Link>
-                    </span>
+                    <Link to="/auth/logout" className="detail-title" onClick={handleCloseAccountBtn}>
+                      Logout
+                    </Link>
                   </div>
                 </div>
               </>

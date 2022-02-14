@@ -5,7 +5,6 @@
   margin-top: 70px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
 
   &__header {
     padding: 20px;
@@ -13,6 +12,7 @@
     @include flex(center, center);
     height: 340px;
     background-color: #dddddd;
+    flex-wrap: wrap;
 
     .header__avatar {
       position: relative;

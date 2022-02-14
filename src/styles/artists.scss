@@ -18,8 +18,9 @@
 .box-artists-sliders {
   min-height: 500px;
   padding: 0 30px;
-
+  background-color: #dddddd;
   transition: 0.25s linear;
+  cursor: pointer;
   @include mobile {
     min-height: 360px;
   }
@@ -44,6 +45,10 @@
     font-size: $font-size-first + 30;
     color: $text-color;
     font-weight: $font-weight;
+
+    @include mobile {
+      font-size: 24px;
+    }
   }
 
   &__desc {
@@ -82,7 +87,6 @@
   img {
     @include widthHeight(100%, 100%);
     object-fit: contain;
-    opacity: 0.7;
     transform: scale(1.5);
   }
 }

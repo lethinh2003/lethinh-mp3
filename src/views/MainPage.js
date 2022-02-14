@@ -6,6 +6,7 @@ import Search from "./Search";
 import Popular from "./Popular";
 import Playlists from "./Playlists";
 import Artists from "./Artists";
+import HotArtists from "./HotArtists";
 import Heart from "./Heart";
 import Layout from "./Layout";
 import Login from "./auth/Login";
@@ -22,12 +23,13 @@ const MainPage = () => {
       {/* MAINPAGE */}
 
       <div className="ms-mainpage">
-        {/* <Artists /> */}
+        <HotArtists />
         <NewMusic />
         <div className="box-two-col">
           <Popular />
           <Playlists />
         </div>
+        <Artists />
       </div>
     </>
   );

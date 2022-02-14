@@ -9,7 +9,6 @@ const getMyListHearts = (state = initialState, action) => {
       const currentData = JSON.parse(localStorage.getItem("MyListHearts")) || [];
       const newData = currentData.filter((id) => id !== action.payload);
       localStorage.setItem("MyListHearts", JSON.stringify(newData));
-      console.log(newData);
 
       return newData;
 

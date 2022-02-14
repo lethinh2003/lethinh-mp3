@@ -20,6 +20,8 @@ import {
   getMyListHearts,
   removeMyListHearts,
   getStatusSelectedMusic,
+  removeMyListHeartsDetail,
+  getMyListHeartsDetail,
 } from "../redux/actions";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
@@ -88,6 +90,15 @@ const TopPopular = () => {
     });
     return hasHeart;
   };
+  const filterListHeartsDetail = (id) => {
+    const myListHearts = localStorage.getItem("AllMusics") ? JSON.parse(localStorage.getItem("AllMusics")) : null;
+    let filterListHearts;
+    if (myListHearts) {
+      filterListHearts = myListHearts.filter((data) => data._id === id);
+    }
+    return filterListHearts;
+  };
+
   const handleClickHeart = async (data) => {
     const loadingView = document.querySelector(".loading-opacity");
     const checkMusic = checkMusicHearted(data._id);
@@ -103,6 +114,11 @@ const TopPopular = () => {
       }
       const updateHeart = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/hearts`);
       dispatch(getMyListHearts(data._id));
+      const musicHeartsDetail = filterListHeartsDetail(data._id);
+      if (musicHeartsDetail) {
+        dispatch(getMyListHeartsDetail(musicHeartsDetail[0]));
+      }
+
       if (loadingView) {
         loadingView.classList.add("is-hide");
         loadingView.classList.remove("is-show");
@@ -147,6 +163,7 @@ const TopPopular = () => {
         music: data._id,
       });
       dispatch(removeMyListHearts(data._id));
+      dispatch(removeMyListHeartsDetail(data._id));
       if (loadingView) {
         loadingView.classList.add("is-hide");
         loadingView.classList.remove("is-show");
