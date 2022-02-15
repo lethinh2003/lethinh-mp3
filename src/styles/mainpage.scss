@@ -345,7 +345,6 @@ $margin-primary: 52px;
 }
 
 .search {
-  transition: all 0.2s linear;
   overflow: hidden;
   width: 420px;
   border-radius: 20px;
@@ -387,9 +386,11 @@ $margin-primary: 52px;
   @include mobile {
     width: 40px;
     &.is-show {
-      transition: all 0.25s linear;
       position: fixed;
-
+      background-color: #ffffff;
+      left: 0;
+      top: 13px;
+      z-index: 99999;
       width: 300px;
     }
     // position: fixed;
@@ -406,16 +407,15 @@ $margin-primary: 52px;
   visibility: hidden;
 }
 .search-result {
-  transition: all 0.15s linear;
   padding: 15px;
   border-radius: $border-radius;
   position: absolute;
   transform: translate(0px, 15px);
-  box-shadow: 1px 0px 16px 5px #ffffff;
+  box-shadow: 1px 0px 16px 5px #9e9d9d;
   width: 420px;
   position: absolute;
   background-color: #ffffff;
-  max-height: 500px;
+  max-height: 400px;
   display: flex;
   flex-direction: column;
 
@@ -445,6 +445,10 @@ $margin-primary: 52px;
         @include flex(center, center);
         @include widthHeight(100%, 50px);
         gap: 10px;
+        cursor: pointer;
+        &:hover {
+          background-color: #e8ebed;
+        }
 
         .data__img {
           @include widthHeight(32px, 32px);
@@ -455,17 +459,14 @@ $margin-primary: 52px;
           color: $text-color;
           @include threeDots;
           flex: 1;
-
-          &:hover {
-            color: $text-hover-color;
-          }
         }
       }
     }
   }
 
   @include mobile {
-    transform: translate(0px, 47px);
+    top: 60px;
+    left: 0;
     width: 300px;
   }
 }
@@ -573,7 +574,7 @@ $margin-primary: 52px;
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  margin-bottom: 150px;
+
   @include mobile {
     width: 100%;
     left: 0;

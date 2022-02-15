@@ -26,16 +26,12 @@ import {
   getMyListHeartsDetail,
   removeMyListHeartsDetail,
 } from "../redux/actions";
-// Import Swiper React components
+
 import { Swiper, SwiperSlide } from "swiper/react";
-// import Swiper core and required modules
+
 import SwiperCore, { Autoplay, Pagination, Navigation } from "swiper";
 import { useHistory } from "react-router-dom";
-// Import Swiper styles
-// import "swiper/swiper.scss";
-// import "swiper/swiper-bundle.min.css";
-// import "swiper/swiper.min.css";
-// install Swiper modules
+import { filterListHeartsDetail, checkMusicHearted } from "./utils/hearts";
 SwiperCore.use([Pagination, Navigation]);
 
 const NewMusic = () => {
@@ -81,9 +77,9 @@ const NewMusic = () => {
             dataListHeartsDetail = [...dataListHeartsDetail, filterListHearts[0]];
           }
           data.push(item.music[0]);
-          if (!checkMusicHearted(item.music[0]) && filterListHearts) {
+          if (!checkMusicHearted(item.music[0], myListHearts) && filterListHearts) {
             dispatch(getMyListHearts(item.music[0]));
-            dispatch(getMyListHeartsDetail(filterListHearts[0]));
+            // dispatch(getMyListHeartsDetail(filterListHearts[0]));
           }
         });
         localStorage.setItem("MyListHearts", JSON.stringify(data));
@@ -98,15 +94,6 @@ const NewMusic = () => {
   useEffect(() => {
     fetchAPI();
   }, []);
-
-  const filterListHeartsDetail = (id) => {
-    const myListHearts = localStorage.getItem("AllMusics") ? JSON.parse(localStorage.getItem("AllMusics")) : null;
-    let filterListHearts;
-    if (myListHearts) {
-      filterListHearts = myListHearts.filter((data) => data._id === id);
-    }
-    return filterListHearts;
-  };
 
   const handleChangeMusic = async (data) => {
     localStorage.setItem("isPlayingPlaylist", false);
@@ -148,18 +135,10 @@ const NewMusic = () => {
       }
     }
   };
-  const checkMusicHearted = (id) => {
-    let hasHeart = false;
-    myListHearts.map((item) => {
-      if (item === id) {
-        hasHeart = true;
-      }
-    });
-    return hasHeart;
-  };
+
   const handleClickHeart = async (data) => {
     const loadingView = document.querySelector(".loading-opacity");
-    const checkMusic = checkMusicHearted(data._id);
+    const checkMusic = checkMusicHearted(data._id, myListHearts);
     if (!getUserLogin) {
       return toast.error("You must login to heart this music!!");
     } else if (getUserLogin && checkMusic === true) {
@@ -205,7 +184,7 @@ const NewMusic = () => {
   // UNHEART
   const handleClickUnHeart = async (data) => {
     const loadingView = document.querySelector(".loading-opacity");
-    const checkMusic = checkMusicHearted(data._id);
+    const checkMusic = checkMusicHearted(data._id, myListHearts);
     if (!getUserLogin) {
       return toast.error("You must login to unheart this music!!");
     } else if (getUserLogin && checkMusic === false) {
@@ -386,7 +365,7 @@ const NewMusic = () => {
                           <div className="item-play_icon">
                             <i
                               className="fa fa-heart"
-                              style={checkMusicHearted(item._id) ? { color: "#ff6e6e" } : { color: "" }}
+                              style={checkMusicHearted(item._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }}
                               onClick={() => handleClickHeart(item)}
                             ></i>
                             <div className="item-thumbnail__icon--play">

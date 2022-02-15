@@ -16,4 +16,7 @@
 }
 .top {
   flex: 1;
+  @include mobile {
+    max-width: 170px;
+  }
 }

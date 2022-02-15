@@ -30,10 +30,11 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import errorAuth from "./utils/errorAuth";
 import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
 import { Audio } from "react-loading-icons";
+import { filterListHeartsDetail, checkMusicHearted } from "./utils/hearts";
+
 const Popular = () => {
   let history = useHistory();
   const TokenAccount = localStorage.getItem("jwt");
-  const dataMusic = useSelector((state) => state.popularMusic.data);
   const currentMusic = useSelector((state) => state.selectedMusic.data);
   const dataMyPlaylist = useSelector((state) => state.addMyPlaylist);
   const dataMyPlaylistUser = useSelector((state) => state.addMyPlaylistUser);
@@ -41,40 +42,26 @@ const Popular = () => {
   const myListHearts = useSelector((state) => state.getMyListHearts);
   const isAudioPlay = useSelector((state) => state.getStatusSelectedMusic.data.status);
   const isPlayingPlaylist = localStorage.getItem("isPlayingPlaylist") || "false";
+  const [listPopularMusic, setListPopularMusic] = useState([]);
   const dispatch = useDispatch();
-  const fetchAPI = async () => {
-    const response = await axios
-      .get("https://random-musics.herokuapp.com/api/v1/musics/top-views-day")
-      .catch((err) => console.log(err));
-    if (response) {
-      dispatch(getPopular(response.data.data.data));
-    }
-  };
+
   useEffect(() => {
-    fetchAPI();
-  }, []);
-  const filterListHeartsDetail = (id) => {
-    const myListHearts = localStorage.getItem("AllMusics") ? JSON.parse(localStorage.getItem("AllMusics")) : null;
-    let filterListHearts;
-    if (myListHearts) {
-      filterListHearts = myListHearts.filter((data) => data._id === id);
-    }
-    return filterListHearts;
-  };
-  const checkMusicHearted = (id) => {
-    let hasHeart = false;
-    if (currentMusic) {
-      myListHearts.map((item) => {
-        if (item === id) {
-          hasHeart = true;
+    const getListPopular = async () => {
+      try {
+        const response = await axios.get("https://random-musics.herokuapp.com/api/v1/musics/top-views-day");
+        setListPopularMusic(response.data.data.data);
+      } catch (err) {
+        if (err.response) {
+          toast.error(err.response.data.message);
         }
-      });
-    }
-    return hasHeart;
-  };
+      }
+    };
+    getListPopular();
+  }, []);
+
   const handleClickHeart = async (data) => {
     const loadingView = document.querySelector(".loading-opacity");
-    const checkMusic = checkMusicHearted(data._id);
+    const checkMusic = checkMusicHearted(data._id, myListHearts);
     if (!getUserLogin) {
       return toast.error("You must login to heart this music!!");
     } else if (getUserLogin && checkMusic === true) {
@@ -97,7 +84,6 @@ const Popular = () => {
       }
       const heartContainer = document.querySelector(".heart-opacity");
       if (heartContainer) {
-        fetchAPI();
         heartContainer.style.opacity = 1;
         heartContainer.style.visibility = "visible";
         setTimeout(() => {
@@ -116,10 +102,11 @@ const Popular = () => {
       }
     }
   };
+
   // UNHEART
   const handleClickUnHeart = async (data) => {
     const loadingView = document.querySelector(".loading-opacity");
-    const checkMusic = checkMusicHearted(data._id);
+    const checkMusic = checkMusicHearted(data._id, myListHearts);
     if (!getUserLogin) {
       return toast.error("You must login to unheart this music!!");
     } else if (getUserLogin && checkMusic === false) {
@@ -160,7 +147,6 @@ const Popular = () => {
         loadingView.classList.add("is-show");
       }
       const response = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/playlists`);
-
       toast.success("Added your playlist!");
       dispatch(addMyPlaylistUser(data));
       if (loadingView) {
@@ -273,8 +259,8 @@ const Popular = () => {
       <div className="box-popular">
         <span className="box-title">Popular</span>
         <div className="box-popular__">
-          {dataMusic &&
-            dataMusic.length === 0 &&
+          {listPopularMusic &&
+            listPopularMusic.length === 0 &&
             Array.from({ length: 4 }).map((item, i) => {
               return (
                 <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
@@ -298,9 +284,9 @@ const Popular = () => {
               );
             })}
 
-          {dataMusic &&
-            dataMusic.length > 0 &&
-            dataMusic.map((item, i) => {
+          {listPopularMusic &&
+            listPopularMusic.length > 0 &&
+            listPopularMusic.map((item, i) => {
               return (
                 <div
                   className="popular-item"
@@ -339,7 +325,7 @@ const Popular = () => {
                   <div className="popular-item__icon">
                     <i
                       className="fa fa-heart heart-icon"
-                      style={checkMusicHearted(item._id) ? { color: "#ff6e6e" } : { color: "" }}
+                      style={checkMusicHearted(item._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }}
                       onClick={() => handleClickHeart(item)}
                     >
                       {/* <div className="heart-icon__value">

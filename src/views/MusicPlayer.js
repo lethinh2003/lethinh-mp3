@@ -3,7 +3,7 @@ import { Audio } from "react-loading-icons";
 import MenuRight from "../views/MenuRight";
 import FullView from "./FullView";
 import { MdQueueMusic } from "react-icons/md";
-import { RiPlayListLine } from "react-icons/ri";
+import { BiVolumeFull, BiVolumeLow, BiVolumeMute } from "react-icons/bi";
 import { BsVolumeUp } from "react-icons/bs";
 import { toast } from "react-toastify";
 import APIMusic from "../api/APIMusic";
@@ -24,9 +24,14 @@ import {
   getUserLogin,
   getMyListHeartsDetail,
   removeMyListHeartsDetail,
+  addMyPlaylist,
+  addMyPlaylistUser,
 } from "../redux/actions";
 import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
+import { filterListHeartsDetail, checkMusicHearted } from "./utils/hearts";
 const MusicPlayer = () => {
+  const dataMyPlaylist = useSelector((state) => state.addMyPlaylist);
+  const dataMyPlaylistUser = useSelector((state) => state.addMyPlaylistUser);
   const dataListMusic = useSelector((state) => state.listMusic.data);
   const dataMusicUser = useSelector((state) => state.addMyPlaylistUser);
   const dataMusic = useSelector((state) => state.addMyPlaylist);
@@ -35,6 +40,7 @@ const MusicPlayer = () => {
   const [isFullView, setIsFullView] = useState(false);
   const [fullView, setFullView] = useState();
   const [isOpenMenuRight, setIsOpenMenuRight] = useState(false);
+  const [isMouseValue, setIsMouseValue] = useState(false);
   const [musicPlayer, setMusicPlayer] = useState();
   const [navDown, setNavDown] = useState();
 
@@ -54,6 +60,7 @@ const MusicPlayer = () => {
   const nextMusic = useSelector((state) => state.setNextSelectedMusic.data);
   const previousMusic = useSelector((state) => state.setPreviousSelectedMusic.data);
   const getUserLogin = useSelector((state) => state.getUserLogin);
+  const [musicVolume, setMusicVolume] = useState(1);
   const dispatch = useDispatch();
   const audioPlay = document.querySelector("audio");
 
@@ -160,27 +167,11 @@ const MusicPlayer = () => {
       // dispatch(getDuration(newStoreRedux));
     }
   };
-  const checkMusicHearted = (id) => {
-    let hasHeart = false;
-    myListHearts.map((item) => {
-      if (item === id) {
-        hasHeart = true;
-      }
-    });
-    return hasHeart;
-  };
-  const filterListHeartsDetail = (id) => {
-    const myListHearts = localStorage.getItem("AllMusics") ? JSON.parse(localStorage.getItem("AllMusics")) : null;
-    let filterListHearts;
-    if (myListHearts) {
-      filterListHearts = myListHearts.filter((data) => data._id === id);
-    }
-    return filterListHearts;
-  };
+
   const handleClickHeart = async (data, e) => {
     e.stopPropagation();
     const loadingView = document.querySelector(".loading-opacity");
-    const checkMusic = checkMusicHearted(data._id);
+    const checkMusic = checkMusicHearted(data._id, myListHearts);
     if (!getUserLogin) {
       return toast.error("You must login to heart this music!!");
     } else if (getUserLogin && checkMusic === true) {
@@ -224,24 +215,11 @@ const MusicPlayer = () => {
       }
     }
   };
-  // useEffect(() => {
-  //   if (Array.isArray(currentMusic) === false) {
-  //     const heart = document.querySelector(".fa-heart");
-  //     let getStore = JSON.parse(localStorage.getItem(currentMusic.id));
-  //     if (heart) {
-  //       if (getStore.heart > 0) {
-  //         heart.classList.add("clicked");
-  //       } else {
-  //         heart.classList.remove("clicked");
-  //       }
-  //     }
-  //   }
-  // });
 
   // UNHEART
   const handleClickUnHeart = async (data) => {
     const loadingView = document.querySelector(".loading-opacity");
-    const checkMusic = checkMusicHearted(data._id);
+    const checkMusic = checkMusicHearted(data._id, myListHearts);
     if (!getUserLogin) {
       return toast.error("You must login to unheart this music!!");
     } else if (getUserLogin && checkMusic === false) {
@@ -300,10 +278,98 @@ const MusicPlayer = () => {
     e.stopPropagation();
     handleUpdateCurrentMusic(nextMusic);
   };
+  const handleChangeVolume = (e) => {
+    if (audioPlay) {
+      setMusicVolume(e.target.value);
+      audioPlay.volume = e.target.value;
+    }
+  };
+  const handleClickAddMusic = async (data, e) => {
+    e.stopPropagation();
+    let check = true;
+    if (!TokenAccount) {
+      if (dataMyPlaylist && dataMyPlaylist.length > 0) {
+        await dataMyPlaylist.forEach((item) => {
+          if (item._id === data._id) {
+            check = false;
+          }
+        });
+      }
+      if (check) {
+        dispatch(addMyPlaylist(data));
+        if (isPlayingPlaylist === "true") {
+          const nextMusicId = findNextMusic(data);
+          const previousMusicId = findPreviousMusic(data);
 
+          if (nextMusicId !== undefined && previousMusicId !== undefined) {
+            if (TokenAccount) {
+              const nextMusic = dataMyPlaylistUser[nextMusicId];
+              const previousMusic = dataMyPlaylistUser[previousMusicId];
+              dispatch(setNextSelectedMusic(nextMusic));
+              dispatch(setPreviousSelectedMusic(previousMusic));
+            } else {
+              const nextMusic = dataMyPlaylist[nextMusicId];
+              const previousMusic = dataMyPlaylist[previousMusicId];
+              dispatch(setNextSelectedMusic(nextMusic));
+              dispatch(setPreviousSelectedMusic(previousMusic));
+            }
+          }
+        }
+        toast.success("Added your playlist!");
+      } else {
+        toast.error("You have added this music to your playlist!");
+      }
+    } else {
+      if (dataMyPlaylistUser && dataMyPlaylistUser.length > 0) {
+        await dataMyPlaylistUser.forEach((item) => {
+          if (item._id === data._id) {
+            check = false;
+          }
+        });
+      }
+      if (check) {
+        addPlayListToDB(data, getUserLogin._id);
+      } else {
+        toast.error("You have added this music to your playlist!");
+      }
+    }
+  };
+  const addPlayListToDB = async (data, userId) => {
+    const loadingView = document.querySelector(".loading-opacity");
+    try {
+      if (loadingView) {
+        loadingView.classList.remove("is-hide");
+        loadingView.classList.add("is-show");
+      }
+      const response = await axios.post(`https://random-musics.herokuapp.com/api/v1/musics/${data._id}/playlists`);
+      toast.success("Added your playlist!");
+      dispatch(addMyPlaylistUser(data));
+      if (loadingView) {
+        loadingView.classList.add("is-hide");
+        loadingView.classList.remove("is-show");
+      }
+    } catch (err) {
+      if (loadingView) {
+        loadingView.classList.add("is-hide");
+        loadingView.classList.remove("is-show");
+      }
+      if (err.response) {
+        toast.error(err.response.data.message);
+        errorAuth(err);
+      }
+    }
+  };
+  const handleChangeValueMouseDown = () => {
+    setIsMouseValue(true);
+  };
+  const handleChangeValueMouseLeave = () => {
+    setIsMouseValue(false);
+  };
   return (
     <>
       <FullView
+        musicVolume={musicVolume}
+        handleChangeVolume={handleChangeVolume}
         currentMusic={currentMusic}
         handleCloseFullView={handleCloseFullView}
         handleUpdateStatusAudio={handleUpdateStatusAudio}
@@ -319,7 +385,7 @@ const MusicPlayer = () => {
         style={
           Array.isArray(currentMusic) === true ? { transform: "translateY(100%)" } : { transform: "translateY(0px)" }
         }
-        onClick={() => openFullScreenPlayer()}
+        onClick={!isMouseValue ? () => openFullScreenPlayer() : null}
       >
         {Array.isArray(currentMusic) === false && (
           <>
@@ -351,10 +417,10 @@ const MusicPlayer = () => {
                 ></i>
                 <i
                   className="fa fa-heart"
-                  style={checkMusicHearted(currentMusic._id) ? { color: "#ff6e6e" } : { color: "" }}
+                  style={checkMusicHearted(currentMusic._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }}
                   onClick={(e) => handleClickHeart(currentMusic, e)}
                 ></i>
-                <AiOutlinePlus />
+                <AiOutlinePlus onClick={(e) => handleClickAddMusic(currentMusic, e)} />
               </div>
             </div>
             {/* Music Process Bar */}
@@ -377,7 +443,10 @@ const MusicPlayer = () => {
                   {getMusicDuration && getMusicDuration.minutesCurrent ? getMusicDuration.minutesCurrent : "0"}:
                   {getMusicDuration && getMusicDuration.secondsCurrent ? getMusicDuration.secondsCurrent : "00"}
                 </span>
+
                 <input
+                  onMouseDown={() => handleChangeValueMouseDown()}
+                  onMouseLeave={() => handleChangeValueMouseLeave()}
                   onChange={(e) => handleChangeValue(e)}
                   type="range"
                   className="range"
@@ -386,6 +455,7 @@ const MusicPlayer = () => {
                   min="0"
                   max="100"
                 />
+
                 <span className="playbar-bottom__time--right">
                   {getMusicDuration && getMusicDuration.minutesDuration ? getMusicDuration.minutesDuration : "0"}:
                   {getMusicDuration && getMusicDuration.secondsDuration ? getMusicDuration.secondsDuration : "00"}
@@ -394,8 +464,27 @@ const MusicPlayer = () => {
             </div>
             {/* Control Music */}
             <div className="music-control">
-              <div className="music-control__playlists">
-                <RiPlayListLine />
+              <div className="music-control__volume">
+                <div className="volume-icon">
+                  {musicVolume >= 1 ? (
+                    <BiVolumeFull />
+                  ) : musicVolume > 0 && musicVolume < 1 ? (
+                    <BiVolumeLow />
+                  ) : (
+                    <BiVolumeMute />
+                  )}
+                </div>
+                <input
+                  onMouseDown={() => handleChangeValueMouseDown()}
+                  onMouseLeave={() => handleChangeValueMouseLeave()}
+                  onChange={(e) => handleChangeVolume(e)}
+                  type="range"
+                  id="volumn"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  value={musicVolume}
+                />
               </div>
             </div>
           </>

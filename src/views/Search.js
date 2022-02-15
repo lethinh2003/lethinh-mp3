@@ -4,8 +4,11 @@ import { AiOutlineClose } from "react-icons/ai";
 import { Oval } from "react-loading-icons";
 const Search = () => {
   const [isSearch, setIsSearch] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [listMusic, setListMusic] = useState([]);
+  const [queryMusic, setQueryMusic] = useState([]);
   const [search, setSearch] = useState("");
+
   const searchResult = useRef(null);
   const hanldeChangeValueSearch = (e) => {
     setSearch(e.target.value);
@@ -14,30 +17,33 @@ const Search = () => {
     searchResult.current.classList.remove("is-hide");
   };
   useEffect(() => {
-    console.log("search-changed");
+    const allMusics = localStorage.getItem("AllMusics");
+    if (allMusics) {
+      setListMusic(JSON.parse(allMusics));
+    }
+  }, []);
+  useEffect(() => {
+    if (listMusic && listMusic.length > 0) {
+      const listQueryResult = listMusic.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()));
+      setQueryMusic(listQueryResult);
+    }
     const countLoading = setTimeout(() => {
-      if (loadingSearch.current) {
-        loadingSearch.current.classList.add("is-dpb");
-        loadingSearch.current.classList.remove("is-dpn");
-      }
-      setIsLoading(true);
+      setIsLoading(false);
     }, 500);
     return () => {
       clearTimeout(countLoading);
-      setIsLoading(false);
-      if (loadingSearch.current) {
-        loadingSearch.current.classList.remove("is-dpb");
-        loadingSearch.current.classList.add("is-dpn");
-      }
+      setIsLoading(true);
     };
   }, [search]);
   const handleCloseSearch = () => {
+    setQueryMusic([]);
     setSearch("");
     setIsSearch(false);
     searchResult.current.classList.add("is-hide");
     searchResult.current.classList.remove("is-show");
     searchRef.current.classList.remove("is-show");
   };
+
   function useOutsideAlerter(ref) {
     useEffect(() => {
       /**
@@ -75,7 +81,7 @@ const Search = () => {
             <input type="text" placeholder="Search" value={search} onChange={(e) => hanldeChangeValueSearch(e)} />
           </div>
           <div className="search__icon" style={isSearch ? {} : { display: "none" }}>
-            <AiOutlineClose onClick={() => handleCloseSearch()} />
+            <AiOutlineClose style={{ cursor: "pointer" }} onClick={() => handleCloseSearch()} />
           </div>
         </div>
         <div className="search-result is-hide" ref={searchResult}>
@@ -83,32 +89,24 @@ const Search = () => {
             <span className="header__text">Result for {search}</span>
           </div>
           <div className="search-result__container">
-            <span className="is-dpn" ref={loadingSearch} style={{ alignSelf: "center" }}>
-              <Oval style={{ width: "20px" }} />
+            <span className={isLoading ? "is-dpb" : "is-dpn"} ref={loadingSearch} style={{ alignSelf: "center" }}>
+              <Oval style={{ width: "20px" }} stroke="black" />
             </span>
 
             <>
               <div className="container__wrapper">
                 <div className="container__wrapper--header">Musics</div>
-                <div className="container__wrapper--data">
-                  <img className="data__img" src="https://i.imgur.com/3B2eBcK.jpg" />
-                  <span className="data__content">Em cua ngay hom qua</span>
-                </div>
-                <div className="container__wrapper--data">
-                  <img className="data__img" src="https://i.imgur.com/uJxbqaC.jpg" />
-                  <span className="data__content">Toi cua ngay hom nay</span>
-                </div>
-              </div>
-              <div className="container__wrapper">
-                <div className="container__wrapper--header">Artist</div>
-                <div className="container__wrapper--data">
-                  <img className="data__img" src="https://i.imgur.com/3B2eBcK.jpg" />
-                  <span className="data__content">Em cua ngay hom qua</span>
-                </div>
-                <div className="container__wrapper--data">
-                  <img className="data__img" src="https://i.imgur.com/uJxbqaC.jpg" />
-                  <span className="data__content">Toi cua ngay hom nay</span>
-                </div>
+                {!isLoading &&
+                  queryMusic &&
+                  queryMusic.length > 0 &&
+                  queryMusic.map((item, i) => {
+                    return (
+                      <div className="container__wrapper--data" key={i}>
+                        <img className="data__img" src={item.thumbnail} />
+                        <span className="data__content">{item.name}</span>
+                      </div>
+                    );
+                  })}
               </div>
             </>
           </div>

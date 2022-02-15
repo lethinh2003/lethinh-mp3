@@ -9,10 +9,20 @@ import {
   setNextSelectedMusic,
   getDuration,
   accessAccount,
+  setSelectedMusic,
+  removeSelectedMusic,
 } from "../redux/actions";
-
+import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
 const FullView = (props) => {
-  let { handleSetCurrentMusic, currentMusic, handleCloseFullView, handleUpdateStatusAudio, listCurrentMusic } = props;
+  let {
+    handleSetCurrentMusic,
+    currentMusic,
+    handleCloseFullView,
+    handleUpdateStatusAudio,
+    listCurrentMusic,
+    musicVolume,
+    handleChangeVolume,
+  } = props;
 
   const [count, setCount] = useState(0);
   const [minutesCurrent, setMinutesCurrent] = useState(0);
@@ -20,7 +30,7 @@ const FullView = (props) => {
   const [minutesDuration, setMinutesDuration] = useState(0);
   const [secondsDuration, setSecondsDuration] = useState(0);
   const [valueCurrent, setValueCurrent] = useState(0);
-  const [musicVolume, setMusicVolume] = useState(1);
+
   const [isAutoNext, setIsAutoNext] = useState(false);
   const [isRepeatMusic, setIsRepeatMusic] = useState(false);
   const iconNextMusic = useRef(null);
@@ -43,71 +53,90 @@ const FullView = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (Array.isArray(currentMusic) === false) {
-      if (isAudioPlay === true) {
-        if (getMusicDuration.minutesDuration) {
-          dispatch(getStatusSelectedMusic(false));
-        } else {
-          const audioPromise = audioPlay.current.play();
-          if (audioPromise !== undefined) {
-            audioPromise
-              .then(() => {
-                audioPlay.current.play();
-                handleUpdateStatusAudio(true);
-              })
-              .catch((error) => {});
-          }
-        }
+    let updateRealTime = setInterval(updateTime);
+    if (Array.isArray(currentMusic) === false && audioPlay.current && isAudioPlay) {
+      document.title = "You are listening " + currentMusic.name;
+      const audioPromise = audioPlay.current.play();
+      if (audioPromise !== undefined) {
+        audioPromise
+          .then(() => {
+            audioPlay.current.play();
+            handleUpdateStatusAudio(true);
+          })
+          .catch((error) => {});
       }
+      dispatch(getStatusSelectedMusic(true)); // set isAudioPlay = true
     }
+
+    return () => {
+      clearInterval(updateRealTime);
+    };
   }, [currentMusic]);
+
   useEffect(() => {
+    let updateRealTime;
     if (isAudioPlay) {
+      updateRealTime = setInterval(updateTime);
       document.title = "You are listening " + currentMusic.name;
     }
-  }, [isAudioPlay]);
+    //Update Real Time
+    if (!isAudioPlay && updateRealTime) {
+      clearInterval(updateRealTime);
+    }
 
-  useEffect(() => {
-    const updateTime = () => {
-      if (audioPlay.current) {
-        let getMinutes = Math.floor(audioPlay.current.duration / 60);
-        let getSeconds = Math.floor(audioPlay.current.duration - getMinutes * 60);
-        if (getSeconds < 10) {
-          getSeconds = "0" + getSeconds;
-        } else {
-          getSeconds = getSeconds;
+    return () => {
+      clearInterval(updateRealTime);
+    };
+  }, [currentMusic, isAudioPlay]);
+  const updateTime = () => {
+    if (audioPlay.current) {
+      let getMinutes = Math.floor(audioPlay.current.duration / 60);
+      let getSeconds = Math.floor(audioPlay.current.duration - getMinutes * 60);
+      if (getSeconds < 10) {
+        getSeconds = "0" + getSeconds;
+      } else {
+        getSeconds = getSeconds;
+      }
+      let getMinutesCurrent = Math.floor(audioPlay.current.currentTime / 60);
+      let getSecondsCurrent = Math.floor(audioPlay.current.currentTime - getMinutesCurrent * 60);
+      if (getSecondsCurrent < 10) {
+        getSecondsCurrent = "0" + getSecondsCurrent;
+      } else {
+        getSecondsCurrent = getSecondsCurrent;
+      }
+      const valueCurrent = Math.floor((audioPlay.current.currentTime / audioPlay.current.duration) * 100);
+      setMinutesCurrent(getMinutesCurrent);
+      setSecondsCurrent(getSecondsCurrent);
+      setMinutesDuration(getMinutes);
+      setSecondsDuration(getSeconds);
+      setValueCurrent(valueCurrent);
+      if (isRepeatMusic) {
+        if (valueCurrent >= 100) {
+          audioPlay.current.play();
+          audioPlay.current.currentTime = 0;
         }
-        let getMinutesCurrent = Math.floor(audioPlay.current.currentTime / 60);
-        let getSecondsCurrent = Math.floor(audioPlay.current.currentTime - getMinutesCurrent * 60);
-        if (getSecondsCurrent < 10) {
-          getSecondsCurrent = "0" + getSecondsCurrent;
-        } else {
-          getSecondsCurrent = getSecondsCurrent;
+      } else {
+        if (!isAutoNext && valueCurrent >= 100) {
+          audioPlay.current.pause();
+          dispatch(getStatusSelectedMusic(false));
+          handleUpdateStatusAudio(false);
+          audioPlay.current.currentTime = 0;
+        } else if (isAutoNext && valueCurrent >= 100) {
+          // clearInterval(updateRealTime);
+
+          audioPlay.current.pause();
+
+          dispatch(getStatusSelectedMusic(false));
+          handleUpdateStatusAudio(false);
+          setTimeout(() => {
+            audioPlay.current.currentTime = 0;
+            handleUpdateCurrentMusic(nextMusic);
+          }, 1000);
         }
-        const valueCurrent = Math.floor((audioPlay.current.currentTime / audioPlay.current.duration) * 100);
-        setMinutesCurrent(getMinutesCurrent);
-        setSecondsCurrent(getSecondsCurrent);
-        setMinutesDuration(getMinutes);
-        setSecondsDuration(getSeconds);
-        setValueCurrent(valueCurrent);
-
-        // set local storage
-        const newStore = {
-          data: {
-            minutesDuration: getMinutes,
-            secondsDuration: getSeconds,
-            minutesCurrent: getMinutesCurrent,
-            secondsCurrent: getSecondsCurrent,
-            valueCurrent: valueCurrent,
-            musicVolume: musicVolume,
-            repeatMusic: isRepeatMusic,
-            autoNextMusic: isAutoNext,
-          },
-        };
-        localStorage.setItem("musicTime", JSON.stringify(newStore));
-
-        //set redux
-        const newStoreRedux = {
+      }
+      // set local storage
+      const newStore = {
+        data: {
           minutesDuration: getMinutes,
           secondsDuration: getSeconds,
           minutesCurrent: getMinutesCurrent,
@@ -116,56 +145,54 @@ const FullView = (props) => {
           musicVolume: musicVolume,
           repeatMusic: isRepeatMusic,
           autoNextMusic: isAutoNext,
-        };
-        dispatch(getDuration(newStoreRedux));
-      }
-    };
+        },
+      };
+      localStorage.setItem("musicTime", JSON.stringify(newStore));
 
-    //Auto Repeat Music
-    if (
-      audioPlay.current &&
-      getMusicDuration &&
-      getMusicDuration.minutesDuration &&
-      isRepeatMusic === true &&
-      valueCurrent
-    ) {
-      if (valueCurrent >= 100) {
-        audioPlay.current.play();
-        audioPlay.current.currentTime = 0;
+      //set redux
+      const newStoreRedux = {
+        minutesDuration: getMinutes,
+        secondsDuration: getSeconds,
+        minutesCurrent: getMinutesCurrent,
+        secondsCurrent: getSecondsCurrent,
+        valueCurrent: valueCurrent,
+        musicVolume: musicVolume,
+        repeatMusic: isRepeatMusic,
+        autoNextMusic: isAutoNext,
+      };
+      dispatch(getDuration(newStoreRedux));
+    }
+  };
+  const handleUpdateCurrentMusic = (data) => {
+    if (isPlayingPlaylist) {
+      if (accessAccount && dataMusicUser.length > 1) {
+        // dispatch(removeSelectedMusic());
+        dispatch(setSelectedMusic(data));
+
+        const nextMusicId = findNextMusic(data, dataMusicUser, dataMusic);
+        const previousMusicId = findPreviousMusic(data, dataMusicUser, dataMusic);
+        if (nextMusicId !== undefined && previousMusicId !== undefined) {
+          const nextMusic = dataMusicUser[nextMusicId];
+          const previousMusic = dataMusicUser[previousMusicId];
+          dispatch(setNextSelectedMusic(nextMusic));
+          dispatch(setPreviousSelectedMusic(previousMusic));
+        }
       }
-    } else if (
-      audioPlay.current &&
-      getMusicDuration &&
-      getMusicDuration.minutesDuration &&
-      isRepeatMusic === false &&
-      valueCurrent
-    ) {
-      if (valueCurrent >= 100) {
-        audioPlay.current.pause();
-        audioPlay.current.currentTime = 0;
-        dispatch(getStatusSelectedMusic(false));
-        handleUpdateStatusAudio(false);
+      if (!accessAccount && dataMusic.length > 1) {
+        // dispatch(removeSelectedMusic());
+        dispatch(setSelectedMusic(data));
+
+        const nextMusicId = findNextMusic(data, dataMusicUser, dataMusic);
+        const previousMusicId = findPreviousMusic(data, dataMusicUser, dataMusic);
+        if (nextMusicId !== undefined && previousMusicId !== undefined) {
+          const nextMusic = dataMusic[nextMusicId];
+          const previousMusic = dataMusic[previousMusicId];
+          dispatch(setNextSelectedMusic(nextMusic));
+          dispatch(setPreviousSelectedMusic(previousMusic));
+        }
       }
     }
-
-    //Update Real Time
-    const updateRealTime = setInterval(updateTime, 100);
-
-    if (isAutoNext && valueCurrent >= 100) {
-      if (count === 0) {
-        clearInterval(updateRealTime);
-        console.log("clear");
-        handleSetCurrentMusic(nextMusic);
-        setCount(1);
-        // setIsAutoNext(true);
-      }
-    }
-
-    return () => {
-      clearInterval(updateRealTime);
-    };
-  });
-
+  };
   //Handle Change Value Music
   const handleChangeValue = (e) => {
     if (audioPlay.current && getMusicDuration.minutesDuration && Array.isArray(currentMusic) === false) {
@@ -197,7 +224,7 @@ const FullView = (props) => {
 
   //On/Off music
   const handleOnOffMusic = () => {
-    if (Array.isArray(currentMusic) === false && getMusicDuration.minutesDuration) {
+    if (Array.isArray(currentMusic) === false) {
       if (isAudioPlay) {
         dispatch(getStatusSelectedMusic(false));
         handleUpdateStatusAudio(false);
@@ -207,14 +234,6 @@ const FullView = (props) => {
         handleUpdateStatusAudio(true);
         audioPlay.current.play();
       }
-    }
-  };
-
-  //Change Volume
-  const handleChangeVolume = (e) => {
-    if (audioPlay.current) {
-      setMusicVolume(e.target.value);
-      audioPlay.current.volume = e.target.value;
     }
   };
 
@@ -371,7 +390,7 @@ const FullView = (props) => {
                   ></input>
                 </div>
                 <div className="playbar-bottom">
-                  <span className="time-left">
+                  <span className="time-left" style={{ width: "50px" }}>
                     {getMusicDuration && getMusicDuration.minutesCurrent ? getMusicDuration.minutesCurrent : "0"}:
                     {getMusicDuration && getMusicDuration.secondsCurrent ? getMusicDuration.secondsCurrent : "00"}
                   </span>
@@ -385,7 +404,7 @@ const FullView = (props) => {
                     max="100"
                   />
 
-                  <span className="time-right">
+                  <span className="time-right" style={{ width: "50px" }}>
                     {getMusicDuration && getMusicDuration.minutesDuration ? getMusicDuration.minutesDuration : "0"}:
                     {getMusicDuration && getMusicDuration.secondsDuration ? getMusicDuration.secondsDuration : "00"}
                   </span>

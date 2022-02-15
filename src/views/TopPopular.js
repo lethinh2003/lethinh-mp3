@@ -31,6 +31,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import errorAuth from "./utils/errorAuth";
 import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
 import { Audio } from "react-loading-icons";
+import { filterListHeartsDetail, checkMusicHearted } from "./utils/hearts";
 const TopPopular = () => {
   let history = useHistory();
   const TokenAccount = localStorage.getItem("jwt");
@@ -81,27 +82,10 @@ const TopPopular = () => {
     setIsClickLoadMore(true);
     setCurrentPage(currentPage + 1);
   };
-  const checkMusicHearted = (id) => {
-    let hasHeart = false;
-    myListHearts.map((item) => {
-      if (item === id) {
-        hasHeart = true;
-      }
-    });
-    return hasHeart;
-  };
-  const filterListHeartsDetail = (id) => {
-    const myListHearts = localStorage.getItem("AllMusics") ? JSON.parse(localStorage.getItem("AllMusics")) : null;
-    let filterListHearts;
-    if (myListHearts) {
-      filterListHearts = myListHearts.filter((data) => data._id === id);
-    }
-    return filterListHearts;
-  };
 
   const handleClickHeart = async (data) => {
     const loadingView = document.querySelector(".loading-opacity");
-    const checkMusic = checkMusicHearted(data._id);
+    const checkMusic = checkMusicHearted(data._id, myListHearts);
     if (!getUserLogin) {
       return toast.error("You must login to heart this music!!");
     } else if (getUserLogin && checkMusic === true) {
@@ -147,7 +131,7 @@ const TopPopular = () => {
   // UNHEART
   const handleClickUnHeart = async (data) => {
     const loadingView = document.querySelector(".loading-opacity");
-    const checkMusic = checkMusicHearted(data._id);
+    const checkMusic = checkMusicHearted(data._id, myListHearts);
     if (!getUserLogin) {
       return toast.error("You must login to unheart this music!!");
     } else if (getUserLogin && checkMusic === false) {
@@ -369,7 +353,7 @@ const TopPopular = () => {
                     <div className="popular-item__icon">
                       <i
                         className="fa fa-heart heart-icon"
-                        style={checkMusicHearted(item._id) ? { color: "#ff6e6e" } : { color: "" }}
+                        style={checkMusicHearted(item._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }}
                         onClick={() => handleClickHeart(item)}
                       >
                         {/* <div className="heart-icon__value">

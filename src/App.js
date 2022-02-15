@@ -18,7 +18,7 @@ import CreateArtists from "./views/auth/CreateArtists";
 import CreateGenres from "./views/auth/CreateGenres";
 import User from "./views/User";
 import Overlay from "./views/Overlay";
-
+import Footer from "./views/Footer";
 import Layout from "./views/Layout";
 import GetCateGory from "./views/category/GetCategory";
 import Heart from "./views/Heart";
@@ -29,6 +29,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
+import ScrollToTop from "./views/utils/ScrollToTop";
 
 function App() {
   ////CONFIG DEFAULT AXIOS
@@ -60,7 +61,7 @@ function App() {
         {currentUser && <ProfilePassword />}
         <Loading />
         <Heart />
-
+        <ScrollToTop />
         <Switch>
           <Route path="/" exact={true}>
             <MainPage />
@@ -87,6 +88,7 @@ function App() {
             <ResetPassword />
           </Route>
         </Switch>
+        <Footer />
 
         <MusicPlayer />
         <ToastContainer

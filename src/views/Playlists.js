@@ -6,19 +6,22 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { getCategory } from "../redux/actions";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 const Playlists = () => {
-  const dataCategoryMusic = useSelector((state) => state.categoryMusic.data);
-  const dispatch = useDispatch();
-  const fetchAPI = async () => {
-    const response = await axios
-      .get("https://random-musics.herokuapp.com/api/v1/genres")
-      .catch((err) => console.log(err));
-    if (response) {
-      dispatch(getCategory(response.data.data.data.slice(-4)));
-    }
-  };
+  const [dataCategoryMusic, setDataCategoryMusic] = useState([]);
+
   useEffect(() => {
-    fetchAPI();
+    const getListPlatlist = async () => {
+      try {
+        const response = await axios.get("https://random-musics.herokuapp.com/api/v1/genres");
+        setDataCategoryMusic(response.data.data.data.slice(-4));
+      } catch (err) {
+        if (err.response) {
+          toast.error(err.response.data.message);
+        }
+      }
+    };
+    getListPlatlist();
   }, []);
   return (
     <>

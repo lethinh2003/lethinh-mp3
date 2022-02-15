@@ -22,17 +22,18 @@
   color: white;
   display: flex;
   align-items: center;
+  padding-left: 10px;
 
   &__image {
-    width: 60px;
-    height: 60px;
+    @include widthHeight(50px, 50px);
     border-radius: $border-radius;
-    box-shadow: 0px 2px 9px 2px #0e0a0c;
+    box-shadow: 0px 2px 9px 2px #878284;
     overflow: hidden;
     object-fit: cover;
     position: relative;
 
     &--icon-play {
+      @include widthHeight(40px, 30px);
       position: absolute;
       @include center;
     }
@@ -122,6 +123,7 @@
         font-size: $font-size-second;
         color: $text-second-color;
         font-weight: $font-weight;
+        width: 30px;
       }
     }
 
@@ -141,6 +143,11 @@
   &__volume {
     @include flex(center, center);
 
+    .volume-icon {
+      display: flex;
+      @include flex(center, center);
+    }
+
     input[type="range"] {
       @include widthHeight(90px, 3px);
 
@@ -152,6 +159,7 @@
 }
 
 .open-playlist {
+  box-shadow: 0 2px 10px 2px #837c7c;
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -162,12 +170,18 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #7200a1;
+  background-color: #101111;
   z-index: 100;
   bottom: 63px;
   position: fixed;
   right: 0;
   margin: 10px;
+  transition: all 0.25s linear;
+
+  &:active {
+    box-shadow: 0 1px 10px 2px #837c7c;
+    transform: translateY(1px);
+  }
 }
 .clicked {
   color: red;
