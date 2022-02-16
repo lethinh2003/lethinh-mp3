@@ -53,7 +53,7 @@ const User = () => {
   const isBtnProfile = useSelector((state) => state.btnProfile);
   const dispatch = useDispatch();
   let { id } = useParams();
-  console.log(dataMyListHeartsDetail);
+
   const fetchAPI = async () => {
     try {
       const response = await axios.get("https://random-musics.herokuapp.com/api/v1/users/" + id);
@@ -152,7 +152,6 @@ const User = () => {
       dispatch(getMyListHearts(data._id));
       const musicHeartsDetail = filterListHeartsDetail(data._id);
       if (musicHeartsDetail) {
-        console.log("dispatch");
         dispatch(getMyListHeartsDetail(musicHeartsDetail[0]));
       }
       if (loadingView) {

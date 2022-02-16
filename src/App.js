@@ -5,6 +5,7 @@ import Navigation from "./views/Navigation";
 import MusicPlayer from "./views/MusicPlayer";
 import MainPage from "./views/MainPage";
 import TopPopular from "./views/TopPopular";
+import SearchDetail from "./views/SearchDetail";
 // AUTH
 import Login from "./views/auth/Login";
 import Logout from "./views/auth/Logout";
@@ -30,6 +31,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
 import ScrollToTop from "./views/utils/ScrollToTop";
+import useQuery from "./views/utils/useQuery";
 
 function App() {
   ////CONFIG DEFAULT AXIOS
@@ -47,6 +49,8 @@ function App() {
     localStorage.setItem("accessAccount", false);
   }
   const currentUser = useSelector((state) => state.getUserLogin);
+
+  let query = useQuery();
   return (
     <>
       <Overlay />
@@ -61,10 +65,13 @@ function App() {
         {currentUser && <ProfilePassword />}
         <Loading />
         <Heart />
-        <ScrollToTop />
+
         <Switch>
           <Route path="/" exact={true}>
             <MainPage />
+          </Route>
+          <Route path="/search/">
+            <SearchDetail q={query.get("q")} />
           </Route>
           <Route path="/category/:category" exact={true}>
             <GetCateGory />
@@ -89,7 +96,7 @@ function App() {
           </Route>
         </Switch>
         <Footer />
-
+        <ScrollToTop />
         <MusicPlayer />
         <ToastContainer
           position="top-right"

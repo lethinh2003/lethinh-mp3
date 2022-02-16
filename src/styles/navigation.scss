@@ -9,6 +9,10 @@ a.active {
     opacity: 1;
   }
 }
+a.active-mobile {
+  background-color: $nav-selected-bg;
+  border-radius: 5px;
+}
 .active > .nav__item {
   color: unset;
 }

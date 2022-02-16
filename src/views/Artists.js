@@ -24,6 +24,7 @@ const Artists = () => {
       const response = await axios.get("https://random-musics.herokuapp.com/api/v1/artists");
       setIsLoading(false);
       setData(response.data.data.data.slice(-10));
+      localStorage.setItem("AllArtists", JSON.stringify(response.data.data.data));
     } catch (err) {
       setIsLoading(false);
       if (err.response) {

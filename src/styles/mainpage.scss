@@ -1,6 +1,7 @@
 $margin-primary: 52px;
 @import "../scss/_variables.scss";
 @import "../scss/_mixin.scss";
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;500&display=swap");
 .box-new_music,
 .box-category {
   display: flex;
@@ -228,12 +229,24 @@ $margin-primary: 52px;
   transform: translateX(0);
 
   &__logo {
+    @include mobile {
+      display: none;
+    }
     @include widthHeight(50px, 50px);
     object-fit: cover;
 
     img {
       @include widthHeight(100%, 100%);
     }
+  }
+
+  &__slogan {
+    @include mobile {
+      display: none;
+    }
+    padding-left: 40px;
+    font-family: "Fira Sans", sans-serif;
+    font-weight: 500;
   }
 
   &__wrapper {
@@ -323,6 +336,9 @@ $margin-primary: 52px;
       display: flex;
       height: 100%;
       align-items: center;
+    }
+    &-right {
+      gap: 20px;
     }
   }
 
@@ -424,6 +440,7 @@ $margin-primary: 52px;
     @include flex(center, center);
 
     .header__text {
+      color: $text-second-color;
       @include threeDots;
     }
   }
@@ -438,8 +455,15 @@ $margin-primary: 52px;
       padding-top: 20px;
 
       &--header {
-        text-transform: uppercase;
-        font-weight: $font-weight;
+        @include flex(center, space-between);
+
+        .header-title {
+          text-transform: uppercase;
+          font-weight: $font-weight;
+        }
+        .header-more {
+          color: $text-second-color;
+        }
       }
       &--data {
         @include flex(center, center);
@@ -593,4 +617,57 @@ $margin-primary: 52px;
 }
 .is-center {
   @include flex(center, center);
+}
+.sidebar-mobile__opacity {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+.sidebar-mobile__body {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  max-width: 300px;
+
+  .sidebar-body {
+    &__wrapper {
+      width: 100%;
+      padding: 50px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    &__feature {
+      transition: all 0.25s linear;
+      cursor: pointer;
+      color: #646263;
+      display: flex;
+      padding: 10px;
+      border-radius: 5px;
+      gap: 12px;
+      align-items: center;
+
+      &--icon {
+        @include flex(center, center);
+      }
+      &--title {
+        font-weight: bold;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        @include threeDots();
+      }
+
+      &:hover {
+        background-color: rgb(235, 234, 236);
+      }
+    }
+  }
 }

@@ -2,11 +2,15 @@ import { useState, useEffect, useRef } from "react";
 import { AiOutlineConsoleSql, AiOutlineSearch } from "react-icons/ai";
 import { AiOutlineClose } from "react-icons/ai";
 import { Oval } from "react-loading-icons";
+import { Link } from "react-router-dom";
 const Search = () => {
+  const searchValue = useRef();
   const [isSearch, setIsSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [listMusic, setListMusic] = useState([]);
+  const [listArtist, setListArtist] = useState([]);
   const [queryMusic, setQueryMusic] = useState([]);
+  const [queryArtist, setQueryArtist] = useState([]);
   const [search, setSearch] = useState("");
 
   const searchResult = useRef(null);
@@ -18,14 +22,26 @@ const Search = () => {
   };
   useEffect(() => {
     const allMusics = localStorage.getItem("AllMusics");
+    const allArtists = localStorage.getItem("AllArtists");
     if (allMusics) {
       setListMusic(JSON.parse(allMusics));
     }
+    if (allArtists) {
+      setListArtist(JSON.parse(allArtists));
+    }
   }, []);
   useEffect(() => {
-    if (listMusic && listMusic.length > 0) {
-      const listQueryResult = listMusic.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()));
-      setQueryMusic(listQueryResult);
+    if (listMusic && listMusic.length > 0 && searchValue.current.value) {
+      const listQueryMusicResult = listMusic.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()));
+      setQueryMusic(listQueryMusicResult.slice(-3));
+    } else if (listMusic && listMusic.length > 0 && !searchValue.current.value) {
+      handleCloseSearch();
+    }
+    if (listArtist && listArtist.length > 0 && searchValue.current.value) {
+      const listQueryArtistResult = listArtist.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()));
+      setQueryArtist(listQueryArtistResult.slice(-3));
+    } else if (listArtist && listArtist.length > 0 && !searchValue.current.value) {
+      handleCloseSearch();
     }
     const countLoading = setTimeout(() => {
       setIsLoading(false);
@@ -37,6 +53,7 @@ const Search = () => {
   }, [search]);
   const handleCloseSearch = () => {
     setQueryMusic([]);
+    setQueryArtist([]);
     setSearch("");
     setIsSearch(false);
     searchResult.current.classList.add("is-hide");
@@ -78,7 +95,13 @@ const Search = () => {
             <AiOutlineSearch />
           </div>
           <div className="search__input">
-            <input type="text" placeholder="Search" value={search} onChange={(e) => hanldeChangeValueSearch(e)} />
+            <input
+              type="text"
+              placeholder="Search"
+              value={search}
+              ref={searchValue}
+              onChange={(e) => hanldeChangeValueSearch(e)}
+            />
           </div>
           <div className="search__icon" style={isSearch ? {} : { display: "none" }}>
             <AiOutlineClose style={{ cursor: "pointer" }} onClick={() => handleCloseSearch()} />
@@ -95,11 +118,39 @@ const Search = () => {
 
             <>
               <div className="container__wrapper">
-                <div className="container__wrapper--header">Musics</div>
+                <div className="container__wrapper--header">
+                  <span className="header-title">Musics</span>
+                  <span className="header-more">
+                    <Link to={`search?q=${search}`} onClick={() => handleCloseSearch()}>
+                      Xem thêm
+                    </Link>
+                  </span>
+                </div>
                 {!isLoading &&
                   queryMusic &&
                   queryMusic.length > 0 &&
                   queryMusic.map((item, i) => {
+                    return (
+                      <div className="container__wrapper--data" key={i}>
+                        <img className="data__img" src={item.thumbnail} />
+                        <span className="data__content">{item.name}</span>
+                      </div>
+                    );
+                  })}
+              </div>
+              <div className="container__wrapper">
+                <div className="container__wrapper--header">
+                  <span className="header-title">Artists</span>
+                  <span className="header-more">
+                    <Link to={`search?q=${search}`} onClick={() => handleCloseSearch()}>
+                      Xem thêm
+                    </Link>
+                  </span>
+                </div>
+                {!isLoading &&
+                  queryArtist &&
+                  queryArtist.length > 0 &&
+                  queryArtist.map((item, i) => {
                     return (
                       <div className="container__wrapper--data" key={i}>
                         <img className="data__img" src={item.thumbnail} />
