@@ -8,6 +8,15 @@
 
   padding: 0 30px;
   display: flex;
+  @include mobileSpecific(912px) {
+    margin-bottom: 100px;
+  }
+  @include mobileSpecific(820px) {
+    margin-bottom: 250px;
+  }
+  @include mobileSpecific(768px) {
+    margin-bottom: 100px;
+  }
 
   @include mobile {
     width: 100%;

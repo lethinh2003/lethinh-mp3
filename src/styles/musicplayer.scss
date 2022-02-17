@@ -24,6 +24,13 @@
   align-items: center;
   padding-left: 10px;
 
+  @include mobileSpecific(540px) {
+    padding-left: 20px;
+  }
+  @include mobileSpecific(414px) {
+    padding-left: 20px;
+  }
+
   &__image {
     @include widthHeight(50px, 50px);
     border-radius: $border-radius;
@@ -47,7 +54,7 @@
 
   &__desc {
     @include flex(flex-start, center);
-    width: 225px;
+
     flex-direction: column;
     margin-left: 9px;
     font-weight: $font-weight;
@@ -57,6 +64,10 @@
       @include threeDots;
       font-size: $font-size-first;
       color: $text-color;
+
+      @include mobileSpecific(912px) {
+        width: 115px;
+      }
     }
 
     &--author {
@@ -64,6 +75,9 @@
       @include threeDots;
       font-size: $font-size-second;
       color: $text-second-color;
+      @include mobileSpecific(912px) {
+        width: 115px;
+      }
     }
   }
 
@@ -139,7 +153,7 @@
   @include flex(center, center);
   gap: 27px;
   font-size: $font-size-first + 10px;
-
+  padding-right: 20px;
   &__volume {
     @include flex(center, center);
 

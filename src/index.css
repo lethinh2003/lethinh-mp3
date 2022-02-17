@@ -17,3 +17,17 @@ code {
 .unset-padding {
   padding: unset;
 }
+.has-display {
+  opacity: 1;
+  visibility: visible;
+}
+.hasnot-display {
+  opacity: 0;
+  visibility: hidden;
+}
+.nav_is-hide {
+  transform: translateX(-100%);
+}
+.nav_is-display {
+  transform: translateX(0px);
+}

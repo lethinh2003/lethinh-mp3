@@ -10,9 +10,21 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { Autoplay, Pagination, Navigation } from "swiper";
 import { toast } from "react-toastify";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 SwiperCore.use([Autoplay, Pagination, Navigation]);
 
 const HotArtists = () => {
+  const settings = {
+    autoplay: true,
+    arrows: false,
+    dots: false,
+    infinite: true,
+    speed: 1000,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
   const [data, setData] = useState([]);
   const dispatch = useDispatch();
   const fetchAPI = async () => {
@@ -31,37 +43,29 @@ const HotArtists = () => {
   }, []);
   return (
     <>
-      <Swiper
-        spaceBetween={30}
-        centeredSlides={true}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-        }}
-        className="box-artists-sliders"
-      >
-        {data &&
-          data.length > 0 &&
-          data.map((item, i) => {
-            return (
-              <SwiperSlide key={i}>
-                <div className="box-artists">
-                  <div className="artists-info">
+      <div className="box-artists-sliders">
+        <Slider {...settings}>
+          {data &&
+            data.length > 0 &&
+            data.map((item, i) => {
+              return (
+                <div className="box-artists" style={{ display: "flex" }} key={i}>
+                  {/* <div className="artists-info">
                     <span className="artists-info__name">{item.name}</span>
                     <span className="artists-info__desc">{item.desc}</span>
                     <div className="artists-info__btn">
                       <div className="artists-info__btn--play">Play</div>
                       <div className="artists-info__btn--follow">Follow</div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="artists-image">
                     <img src={item.thumbnail} />
                   </div>
                 </div>
-              </SwiperSlide>
-            );
-          })}
-      </Swiper>
+              );
+            })}
+        </Slider>
+      </div>
     </>
   );
 };

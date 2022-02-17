@@ -121,7 +121,7 @@ const Search = () => {
                 <div className="container__wrapper--header">
                   <span className="header-title">Musics</span>
                   <span className="header-more">
-                    <Link to={`search?q=${search}`} onClick={() => handleCloseSearch()}>
+                    <Link to={`/search?q=${search}&tab=musics`} onClick={() => handleCloseSearch()}>
                       Xem thêm
                     </Link>
                   </span>
@@ -142,7 +142,7 @@ const Search = () => {
                 <div className="container__wrapper--header">
                   <span className="header-title">Artists</span>
                   <span className="header-more">
-                    <Link to={`search?q=${search}`} onClick={() => handleCloseSearch()}>
+                    <Link to={`/search?q=${search}&tab=artists`} onClick={() => handleCloseSearch()}>
                       Xem thêm
                     </Link>
                   </span>

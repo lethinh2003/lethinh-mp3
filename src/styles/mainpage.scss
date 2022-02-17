@@ -22,6 +22,22 @@ $margin-primary: 52px;
   display: flex;
   padding: 0 30px;
   gap: 52px;
+  @include mobileSpecific(1024px) {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  @include mobileSpecific(820px) {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  @include mobileSpecific(768px) {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  @include mobileSpecific(736px) {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
 
   @include mobile {
     flex-wrap: wrap;
@@ -241,6 +257,18 @@ $margin-primary: 52px;
   }
 
   &__slogan {
+    @include mobileSpecific(912px) {
+      display: none;
+    }
+    @include mobileSpecific(820px) {
+      display: none;
+    }
+    @include mobileSpecific(768px) {
+      display: none;
+    }
+    @include mobileSpecific(736px) {
+      display: none;
+    }
     @include mobile {
       display: none;
     }
@@ -339,6 +367,7 @@ $margin-primary: 52px;
     }
     &-right {
       gap: 20px;
+      padding-right: 7px;
     }
   }
 
@@ -619,6 +648,7 @@ $margin-primary: 52px;
   @include flex(center, center);
 }
 .sidebar-mobile__opacity {
+  transition: all 0.25s linear;
   position: fixed;
   top: 0;
   left: 0;
@@ -628,6 +658,7 @@ $margin-primary: 52px;
   z-index: 999;
 }
 .sidebar-mobile__body {
+  transition: all 0.25s linear;
   width: 100%;
   position: absolute;
   top: 0;

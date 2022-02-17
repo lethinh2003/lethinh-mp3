@@ -16,21 +16,17 @@
 }
 
 .box-artists-sliders {
-  min-height: 500px;
   padding: 0 30px;
 
-  transition: 0.25s linear;
   cursor: pointer;
-  @include mobile {
-    min-height: 360px;
-  }
 }
 .box-artists {
+  border-radius: 20px;
   width: 100%;
   height: 100%;
   @include flex(center, space-around);
   margin-top: 100px;
-  max-width: 1000px;
+  background-color: black;
   gap: 20px;
 }
 .artists-info {
@@ -87,6 +83,5 @@
   img {
     @include widthHeight(100%, 100%);
     object-fit: contain;
-    transform: scale(1.5);
   }
 }

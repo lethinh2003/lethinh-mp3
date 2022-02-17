@@ -7,7 +7,8 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
 import { Audio } from "react-loading-icons";
 import { Oval } from "react-loading-icons";
-const SearchDetail = ({ q }) => {
+const SearchDetail = (props) => {
+  const { q, tab } = props;
   const searchValue = useRef();
   let history = useHistory();
   const [search, setSearch] = useState("");
@@ -35,6 +36,15 @@ const SearchDetail = ({ q }) => {
       setListArtist(JSON.parse(allArtists));
     }
   }, []);
+  useEffect(() => {
+    if (tab === "musics") {
+      setIsBoxMusic(true);
+      setIsBoxArtist(false);
+    } else if (tab === "artists") {
+      setIsBoxMusic(false);
+      setIsBoxArtist(true);
+    }
+  }, [tab]);
   const handleQueryMusic = () => {
     if (listMusic && listMusic.length > 0 && searchValue.current.value) {
       const listQueryMusicResult = listMusic.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()));
@@ -79,6 +89,7 @@ const SearchDetail = ({ q }) => {
   const handleChangeMusic = () => {};
   const handleClickAddMusic = () => {};
   const handleChangeBox = (id) => {
+    setIsLoading(true);
     if (id === 1) {
       setIsBoxMusic(true);
       setIsBoxArtist(false);
@@ -86,6 +97,9 @@ const SearchDetail = ({ q }) => {
       setIsBoxMusic(false);
       setIsBoxArtist(true);
     }
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   };
   return (
     <>
@@ -124,7 +138,7 @@ const SearchDetail = ({ q }) => {
                   queryMusic.length > 0 &&
                   queryMusic.map((item, i) => {
                     return (
-                      <div className="new-music-item" style={{ width: "100%", maxWidth: "180px" }}>
+                      <div key={i} className="new-music-item" style={{ width: "100%", maxWidth: "180px" }}>
                         <div className="item-thumbnail">
                           <div className="item-thumbnail_hover"></div>
                           <div className="item-play_icon">
@@ -169,7 +183,7 @@ const SearchDetail = ({ q }) => {
                   queryArtist.length > 0 &&
                   queryArtist.map((item, i) => {
                     return (
-                      <div className="new-music-item" style={{ width: "100%", maxWidth: "180px" }}>
+                      <div key={i} className="new-music-item" style={{ width: "100%", maxWidth: "180px" }}>
                         <div className="item-thumbnail">
                           <div className="item-thumbnail_hover"></div>
                           <div className="item-play_icon">

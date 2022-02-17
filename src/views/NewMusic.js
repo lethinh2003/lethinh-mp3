@@ -244,6 +244,7 @@ const NewMusic = () => {
     }
   };
   const handleClickAddMusic = async (data) => {
+    const loadingView = document.querySelector(".loading-opacity");
     let check = true;
     if (!TokenAccount) {
       if (dataMyPlaylist && dataMyPlaylist.length > 0) {
@@ -254,7 +255,12 @@ const NewMusic = () => {
         });
       }
       if (check) {
+        if (loadingView) {
+          loadingView.classList.add("is-show");
+          loadingView.classList.remove("is-hide");
+        }
         dispatch(addMyPlaylist(data));
+
         if (isPlayingPlaylist === "true") {
           const nextMusicId = findNextMusic(data);
           const previousMusicId = findPreviousMusic(data);
@@ -273,7 +279,13 @@ const NewMusic = () => {
             }
           }
         }
-        toast.success("Added your playlist!");
+        setTimeout(() => {
+          if (loadingView) {
+            loadingView.classList.remove("is-show");
+            loadingView.classList.add("is-hide");
+            toast.success("Added your playlist!");
+          }
+        }, 200);
       } else {
         toast.error("You have added this music to your playlist!");
       }

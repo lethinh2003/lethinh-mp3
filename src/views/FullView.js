@@ -76,7 +76,7 @@ const FullView = (props) => {
   useEffect(() => {
     let updateRealTime;
     if (isAudioPlay) {
-      updateRealTime = setInterval(updateTime);
+      updateRealTime = setInterval(updateTime, 100);
       document.title = "You are listening " + currentMusic.name;
     }
     //Update Real Time

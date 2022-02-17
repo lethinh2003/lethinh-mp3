@@ -12,20 +12,26 @@ const SidebarMobile = (props) => {
   const dispatch = useDispatch();
   const sidebarMobile = useRef();
   const { isNavOpen, hanldeOnOffNavbar, handleClickLogin, handleClickSignup } = props;
-  console.log(isNavOpen);
+
   const handleCloseSidebar = () => {
-    sidebarMobile.current.classList.add("is-dpn");
-    sidebarMobile.current.classList.remove("is-dpb");
+    sidebarMobile.current.classList.add("hasnot-display");
+    sidebarMobile.current.classList.remove("has-display");
+    sidebarMobileBody.current.classList.add("nav_is-hide");
+    sidebarMobileBody.current.classList.remove("nav_is-display");
     hanldeOnOffNavbar(false);
   };
   useEffect(() => {
     if (sidebarMobile.current) {
       if (isNavOpen) {
-        sidebarMobile.current.classList.remove("is-dpn");
-        sidebarMobile.current.classList.add("is-dpb");
+        sidebarMobile.current.classList.remove("hasnot-display");
+        sidebarMobile.current.classList.add("has-display");
+        sidebarMobileBody.current.classList.remove("nav_is-hide");
+        sidebarMobileBody.current.classList.add("nav_is-display");
       } else {
-        sidebarMobile.current.classList.add("is-dpn");
-        sidebarMobile.current.classList.remove("is-dpb");
+        sidebarMobile.current.classList.add("hasnot-display");
+        sidebarMobile.current.classList.remove("has-display");
+        sidebarMobileBody.current.classList.add("nav_is-hide");
+        sidebarMobileBody.current.classList.remove("nav_is-display");
       }
     }
   }, [isNavOpen]);
@@ -53,8 +59,8 @@ const SidebarMobile = (props) => {
   };
   return (
     <>
-      <div className="sidebar-mobile__opacity is-dpn" ref={sidebarMobile} onClick={(e) => handleClickOff(e)}>
-        <div className="sidebar-mobile__body" ref={sidebarMobileBody}>
+      <div className="sidebar-mobile__opacity hasnot-display" ref={sidebarMobile} onClick={(e) => handleClickOff(e)}>
+        <div className="sidebar-mobile__body nav_is-hide" ref={sidebarMobileBody}>
           <div className="sidebar-body__wrapper">
             {!dataUser && (
               <>

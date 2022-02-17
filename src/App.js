@@ -71,7 +71,7 @@ function App() {
             <MainPage />
           </Route>
           <Route path="/search/">
-            <SearchDetail q={query.get("q")} />
+            <SearchDetail q={query.get("q")} tab={query.get("tab")} />
           </Route>
           <Route path="/category/:category" exact={true}>
             <GetCateGory />
