@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { AiOutlinePlus } from "react-icons/ai";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -108,7 +109,9 @@ const Artists = () => {
                           <div className="item-play_icon">
                             <i className="fa fa-heart"></i>
                             <div className="item-thumbnail__icon--play">
-                              <i className="fa fa-play" aria-hidden="true"></i>
+                              <Link to={"/artist/" + item._id}>
+                                <i className="fa fa-play" aria-hidden="true"></i>
+                              </Link>
                             </div>
                             <AiOutlinePlus />
                           </div>

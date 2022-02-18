@@ -18,6 +18,7 @@ import ProfilePassword from "./views/auth/ProfilePassword";
 import CreateArtists from "./views/auth/CreateArtists";
 import CreateGenres from "./views/auth/CreateGenres";
 import User from "./views/User";
+import ArtistDetail from "./views/ArtistDetail";
 import Overlay from "./views/Overlay";
 import Footer from "./views/Footer";
 import Layout from "./views/Layout";
@@ -86,6 +87,9 @@ function App() {
 
           <Route path="/user/:id">
             <User />
+          </Route>
+          <Route path="/artist/:id">
+            <ArtistDetail />
           </Route>
 
           <Route path="/auth/forgot-password" exact={true}>

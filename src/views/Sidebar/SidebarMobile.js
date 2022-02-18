@@ -49,7 +49,7 @@ const SidebarMobile = (props) => {
     handleCloseSidebar();
   };
   const handleClickSignupMiddle = () => {
-    handleClickLogin();
+    handleClickSignup();
     handleCloseSidebar();
   };
   const handleClickUpload = () => {
