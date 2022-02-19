@@ -1,8 +1,19 @@
-import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { useState, useEffect, useRef } from "react";
+import "../styles/newmusic.scss";
+import { Audio } from "react-loading-icons";
+import axios from "axios";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { FiArrowRight, FiArrowLeft } from "react-icons/fi";
+import { AiOutlinePlus } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
+import errorAuth from "./utils/errorAuth";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import {
-  getUserLogin,
-  getPopular,
   getListMusic,
   setSelectedMusic,
   removeSelectedMusic,
@@ -15,84 +26,78 @@ import {
   setIsPlayingPlaylist,
   getMyListHearts,
   removeMyListHearts,
-  getStatusSelectedMusic,
-  btnProfile,
   getMyListHeartsDetail,
   removeMyListHeartsDetail,
 } from "../redux/actions";
-import errorAuth from "./utils/errorAuth";
-import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
-import { Audio } from "react-loading-icons";
-import { Swiper, SwiperSlide } from "swiper/react";
-import SwiperCore, { Autoplay, Pagination, Navigation } from "swiper";
-import { AiOutlinePlus } from "react-icons/ai";
-import { FiEdit2 } from "react-icons/fi";
-import { toast } from "react-toastify";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { useState, useEffect } from "react";
-import axios from "axios";
-const ArtistDetail = () => {
-  let history = useHistory();
-  const currentUser = localStorage.getItem("currentUser");
-  const [profileArtist, setProfileArtist] = useState();
-  const [musicsArtist, setMusicsArtist] = useState();
-  const [listViews, setListViews] = useState();
-  const [totalViews, setTotalViews] = useState(0);
 
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import SwiperCore, { Autoplay, Pagination, Navigation } from "swiper";
+import { Link, useHistory } from "react-router-dom";
+import { filterListHeartsDetail, checkMusicHearted } from "./utils/hearts";
+import { IconButton } from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import AddIcon from "@mui/icons-material/Add";
+SwiperCore.use([Pagination, Navigation]);
+const Musics = () => {
+  let history = useHistory();
+  let currentUser = localStorage.getItem("currentUser");
+  if (currentUser) {
+    currentUser = JSON.parse(currentUser);
+  }
   const TokenAccount = localStorage.getItem("jwt");
-  const dataMyListHeartsDetail = useSelector((state) => state.getMyListHeartsDetail);
-  const dataMusic = useSelector((state) => state.popularMusic.data);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const getUserLogin = useSelector((state) => state.getUserLogin);
+  const dataMusic = useSelector((state) => state.listMusic.data);
   const currentMusic = useSelector((state) => state.selectedMusic.data);
   const dataMyPlaylist = useSelector((state) => state.addMyPlaylist);
   const dataMyPlaylistUser = useSelector((state) => state.addMyPlaylistUser);
-  const getUserLogin = useSelector((state) => state.getUserLogin);
   const myListHearts = useSelector((state) => state.getMyListHearts);
   const isAudioPlay = useSelector((state) => state.getStatusSelectedMusic.data.status);
-  const isPlayingPlaylist = localStorage.getItem("isPlayingPlaylist") || "false";
-  const isBtnProfile = useSelector((state) => state.btnProfile);
   const dispatch = useDispatch();
-  let { id } = useParams();
+  const isPlayingPlaylist = localStorage.getItem("isPlayingPlaylist") || "false";
+
   const fetchAPI = async () => {
     try {
-      const ListViews = [];
-      const response = await axios.get("https://random-musics.herokuapp.com/api/v1/artists/" + id);
-      setProfileArtist(response.data.data.data[0].artist);
-      const ListMusics = response.data.data.data[1].musics;
-      setMusicsArtist(ListMusics);
-      if (ListMusics && ListMusics.length > 0) {
-        ListMusics.map((item) => ListViews.push(item.views));
+      const getAllMusics = axios.get("https://random-musics.herokuapp.com/api/v1/musics/");
+      await Promise.all([getAllMusics]).then((data) => {
+        localStorage.setItem("AllMusics", JSON.stringify(data[0].data.data.data));
+        dispatch(getListMusic(data[0].data.data.data));
+      });
+
+      setIsLoading(false);
+      if (getUserLogin) {
+        let data = [];
+        let dataListHeartsDetail = [];
+        const response = await axios.get("https://random-musics.herokuapp.com/api/v1/hearts/user/" + getUserLogin._id);
+        const dataFromDB = response.data.data.data;
+        const myListHearts = localStorage.getItem("AllMusics") ? JSON.parse(localStorage.getItem("AllMusics")) : null;
+
+        dataFromDB.map((item) => {
+          let filterListHearts;
+          if (myListHearts) {
+            filterListHearts = myListHearts.filter((data) => data._id === item.music[0]);
+            dataListHeartsDetail = [...dataListHeartsDetail, filterListHearts[0]];
+          }
+          data.push(item.music[0]);
+          if (!checkMusicHearted(item.music[0], myListHearts) && filterListHearts) {
+            dispatch(getMyListHearts(item.music[0]));
+            // dispatch(getMyListHeartsDetail(filterListHearts[0]));
+          }
+        });
+        localStorage.setItem("MyListHearts", JSON.stringify(data));
+        localStorage.setItem("MyListHeartsDetail", JSON.stringify(dataListHeartsDetail));
       }
-      setListViews(ListViews);
-      console.log(response.data.data.data[1].musics);
     } catch (err) {
       if (err.response) {
         toast.error(err.response.data.message);
-        errorAuth(err);
       }
     }
   };
-
   useEffect(() => {
     fetchAPI();
   }, []);
-  useEffect(() => {
-    if (listViews && listViews.length > 0) {
-      const sumWithInitial = listViews.reduce(
-        (previousValue, currentValue) => previousValue + currentValue,
-        totalViews
-      );
-      setTotalViews(sumWithInitial);
-    }
-  }, [listViews]);
-
-  const filterListHeartsDetail = (id) => {
-    const myListHearts = localStorage.getItem("AllMusics") ? JSON.parse(localStorage.getItem("AllMusics")) : null;
-    let filterListHearts;
-    if (myListHearts) {
-      filterListHearts = myListHearts.filter((data) => data._id === id);
-    }
-    return filterListHearts;
-  };
 
   const handleChangeMusic = async (data) => {
     localStorage.setItem("isPlayingPlaylist", false);
@@ -134,19 +139,10 @@ const ArtistDetail = () => {
       }
     }
   };
-  const checkMusicHearted = (id) => {
-    let hasHeart = false;
-    myListHearts.map((item) => {
-      if (item === id) {
-        hasHeart = true;
-      }
-    });
-    return hasHeart;
-  };
 
   const handleClickHeart = async (data) => {
     const loadingView = document.querySelector(".loading-opacity");
-    const checkMusic = checkMusicHearted(data._id);
+    const checkMusic = checkMusicHearted(data._id, myListHearts);
     if (!getUserLogin) {
       return toast.error("You must login to heart this music!!");
     } else if (getUserLogin && checkMusic === true) {
@@ -192,7 +188,7 @@ const ArtistDetail = () => {
   // UNHEART
   const handleClickUnHeart = async (data) => {
     const loadingView = document.querySelector(".loading-opacity");
-    const checkMusic = checkMusicHearted(data._id);
+    const checkMusic = checkMusicHearted(data._id, myListHearts);
     if (!getUserLogin) {
       return toast.error("You must login to unheart this music!!");
     } else if (getUserLogin && checkMusic === false) {
@@ -252,6 +248,7 @@ const ArtistDetail = () => {
     }
   };
   const handleClickAddMusic = async (data) => {
+    const loadingView = document.querySelector(".loading-opacity");
     let check = true;
     if (!TokenAccount) {
       if (dataMyPlaylist && dataMyPlaylist.length > 0) {
@@ -262,7 +259,12 @@ const ArtistDetail = () => {
         });
       }
       if (check) {
+        if (loadingView) {
+          loadingView.classList.add("is-show");
+          loadingView.classList.remove("is-hide");
+        }
         dispatch(addMyPlaylist(data));
+
         if (isPlayingPlaylist === "true") {
           const nextMusicId = findNextMusic(data);
           const previousMusicId = findPreviousMusic(data);
@@ -281,7 +283,13 @@ const ArtistDetail = () => {
             }
           }
         }
-        toast.success("Added your playlist!");
+        setTimeout(() => {
+          if (loadingView) {
+            loadingView.classList.remove("is-show");
+            loadingView.classList.add("is-hide");
+            toast.success("Added your playlist!");
+          }
+        }, 200);
       } else {
         toast.error("You have added this music to your playlist!");
       }
@@ -300,115 +308,79 @@ const ArtistDetail = () => {
       }
     }
   };
-
   return (
     <>
-      {profileArtist && musicsArtist && (
-        <div className="ms-mainpage">
-          <div className="box-profile">
-            <div className="box-profile__header artist">
-              <div className="header__avatar">
-                <img src={profileArtist.thumbnail} />
-              </div>
-              <div className="header__info">
-                <span className="header__info--title">Profile</span>
-                <a title={profileArtist.name}>
-                  <span className="header__info--name">{profileArtist.name}</span>
-                </a>
-                <span className="header__info--desc">
-                  MUSICS: {musicsArtist.length}. VIEWS: {totalViews}
-                </span>
-              </div>
-            </div>
-            <div className="box-profile__body">
-              <div className="box-new_music" style={{ padding: "unset" }}>
-                <div className="box-header">
-                  <span className="box-title">Musics</span>
-                </div>
-                <Swiper
-                  loop={false}
-                  loopFillGroupWithBlank={true}
-                  breakpoints={{
-                    0: {
-                      slidesPerView: 1,
-                      spaceBetween: 10,
-                      slidesPerGroup: 1,
-                    },
-                    390: {
-                      slidesPerView: 2,
-                      spaceBetween: 10,
-                      slidesPerGroup: 2,
-                    },
-                    540: {
-                      slidesPerView: 3,
-                      spaceBetween: 10,
-                      slidesPerGroup: 3,
-                    },
+      <div className="ms-mainpage">
+        <div className="box-new_music" style={{ marginTop: "80px" }}>
+          <div className="box-header">
+            <span className="box-title"># Music</span>
+          </div>
 
-                    1024: {
-                      slidesPerView: 4,
-                      spaceBetween: 10,
-                      slidesPerGroup: 4,
-                    },
-                    1280: {
-                      slidesPerView: 6,
-                      spaceBetween: 10,
-                      slidesPerGroup: 6,
-                    },
-                  }}
-                  className="new-music_slider"
-                >
-                  {musicsArtist &&
-                    musicsArtist.length > 0 &&
-                    musicsArtist.map((item, i) => {
-                      return (
-                        <SwiperSlide key={i}>
-                          <div className="new-music-item">
-                            <div className="item-thumbnail">
-                              <div className="item-thumbnail_hover"></div>
-                              <div className="item-play_icon">
-                                <i
-                                  className="fa fa-heart"
-                                  style={checkMusicHearted(item._id) ? { color: "#ff6e6e" } : { color: "" }}
-                                  onClick={() => handleClickHeart(item)}
-                                ></i>
-                                <div className="item-thumbnail__icon--play">
-                                  {currentMusic._id === item._id && isAudioPlay ? (
-                                    <Audio
-                                      style={{
-                                        width: "50%",
-                                        height: "50%",
-                                      }}
-                                    />
-                                  ) : (
-                                    <i
-                                      className="fa fa-play"
-                                      aria-hidden="true"
-                                      onClick={() => handleChangeMusic(item)}
-                                    ></i>
-                                  )}
-                                </div>
-                                <AiOutlinePlus onClick={() => handleClickAddMusic(item)} />
-                              </div>
-                              <img src={item.thumbnail} alt="" />
-                            </div>
-                            <div className="item-desc">
-                              <span className="item-name">
-                                <a title={item.name}>{item.name}</a>
-                              </span>
-                              <span className="item_desc">{profileArtist.name}</span>
-                            </div>
-                          </div>
-                        </SwiperSlide>
-                      );
-                    })}
-                </Swiper>
-              </div>
-            </div>
+          <div className="new-music" style={{ display: "flex", justifyContent: "center" }}>
+            {isLoading &&
+              Array.from({ length: 2 }).map((item, i) => {
+                return (
+                  <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
+                    <div className="new-music-item" style={{ width: "unset" }}>
+                      <div className="item-thumbnail">
+                        <Skeleton height={178} width={188} />
+                      </div>
+                      <div className="item-desc">
+                        <span className="item-name">
+                          <Skeleton />
+                        </span>
+                        <span className="item_desc">
+                          <Skeleton />
+                        </span>
+                      </div>
+                    </div>
+                  </SkeletonTheme>
+                );
+              })}
+
+            {!isLoading &&
+              dataMusic &&
+              dataMusic.length > 0 &&
+              dataMusic.map((item, i) => {
+                return (
+                  <div className="new-music-item" style={{ width: "190px" }} key={i}>
+                    <div className="item-thumbnail">
+                      <div className="item-thumbnail_hover"></div>
+                      <div className="item-play_icon">
+                        <i
+                          className="fa fa-heart"
+                          style={checkMusicHearted(item._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }}
+                          onClick={() => handleClickHeart(item)}
+                        ></i>
+                        <div className="item-thumbnail__icon--play">
+                          {currentMusic._id === item._id && isAudioPlay ? (
+                            <Audio
+                              style={{
+                                width: "50%",
+                                height: "50%",
+                              }}
+                            />
+                          ) : (
+                            <i className="fa fa-play" aria-hidden="true" onClick={() => handleChangeMusic(item)}></i>
+                          )}
+                        </div>
+                        <AiOutlinePlus onClick={() => handleClickAddMusic(item)} />
+                      </div>
+                      <img src={item.thumbnail} alt="" />
+                    </div>
+                    <div className="item-desc">
+                      <span className="item-name">
+                        <a title={item.name}>{item.name}</a>
+                      </span>
+                      <span className="item_desc">{item.artist[0].name}</span>
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 };
-export default ArtistDetail;
+export default Musics;

@@ -82,6 +82,7 @@
   }
 
   &__icon {
+    align-items: center;
     display: flex;
     justify-content: space-around;
     width: 80px;
@@ -143,9 +144,6 @@
 
     .range {
       @include widthHeight(310px, 3px);
-      &:hover {
-        height: 5px;
-      }
     }
   }
 }
@@ -160,6 +158,10 @@
     .volume-icon {
       display: flex;
       @include flex(center, center);
+    }
+
+    & .range-volume {
+      @include widthHeight(90px, 3px);
     }
 
     input[type="range"] {

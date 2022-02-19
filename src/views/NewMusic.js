@@ -33,8 +33,11 @@ import {
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import SwiperCore, { Autoplay, Pagination, Navigation } from "swiper";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { filterListHeartsDetail, checkMusicHearted } from "./utils/hearts";
+import { IconButton } from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import AddIcon from "@mui/icons-material/Add";
 SwiperCore.use([Pagination, Navigation]);
 
 const NewMusic = () => {
@@ -312,6 +315,9 @@ const NewMusic = () => {
       <div className="box-new_music" style={{ marginTop: "0px" }}>
         <div className="box-header">
           <span className="box-title">New Music</span>
+          <Link to="/musics">
+            <span className="box-more">Xem thêm</span>
+          </Link>
         </div>
 
         <div className="new-music" style={{ display: "flex" }}>
@@ -376,7 +382,9 @@ const NewMusic = () => {
                           <span className="item-name">
                             <a title={item.name}>{item.name}</a>
                           </span>
-                          <span className="item_desc">{item.artist[0].name}</span>
+                          <span className="item_desc">
+                            <Link to={"/artist/" + item.artist[0]._id}>{item.artist[0].name}</Link>
+                          </span>
                         </div>
                       </div>
                     );
@@ -456,7 +464,9 @@ const NewMusic = () => {
                           <span className="item-name">
                             <a title={item.name}>{item.name}</a>
                           </span>
-                          <span className="item_desc">{item.artist[0].name}</span>
+                          <span className="item_desc">
+                            <Link to={"/artist/" + item.artist[0]._id}>{item.artist[0].name}</Link>
+                          </span>
                         </div>
                       </div>
                     </SwiperSlide>

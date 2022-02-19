@@ -2,6 +2,7 @@ import "../styles/footer.scss";
 import { RiFacebookFill } from "react-icons/ri";
 import { IoLogoInstagram } from "react-icons/io";
 import { AiOutlineTwitter } from "react-icons/ai";
+import { IconButton } from "@mui/material";
 const Footer = () => {
   return (
     <>
@@ -31,15 +32,21 @@ const Footer = () => {
           </div>
         </div>
         <div className="social">
-          <div className="social-btn">
-            <RiFacebookFill />
-          </div>
-          <div className="social-btn">
-            <IoLogoInstagram />
-          </div>
-          <div className="social-btn">
-            <AiOutlineTwitter />
-          </div>
+          <IconButton aria-label="social btn">
+            <div className="social-btn">
+              <RiFacebookFill />
+            </div>
+          </IconButton>
+          <IconButton aria-label="social btn">
+            <div className="social-btn">
+              <IoLogoInstagram />
+            </div>
+          </IconButton>
+          <IconButton aria-label="social btn">
+            <div className="social-btn">
+              <AiOutlineTwitter />
+            </div>
+          </IconButton>
         </div>
       </footer>
     </>

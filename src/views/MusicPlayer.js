@@ -29,6 +29,10 @@ import {
 } from "../redux/actions";
 import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
 import { filterListHeartsDetail, checkMusicHearted } from "./utils/hearts";
+import { Slider, IconButton } from "@mui/material";
+import { PlayArrowRounded, PauseRounded, FastForwardRounded, FastRewindRounded } from "@mui/icons-material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import AddIcon from "@mui/icons-material/Add";
 const MusicPlayer = () => {
   const dataMyPlaylist = useSelector((state) => state.addMyPlaylist);
   const dataMyPlaylistUser = useSelector((state) => state.addMyPlaylistUser);
@@ -43,7 +47,6 @@ const MusicPlayer = () => {
   const [isMouseValue, setIsMouseValue] = useState(false);
   const [musicPlayer, setMusicPlayer] = useState();
   const [navDown, setNavDown] = useState();
-
   const [musicInfo, setMusicInfo] = useState();
   const [navi, setNavi] = useState();
   const [menuRight, setMenuRight] = useState();
@@ -415,45 +418,61 @@ const MusicPlayer = () => {
                   aria-hidden="true"
                   onClick={(e) => handleOnOffMusic(e)}
                 ></i>
-                <i
-                  className="fa fa-heart"
-                  style={checkMusicHearted(currentMusic._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }}
-                  onClick={(e) => handleClickHeart(currentMusic, e)}
-                ></i>
-                <AiOutlinePlus onClick={(e) => handleClickAddMusic(currentMusic, e)} />
+                <IconButton aria-label="favorite music" onClick={(e) => handleClickHeart(currentMusic, e)}>
+                  <FavoriteIcon
+                    fontSize="small"
+                    color={checkMusicHearted(currentMusic._id, myListHearts) ? "error" : "inherit"}
+                  />
+                </IconButton>
+                <IconButton aria-label="add music" onClick={(e) => handleClickAddMusic(currentMusic, e)}>
+                  <AddIcon fontSize="small" />
+                </IconButton>
+                {/* <AiOutlinePlus onClick={(e) => handleClickAddMusic(currentMusic, e)} /> */}
               </div>
             </div>
             {/* Music Process Bar */}
+
             <audio id="audio" src={currentMusic.link}></audio>
             <div className="music-process">
               <div className="playbar-top">
-                <i className="fa fa-step-backward" aria-hidden="true" onClick={(e) => handleClickPrevious(e)}></i>
+                <IconButton aria-label="previous song" onClick={(e) => handleClickPrevious(e)}>
+                  <FastRewindRounded fontSize="large" />
+                </IconButton>
                 <div className="playbar-top__icon--play">
-                  <i
+                  <IconButton
+                    color="inherit"
+                    aria-label={!isAudioPlay ? "play" : "pause"}
+                    onClick={(e) => handleOnOffMusic(e)}
+                  >
+                    {!isAudioPlay ? (
+                      <PlayArrowRounded color="#ffffff" sx={{ fontSize: "2rem" }} />
+                    ) : (
+                      <PauseRounded sx={{ fontSize: "2rem" }} />
+                    )}
+                  </IconButton>
+                  {/* <i
                     className={!isAudioPlay ? "fa play-icon fa-play" : "fa play-icon fa-pause"}
                     aria-hidden="true"
                     onClick={(e) => handleOnOffMusic(e)}
-                  ></i>
+                  ></i> */}
                 </div>
-
-                <i className="fa fa-step-forward" aria-hidden="true" onClick={(e) => handleClickNext(e)}></i>
+                <IconButton aria-label="previous song" onClick={(e) => handleClickNext(e)}>
+                  <FastForwardRounded fontSize="large" />
+                </IconButton>
               </div>
               <div className="playbar-bottom">
                 <span className="playbar-bottom__time--left">
                   {getMusicDuration && getMusicDuration.minutesCurrent ? getMusicDuration.minutesCurrent : "0"}:
                   {getMusicDuration && getMusicDuration.secondsCurrent ? getMusicDuration.secondsCurrent : "00"}
                 </span>
-
-                <input
+                <Slider
+                  className="range"
                   onMouseDown={() => handleChangeValueMouseDown()}
                   onMouseLeave={() => handleChangeValueMouseLeave()}
                   onChange={(e) => handleChangeValue(e)}
-                  type="range"
-                  className="range"
-                  name="vol"
                   value={getMusicDuration && getMusicDuration.valueCurrent ? getMusicDuration.valueCurrent : "0"}
-                  min="0"
-                  max="100"
+                  size="small"
+                  aria-label="Small"
                 />
 
                 <span className="playbar-bottom__time--right">
@@ -474,7 +493,20 @@ const MusicPlayer = () => {
                     <BiVolumeMute />
                   )}
                 </div>
-                <input
+                <Slider
+                  sx={{ ml: 1 }}
+                  size="small"
+                  className="range-volume"
+                  onMouseDown={() => handleChangeValueMouseDown()}
+                  onMouseLeave={() => handleChangeValueMouseLeave()}
+                  onChange={(e) => handleChangeVolume(e)}
+                  aria-label="Volume"
+                  min={0}
+                  max={1}
+                  step={0.1}
+                  value={musicVolume}
+                />
+                {/* <input
                   onMouseDown={() => handleChangeValueMouseDown()}
                   onMouseLeave={() => handleChangeValueMouseLeave()}
                   onChange={(e) => handleChangeVolume(e)}
@@ -484,7 +516,7 @@ const MusicPlayer = () => {
                   max="1"
                   step="0.1"
                   value={musicVolume}
-                />
+                /> */}
               </div>
             </div>
           </>

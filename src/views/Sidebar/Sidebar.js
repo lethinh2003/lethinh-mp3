@@ -55,15 +55,9 @@ const Sidebar = (props) => {
 
             <div className="ms-navbar__item">
               <span className="ms-navbar__item--icon">
-                <MdFeaturedPlayList />
-              </span>
-              <span className="ms-navbar__item--title">Playlists</span>
-            </div>
-            <div className="ms-navbar__item">
-              <span className="ms-navbar__item--icon">
                 <FaMicrophone />
               </span>
-              <span className="ms-navbar__item--title">Aartist</span>
+              <span className="ms-navbar__item--title">Artists</span>
             </div>
             <div className="ms-navbar__item">
               <span className="ms-navbar__item--icon">

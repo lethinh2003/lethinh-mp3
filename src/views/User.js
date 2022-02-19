@@ -312,7 +312,7 @@ const User = () => {
                   <span className="header__info--name">{profileUser.name}</span>
                 </a>
                 <span className="header__info--desc">
-                  PLAYLIST: {dataMyPlaylistUser.length} musics, love: {dataMyListHeartsDetail.length} musics
+                  PLAYLIST: {dataMyPlaylistUser.length} musics. FOVORITE: {dataMyListHeartsDetail.length} musics
                 </span>
               </div>
             </div>
@@ -320,6 +320,54 @@ const User = () => {
               <div className="box-new_music" style={{ padding: "unset" }}>
                 <div className="box-header">
                   <span className="box-title">Playlists</span>
+                </div>
+                <div className="new-music__mobile">
+                  <div className="new-music__mobile--wrapper">
+                    {dataMyPlaylistUser &&
+                      dataMyPlaylistUser.length > 0 &&
+                      dataMyPlaylistUser.map((item, i) => {
+                        return (
+                          <div className="new-music-item__mobile" key={i}>
+                            <div className="item-thumbnail">
+                              <div className="item-thumbnail_hover"></div>
+                              <div className="item-play_icon">
+                                <i
+                                  className="fa fa-heart"
+                                  style={
+                                    checkMusicHearted(item._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }
+                                  }
+                                  onClick={() => handleClickHeart(item)}
+                                ></i>
+                                <div className="item-thumbnail__icon--play">
+                                  {currentMusic._id === item._id && isAudioPlay ? (
+                                    <Audio
+                                      style={{
+                                        width: "50%",
+                                        height: "50%",
+                                      }}
+                                    />
+                                  ) : (
+                                    <i
+                                      className="fa fa-play"
+                                      aria-hidden="true"
+                                      onClick={() => handleChangeMusic(item)}
+                                    ></i>
+                                  )}
+                                </div>
+                                <AiOutlinePlus onClick={() => handleClickAddMusic(item)} />
+                              </div>
+                              <img src={item.thumbnail} alt="" />
+                            </div>
+                            <div className="item-desc">
+                              <span className="item-name">
+                                <a title={item.name}>{item.name}</a>
+                              </span>
+                              <span className="item_desc">{item.artist[0].name}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
                 </div>
                 <Swiper
                   loop={false}
@@ -402,7 +450,55 @@ const User = () => {
               </div>
               <div className="box-new_music" style={{ padding: "unset" }}>
                 <div className="box-header">
-                  <span className="box-title">Love</span>
+                  <span className="box-title">Favorite Musics</span>
+                </div>
+                <div className="new-music__mobile">
+                  <div className="new-music__mobile--wrapper">
+                    {dataMyListHeartsDetail &&
+                      dataMyListHeartsDetail.length > 0 &&
+                      dataMyListHeartsDetail.map((item, i) => {
+                        return (
+                          <div className="new-music-item__mobile" key={i}>
+                            <div className="item-thumbnail">
+                              <div className="item-thumbnail_hover"></div>
+                              <div className="item-play_icon">
+                                <i
+                                  className="fa fa-heart"
+                                  style={
+                                    checkMusicHearted(item._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }
+                                  }
+                                  onClick={() => handleClickHeart(item)}
+                                ></i>
+                                <div className="item-thumbnail__icon--play">
+                                  {currentMusic._id === item._id && isAudioPlay ? (
+                                    <Audio
+                                      style={{
+                                        width: "50%",
+                                        height: "50%",
+                                      }}
+                                    />
+                                  ) : (
+                                    <i
+                                      className="fa fa-play"
+                                      aria-hidden="true"
+                                      onClick={() => handleChangeMusic(item)}
+                                    ></i>
+                                  )}
+                                </div>
+                                <AiOutlinePlus onClick={() => handleClickAddMusic(item)} />
+                              </div>
+                              <img src={item.thumbnail} alt="" />
+                            </div>
+                            <div className="item-desc">
+                              <span className="item-name">
+                                <a title={item.name}>{item.name}</a>
+                              </span>
+                              <span className="item_desc">{item.artist[0].name}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
                 </div>
                 <Swiper
                   loop={false}

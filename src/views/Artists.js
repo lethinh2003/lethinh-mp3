@@ -41,6 +41,7 @@ const Artists = () => {
       <div className="box-new_music" style={{ marginTop: "0px" }}>
         <div className="box-header">
           <span className="box-title">Artists</span>
+          <span className="box-more">Xem thêm</span>
         </div>
 
         <div className="new-music" style={{ display: "flex" }}>
@@ -71,7 +72,7 @@ const Artists = () => {
                   data.length > 0 &&
                   data.map((item, i) => {
                     return (
-                      <div className="artist-item__mobile">
+                      <div className="artist-item__mobile" key={i}>
                         <div className="item-thumbnail">
                           <div className="item-thumbnail_hover"></div>
                           <div className="item-play_icon">

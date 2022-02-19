@@ -63,7 +63,6 @@
     align-items: flex-start;
     flex: 1;
 
-    gap: 15px;
     @include tablet {
       justify-content: flex-end;
     }

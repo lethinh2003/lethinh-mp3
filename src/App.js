@@ -34,6 +34,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
 import ScrollToTop from "./views/utils/ScrollToTop";
 import useQuery from "./views/utils/useQuery";
+import Musics from "./views/Musics";
 
 function App() {
   ////CONFIG DEFAULT AXIOS
@@ -86,6 +87,9 @@ function App() {
             <Logout />
           </Route>
 
+          <Route path="/musics/">
+            <Musics />
+          </Route>
           <Route path="/user/:id">
             <User />
           </Route>
