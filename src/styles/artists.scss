@@ -1,5 +1,6 @@
 @import "../scss/_variables.scss";
 @import "../scss/_mixin.scss";
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;700&display=swap");
 .swiper-container {
   overflow: hidden;
   width: 100%;
@@ -15,21 +16,51 @@
   position: absolute;
 }
 
-.box-artists-sliders {
+.box-artists-sliders,
+.box-introduce-sliders {
   padding: 0 30px;
-
   cursor: pointer;
+  margin-bottom: 25px;
 }
-.box-artists {
+.box-artists,
+.box-introduce {
   border-radius: 20px;
   width: 100%;
-  height: 100%;
+  height: 300px;
   @include flex(center, space-around);
   margin-top: 100px;
   background-color: black;
   gap: 20px;
+  position: relative;
+
+  @include mobileSpecific(540px) {
+    height: 200px;
+  }
+
+  &.box-1 {
+    background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+  }
+  &.box-2 {
+    background-image: linear-gradient(120deg, #b9d775 0%, #40dd55 100%);
+  }
+  &.box-3 {
+    background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
+  }
+  &.box-n {
+    background-image: linear-gradient(120deg, #252527 0%, #140102 100%);
+  }
+
+  &__detail {
+    gap: 5px;
+    padding: 0 30px;
+    @include widthHeight(100%, 100%);
+    display: flex;
+    position: absolute;
+    align-items: center;
+  }
 }
-.artists-info {
+.artists-info,
+.introduce-info {
   display: flex;
   flex-direction: column;
   @include widthHeight(350px, 150px);
@@ -37,10 +68,13 @@
     width: 200px;
   }
 
-  &__name {
-    font-size: $font-size-first + 30;
-    color: $text-color;
-    font-weight: $font-weight;
+  &__name,
+  &__title {
+    font-family: "Noto Sans JP", sans-serif;
+    text-transform: capitalize;
+    font-size: 40px;
+    color: #ffffff;
+    font-weight: bold;
 
     @include mobile {
       font-size: 24px;
@@ -48,9 +82,8 @@
   }
 
   &__desc {
-    font-size: $font-size-first;
-    color: $text-second-color;
-    font-weight: $font-weight;
+    font-size: 20px;
+    color: #ffffff;
   }
 
   &__btn {
@@ -74,11 +107,27 @@
     }
   }
 }
+.introduce-info {
+  @include widthHeight(unset, unset);
+}
 .artists-image {
   @include widthHeight(440px, 290px);
   @include mobile {
     @include widthHeight(210px, 110px);
   }
+
+  img {
+    @include widthHeight(100%, 100%);
+    object-fit: contain;
+  }
+}
+
+.introduce-image {
+  @include mobile {
+    display: none;
+  }
+  height: 100%;
+  width: 50%;
 
   img {
     @include widthHeight(100%, 100%);

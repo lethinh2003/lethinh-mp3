@@ -1,6 +1,7 @@
 import "./styles/body.scss";
 import "./styles/modal.scss";
-
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import Navigation from "./views/Navigation";
 import MusicPlayer from "./views/MusicPlayer";
 import MainPage from "./views/MainPage";
