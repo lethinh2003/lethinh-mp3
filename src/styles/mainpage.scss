@@ -12,7 +12,6 @@ $margin-primary: 52px;
   @include mobile {
     margin: 0 auto;
     width: 100%;
-    max-height: 250px;
   }
 }
 .box-category {
@@ -102,10 +101,14 @@ $margin-primary: 52px;
   display: block;
 }
 .new-music_slider {
+  @include mobile {
+    display: none;
+  }
   display: flex;
   transform: translateX(0);
   gap: 20px;
   min-height: 250px;
+
   transition: 0.6s linear;
 }
 .box-header {
@@ -703,4 +706,25 @@ $margin-primary: 52px;
       }
     }
   }
+}
+.new-music__mobile,
+.artist__mobile {
+  display: none;
+  margin-bottom: 50px;
+  overflow-x: auto;
+  @include mobile {
+    display: block;
+  }
+
+  &--wrapper {
+    display: flex;
+  }
+}
+.new-music-item__mobile,
+.artist-item__mobile {
+  display: flex;
+  flex-direction: column;
+  padding-left: 5px;
+  min-width: 190px;
+  height: 248px;
 }

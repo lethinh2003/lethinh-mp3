@@ -65,6 +65,39 @@ const Artists = () => {
               );
             })}
           {!isLoading && (
+            <div className="artist__mobile">
+              <div className="artist__mobile--wrapper">
+                {data &&
+                  data.length > 0 &&
+                  data.map((item, i) => {
+                    return (
+                      <div className="artist-item__mobile">
+                        <div className="item-thumbnail">
+                          <div className="item-thumbnail_hover"></div>
+                          <div className="item-play_icon">
+                            <i className="fa fa-heart"></i>
+                            <div className="item-thumbnail__icon--play">
+                              <Link to={"/artist/" + item._id}>
+                                <i className="fa fa-play" aria-hidden="true"></i>
+                              </Link>
+                            </div>
+                            <AiOutlinePlus />
+                          </div>
+                          <img src={item.thumbnail} alt="" />
+                        </div>
+                        <div className="item-desc">
+                          <span className="item-name">
+                            <a title={item.name}>{item.name}</a>
+                          </span>
+                          <span className="item_desc">{item.desc}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+          {!isLoading && (
             <Swiper
               loop={false}
               loopFillGroupWithBlank={true}

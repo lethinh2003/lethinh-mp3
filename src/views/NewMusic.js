@@ -38,57 +38,6 @@ import { filterListHeartsDetail, checkMusicHearted } from "./utils/hearts";
 SwiperCore.use([Pagination, Navigation]);
 
 const NewMusic = () => {
-  const settings = {
-    autoplay: false,
-    arrows: false,
-    dots: true,
-    infinite: false,
-    speed: 1000,
-    slidesToShow: 6,
-    slidesToScroll: 6,
-    responsive: [
-      {
-        breakpoint: 1280,
-        settings: {
-          slidesToShow: 6,
-          slidesToScroll: 6,
-          infinite: true,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 4,
-          slidesToScroll: 4,
-          infinite: true,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 540,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-        },
-      },
-      {
-        breakpoint: 390,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-        },
-      },
-      {
-        breakpoint: 0,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  };
-
   let history = useHistory();
   let currentUser = localStorage.getItem("currentUser");
   if (currentUser) {
@@ -387,48 +336,55 @@ const NewMusic = () => {
               );
             })}
 
-          <Slider {...settings}>
-            {dataMusic &&
-              dataMusic.length > 0 &&
-              dataMusic.map((item, i) => {
-                return (
-                  <div className="new-music-item" key={i}>
-                    <div className="item-thumbnail">
-                      <div className="item-thumbnail_hover"></div>
-                      <div className="item-play_icon">
-                        <i
-                          className="fa fa-heart"
-                          style={checkMusicHearted(item._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }}
-                          onClick={() => handleClickHeart(item)}
-                        ></i>
-                        <div className="item-thumbnail__icon--play">
-                          {currentMusic._id === item._id && isAudioPlay ? (
-                            <Audio
-                              style={{
-                                width: "50%",
-                                height: "50%",
-                              }}
-                            />
-                          ) : (
-                            <i className="fa fa-play" aria-hidden="true" onClick={() => handleChangeMusic(item)}></i>
-                          )}
+          {!isLoading && (
+            <div className="new-music__mobile">
+              <div className="new-music__mobile--wrapper">
+                {dataMusic &&
+                  dataMusic.length > 0 &&
+                  dataMusic.map((item, i) => {
+                    return (
+                      <div className="new-music-item__mobile" key={i}>
+                        <div className="item-thumbnail">
+                          <div className="item-thumbnail_hover"></div>
+                          <div className="item-play_icon">
+                            <i
+                              className="fa fa-heart"
+                              style={checkMusicHearted(item._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }}
+                              onClick={() => handleClickHeart(item)}
+                            ></i>
+                            <div className="item-thumbnail__icon--play">
+                              {currentMusic._id === item._id && isAudioPlay ? (
+                                <Audio
+                                  style={{
+                                    width: "50%",
+                                    height: "50%",
+                                  }}
+                                />
+                              ) : (
+                                <i
+                                  className="fa fa-play"
+                                  aria-hidden="true"
+                                  onClick={() => handleChangeMusic(item)}
+                                ></i>
+                              )}
+                            </div>
+                            <AiOutlinePlus onClick={() => handleClickAddMusic(item)} />
+                          </div>
+                          <img src={item.thumbnail} alt="" />
                         </div>
-                        <AiOutlinePlus onClick={() => handleClickAddMusic(item)} />
+                        <div className="item-desc">
+                          <span className="item-name">
+                            <a title={item.name}>{item.name}</a>
+                          </span>
+                          <span className="item_desc">{item.artist[0].name}</span>
+                        </div>
                       </div>
-                      <img src={item.thumbnail} alt="" />
-                    </div>
-                    <div className="item-desc">
-                      <span className="item-name">
-                        <a title={item.name}>{item.name}</a>
-                      </span>
-                      <span className="item_desc">{item.artist[0].name}</span>
-                    </div>
-                  </div>
-                );
-              })}
-          </Slider>
-
-          {/* {!isLoading && (
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+          {!isLoading && (
             <Swiper
               loop={false}
               loopFillGroupWithBlank={true}
@@ -507,7 +463,7 @@ const NewMusic = () => {
                   );
                 })}
             </Swiper>
-          )} */}
+          )}
         </div>
       </div>
     </>
