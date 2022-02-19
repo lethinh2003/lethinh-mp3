@@ -43,9 +43,9 @@ const Artists = () => {
           <span className="box-title">Artists</span>
         </div>
 
-        <div className="new-music">
+        <div className="new-music" style={{ display: "flex" }}>
           {isLoading &&
-            Array.from({ length: 5 }).map((item, i) => {
+            Array.from({ length: 2 }).map((item, i) => {
               return (
                 <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
                   <div className="category-item" style={{ width: "unset" }}>

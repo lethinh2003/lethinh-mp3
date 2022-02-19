@@ -708,7 +708,8 @@ $margin-primary: 52px;
   }
 }
 .new-music__mobile,
-.artist__mobile {
+.artist__mobile,
+.search__mobile {
   display: none;
   margin-bottom: 50px;
   overflow-x: auto;
@@ -727,4 +728,8 @@ $margin-primary: 52px;
   padding-left: 5px;
   min-width: 190px;
   height: 248px;
+}
+.search-item__pc {
+  display: flex;
+  flex-wrap: wrap;
 }

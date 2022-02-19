@@ -314,12 +314,12 @@ const NewMusic = () => {
           <span className="box-title">New Music</span>
         </div>
 
-        <div className="new-music">
+        <div className="new-music" style={{ display: "flex" }}>
           {isLoading &&
-            Array.from({ length: 5 }).map((item, i) => {
+            Array.from({ length: 2 }).map((item, i) => {
               return (
                 <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
-                  <div className="category-item" style={{ width: "unset" }}>
+                  <div className="new-music-item" style={{ width: "unset" }}>
                     <div className="item-thumbnail">
                       <Skeleton height={178} width={188} />
                     </div>
