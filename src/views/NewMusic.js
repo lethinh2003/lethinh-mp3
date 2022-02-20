@@ -381,10 +381,12 @@ const NewMusic = () => {
                         </div>
                         <div className="item-desc">
                           <span className="item-name">
-                            <a title={item.name}>{item.name}</a>
+                            <a title={item.name} style={{ cursor: "pointer" }} onClick={() => handleChangeMusic(item)}>
+                              {item.name}
+                            </a>
                           </span>
                           <span className="item_desc">
-                            <Link to={"/artist/" + item.artist[0]._id}>{item.artist[0].name}</Link>
+                            <Link to={"/artists/" + item.artist[0]._id}>{item.artist[0].name}</Link>
                           </span>
                         </div>
                       </div>
@@ -463,10 +465,12 @@ const NewMusic = () => {
                         </div>
                         <div className="item-desc">
                           <span className="item-name">
-                            <a title={item.name}>{item.name}</a>
+                            <a title={item.name} style={{ cursor: "pointer" }} onClick={() => handleChangeMusic(item)}>
+                              {item.name}
+                            </a>
                           </span>
                           <span className="item_desc">
-                            <Link to={"/artist/" + item.artist[0]._id}>{item.artist[0].name}</Link>
+                            <Link to={"/artists/" + item.artist[0]._id}>{item.artist[0].name}</Link>
                           </span>
                         </div>
                       </div>

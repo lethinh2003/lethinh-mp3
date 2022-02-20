@@ -35,6 +35,7 @@ import { useSelector, useDispatch } from "react-redux";
 import ScrollToTop from "./views/utils/ScrollToTop";
 import useQuery from "./views/utils/useQuery";
 import Musics from "./views/Musics";
+import AllArtists from "./views/AllArtists";
 
 function App() {
   ////CONFIG DEFAULT AXIOS
@@ -90,10 +91,13 @@ function App() {
           <Route path="/musics/">
             <Musics />
           </Route>
-          <Route path="/user/:id">
+          <Route path="/artists/" exact={true}>
+            <AllArtists />
+          </Route>
+          <Route path="/users/:id">
             <User />
           </Route>
-          <Route path="/artist/:id">
+          <Route path="/artists/:id">
             <ArtistDetail />
           </Route>
 

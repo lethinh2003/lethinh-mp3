@@ -41,7 +41,9 @@ const Artists = () => {
       <div className="box-new_music" style={{ marginTop: "0px" }}>
         <div className="box-header">
           <span className="box-title">Artists</span>
-          <span className="box-more">Xem thêm</span>
+          <Link to="/artists">
+            <span className="box-more">Xem thêm</span>
+          </Link>
         </div>
 
         <div className="new-music" style={{ display: "flex" }}>
@@ -76,7 +78,7 @@ const Artists = () => {
                           <div className="item-play_icon">
                             <i className="fa fa-heart"></i>
                             <div className="item-thumbnail__icon--play">
-                              <Link to={"/artist/" + item._id}>
+                              <Link to={"/artists/" + item._id}>
                                 <i className="fa fa-play" aria-hidden="true"></i>
                               </Link>
                             </div>
@@ -86,7 +88,9 @@ const Artists = () => {
                         </div>
                         <div className="item-desc">
                           <span className="item-name">
-                            <a title={item.name}>{item.name}</a>
+                            <Link to={"/artists/" + item._id}>
+                              <a title={item.name}>{item.name}</a>
+                            </Link>
                           </span>
                           <span className="item_desc">{item.desc}</span>
                         </div>
@@ -141,7 +145,7 @@ const Artists = () => {
                           <div className="item-play_icon">
                             <i className="fa fa-heart"></i>
                             <div className="item-thumbnail__icon--play">
-                              <Link to={"/artist/" + item._id}>
+                              <Link to={"/artists/" + item._id}>
                                 <i className="fa fa-play" aria-hidden="true"></i>
                               </Link>
                             </div>

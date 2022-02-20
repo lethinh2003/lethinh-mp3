@@ -3,6 +3,9 @@ import { FaSignInAlt } from "react-icons/fa";
 import { ImHome } from "react-icons/im";
 import { MdUpload } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
+import { FaMicrophone } from "react-icons/fa";
+import { GiLoveSong } from "react-icons/gi";
+
 import { NavLink, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserLogin, removeUserLogin, accessAccount, btnLogin, btnUpload } from "../../redux/actions";
@@ -78,6 +81,14 @@ const SidebarMobile = (props) => {
                 </div>
               </>
             )}
+            <NavLink to="/" activeClassName="active-mobile" exact>
+              <div className="sidebar-body__feature" onClick={() => handleCloseSidebar()}>
+                <span className="sidebar-body__feature--icon">
+                  <ImHome />
+                </span>
+                <span className="sidebar-body__feature--title">Trang chủ</span>
+              </div>
+            </NavLink>
             {dataUser && (
               <>
                 <div className="sidebar-body__feature" onClick={() => handleClickUpload()}>
@@ -86,7 +97,7 @@ const SidebarMobile = (props) => {
                   </span>
                   <span className="sidebar-body__feature--title">Upload</span>
                 </div>
-                <NavLink to={`/user/${dataUser._id}`} activeClassName="active-mobile" exact>
+                <NavLink to={`/users/${dataUser._id}`} activeClassName="active-mobile" exact>
                   <div className="sidebar-body__feature" onClick={() => handleCloseSidebar()}>
                     <span className="sidebar-body__feature--icon">
                       <CgProfile />
@@ -96,12 +107,20 @@ const SidebarMobile = (props) => {
                 </NavLink>
               </>
             )}
-            <NavLink to="/" activeClassName="active-mobile" exact>
+            <NavLink to={`/musics`} activeClassName="active-mobile" exact>
               <div className="sidebar-body__feature" onClick={() => handleCloseSidebar()}>
                 <span className="sidebar-body__feature--icon">
-                  <ImHome />
+                  <GiLoveSong />
                 </span>
-                <span className="sidebar-body__feature--title">Trang chủ</span>
+                <span className="sidebar-body__feature--title">Âm nhạc</span>
+              </div>
+            </NavLink>
+            <NavLink to={`/artists`} activeClassName="active-mobile" exact>
+              <div className="sidebar-body__feature" onClick={() => handleCloseSidebar()}>
+                <span className="sidebar-body__feature--icon">
+                  <FaMicrophone />
+                </span>
+                <span className="sidebar-body__feature--title">Nghệ sĩ</span>
               </div>
             </NavLink>
           </div>

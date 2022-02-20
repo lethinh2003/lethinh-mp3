@@ -379,7 +379,7 @@ const Musics = () => {
                         <a title={item.name}>{item.name}</a>
                       </span>
                       <span className="item_desc">
-                        <Link to={"/artist/" + item.artist[0]._id}>{item.artist[0].name}</Link>
+                        <Link to={"/artists/" + item.artist[0]._id}>{item.artist[0].name}</Link>
                       </span>
                     </div>
                   </div>

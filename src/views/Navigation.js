@@ -110,7 +110,7 @@ const Navigation = () => {
                     </span>
                   </div>
                   <div className="account__header-btn--detail" ref={accountDetail}>
-                    <Link to={`/user/${dataUser._id}`} className="detail-title" onClick={handleCloseAccountBtn}>
+                    <Link to={`/users/${dataUser._id}`} className="detail-title" onClick={handleCloseAccountBtn}>
                       Profile
                     </Link>
 

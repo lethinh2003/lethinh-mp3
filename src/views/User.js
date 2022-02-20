@@ -35,9 +35,11 @@ import { Audio } from "react-loading-icons";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { Autoplay, Pagination, Navigation } from "swiper";
 import { AiOutlinePlus } from "react-icons/ai";
+import SkeletonMUI from "@mui/material/Skeleton";
 SwiperCore.use([Pagination, Navigation]);
 const User = () => {
   let history = useHistory();
+  const [isLoading, setIsLoading] = useState(true);
   const currentUser = localStorage.getItem("currentUser");
   const [profileUser, setProfileUser] = useState("");
   const TokenAccount = localStorage.getItem("jwt");
@@ -58,12 +60,13 @@ const User = () => {
     try {
       const response = await axios.get("https://random-musics.herokuapp.com/api/v1/users/" + id);
       setProfileUser(response.data.data.data);
-      const myListHearts = localStorage.getItem("MyListHearts");
+      setIsLoading(false);
     } catch (err) {
       if (err.response) {
         toast.error(err.response.data.message);
         errorAuth(err);
       }
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -293,29 +296,38 @@ const User = () => {
 
   return (
     <>
-      {profileUser && (
-        <div className="ms-mainpage">
-          <div className="box-profile">
-            <div className="box-profile__header">
-              <div className="header__avatar">
-                {currentUser && JSON.parse(currentUser)._id === profileUser._id && (
-                  <span className="header__avatar--edit" onClick={() => hanldeClickEdit()}>
-                    <FiEdit2 style={{ fontSize: "60px" }} />
-                    <h3>Edit</h3>
+      <div className="ms-mainpage">
+        <div className="box-profile">
+          <div className="box-profile__header">
+            {isLoading && (
+              <>
+                <Skeleton variant="rectangular" sx={{ width: "100%", height: "118px" }} />
+              </>
+            )}
+            {!isLoading && profileUser && (
+              <>
+                <div className="header__avatar">
+                  {currentUser && JSON.parse(currentUser)._id === profileUser._id && (
+                    <span className="header__avatar--edit" onClick={() => hanldeClickEdit()}>
+                      <FiEdit2 style={{ fontSize: "60px" }} />
+                      <h3>Edit</h3>
+                    </span>
+                  )}
+                  <img src={profileUser.avatar} />
+                </div>
+                <div className="header__info">
+                  <span className="header__info--title">Profile</span>
+                  <a title={profileUser.name}>
+                    <span className="header__info--name">{profileUser.name}</span>
+                  </a>
+                  <span className="header__info--desc">
+                    PLAYLIST: {dataMyPlaylistUser.length} musics. FOVORITE: {dataMyListHeartsDetail.length} musics
                   </span>
-                )}
-                <img src={profileUser.avatar} />
-              </div>
-              <div className="header__info">
-                <span className="header__info--title">Profile</span>
-                <a title={profileUser.name}>
-                  <span className="header__info--name">{profileUser.name}</span>
-                </a>
-                <span className="header__info--desc">
-                  PLAYLIST: {dataMyPlaylistUser.length} musics. FOVORITE: {dataMyListHeartsDetail.length} musics
-                </span>
-              </div>
-            </div>
+                </div>
+              </>
+            )}
+          </div>
+          {!isLoading && profileUser && (
             <div className="box-profile__body">
               <div className="box-new_music" style={{ padding: "unset" }}>
                 <div className="box-header">
@@ -360,9 +372,17 @@ const User = () => {
                             </div>
                             <div className="item-desc">
                               <span className="item-name">
-                                <a title={item.name}>{item.name}</a>
+                                <a
+                                  title={item.name}
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => handleChangeMusic(item)}
+                                >
+                                  {item.name}
+                                </a>
                               </span>
-                              <span className="item_desc">{item.artist[0].name}</span>
+                              <span className="item_desc">
+                                <Link to={"/artists/" + item.artist[0]._id}>{item.artist[0].name}</Link>
+                              </span>
                             </div>
                           </div>
                         );
@@ -438,9 +458,17 @@ const User = () => {
                             </div>
                             <div className="item-desc">
                               <span className="item-name">
-                                <a title={item.name}>{item.name}</a>
+                                <a
+                                  title={item.name}
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => handleChangeMusic(item)}
+                                >
+                                  {item.name}
+                                </a>
                               </span>
-                              <span className="item_desc">{item.artist[0].name}</span>
+                              <span className="item_desc">
+                                <Link to={"/artists/" + item.artist[0]._id}>{item.artist[0].name}</Link>
+                              </span>
                             </div>
                           </div>
                         </SwiperSlide>
@@ -491,9 +519,17 @@ const User = () => {
                             </div>
                             <div className="item-desc">
                               <span className="item-name">
-                                <a title={item.name}>{item.name}</a>
+                                <a
+                                  title={item.name}
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => handleChangeMusic(item)}
+                                >
+                                  {item.name}
+                                </a>
                               </span>
-                              <span className="item_desc">{item.artist[0].name}</span>
+                              <span className="item_desc">
+                                <Link to={"/artists/" + item.artist[0]._id}>{item.artist[0].name}</Link>
+                              </span>
                             </div>
                           </div>
                         );
@@ -569,9 +605,17 @@ const User = () => {
                             </div>
                             <div className="item-desc">
                               <span className="item-name">
-                                <a title={item.name}>{item.name}</a>
+                                <a
+                                  title={item.name}
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => handleChangeMusic(item)}
+                                >
+                                  {item.name}
+                                </a>
                               </span>
-                              <span className="item_desc">{item.artist[0].name}</span>
+                              <span className="item_desc">
+                                <Link to={"/artists/" + item.artist[0]._id}>{item.artist[0].name}</Link>
+                              </span>
                             </div>
                           </div>
                         </SwiperSlide>
@@ -580,9 +624,9 @@ const User = () => {
                 </Swiper>
               </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </>
   );
 };

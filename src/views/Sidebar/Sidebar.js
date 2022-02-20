@@ -43,7 +43,7 @@ const Sidebar = (props) => {
               </div>
             </NavLink>
             {dataUser && (
-              <NavLink to={`/user/${dataUser._id}`} activeClassName="active" exact>
+              <NavLink to={`/users/${dataUser._id}`} activeClassName="active" exact>
                 <div className="ms-navbar__item">
                   <span className="ms-navbar__item--icon">
                     <CgProfile />
@@ -52,19 +52,22 @@ const Sidebar = (props) => {
                 </div>
               </NavLink>
             )}
-
-            <div className="ms-navbar__item">
-              <span className="ms-navbar__item--icon">
-                <FaMicrophone />
-              </span>
-              <span className="ms-navbar__item--title">Artists</span>
-            </div>
-            <div className="ms-navbar__item">
-              <span className="ms-navbar__item--icon">
-                <GiLoveSong />
-              </span>
-              <span className="ms-navbar__item--title">Songs</span>
-            </div>
+            <NavLink to={`/artists`} activeClassName="active" exact>
+              <div className="ms-navbar__item">
+                <span className="ms-navbar__item--icon">
+                  <FaMicrophone />
+                </span>
+                <span className="ms-navbar__item--title">Artists</span>
+              </div>
+            </NavLink>
+            <NavLink to={`/musics`} activeClassName="active" exact>
+              <div className="ms-navbar__item">
+                <span className="ms-navbar__item--icon">
+                  <GiLoveSong />
+                </span>
+                <span className="ms-navbar__item--title">Songs</span>
+              </div>
+            </NavLink>
           </div>
         </div>
       </aside>

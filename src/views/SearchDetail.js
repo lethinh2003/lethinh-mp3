@@ -477,7 +477,7 @@ const SearchDetail = (props) => {
                             <div className="item-play_icon">
                               <i className="fa fa-heart"></i>
                               <div className="item-thumbnail__icon--play">
-                                <Link to={"/artist/" + item._id}>
+                                <Link to={"/artists/" + item._id}>
                                   <i className="fa fa-play" aria-hidden="true"></i>
                                 </Link>
                               </div>
@@ -508,7 +508,7 @@ const SearchDetail = (props) => {
                             <div className="item-play_icon">
                               <i className="fa fa-heart"></i>
                               <div className="item-thumbnail__icon--play">
-                                <Link to={"/artist/" + item._id}>
+                                <Link to={"/artists/" + item._id}>
                                   <i className="fa fa-play" aria-hidden="true"></i>
                                 </Link>
                               </div>

@@ -732,19 +732,22 @@ $margin-primary: 52px;
   display: flex;
   flex-wrap: wrap;
 }
-.box-all_music {
+.box-all_music,
+.box-all_artist {
   display: flex;
   flex-direction: column;
   padding: 0 30px;
   z-index: 4;
   margin-top: 80px;
 }
-.all-music {
+.all-music,
+.all-artist {
   justify-content: space-around;
   display: flex;
   flex-wrap: wrap;
 }
-.all-music-item {
+.all-music-item,
+.all-artist-item {
   display: flex;
   flex-direction: column;
   padding-left: 5px;

@@ -21,6 +21,7 @@ import {
   removeMyListHeartsDetail,
 } from "../redux/actions";
 import errorAuth from "./utils/errorAuth";
+import { Link } from "react-router-dom";
 import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
 import { Audio } from "react-loading-icons";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -303,8 +304,8 @@ const ArtistDetail = () => {
 
   return (
     <>
-      {profileArtist && musicsArtist && (
-        <div className="ms-mainpage">
+      <div className="ms-mainpage">
+        {profileArtist && musicsArtist && (
           <div className="box-profile">
             <div className="box-profile__header artist">
               <div className="header__avatar">
@@ -324,6 +325,62 @@ const ArtistDetail = () => {
               <div className="box-new_music" style={{ padding: "unset" }}>
                 <div className="box-header">
                   <span className="box-title">Musics</span>
+                </div>
+                <div className="new-music__mobile">
+                  <div className="new-music__mobile--wrapper">
+                    {musicsArtist &&
+                      musicsArtist.length > 0 &&
+                      musicsArtist.map((item, i) => {
+                        return (
+                          <div className="new-music-item__mobile" key={i}>
+                            <div className="item-thumbnail">
+                              <div className="item-thumbnail_hover"></div>
+                              <div className="item-play_icon">
+                                <i
+                                  className="fa fa-heart"
+                                  style={
+                                    checkMusicHearted(item._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }
+                                  }
+                                  onClick={() => handleClickHeart(item)}
+                                ></i>
+                                <div className="item-thumbnail__icon--play">
+                                  {currentMusic._id === item._id && isAudioPlay ? (
+                                    <Audio
+                                      style={{
+                                        width: "50%",
+                                        height: "50%",
+                                      }}
+                                    />
+                                  ) : (
+                                    <i
+                                      className="fa fa-play"
+                                      aria-hidden="true"
+                                      onClick={() => handleChangeMusic(item)}
+                                    ></i>
+                                  )}
+                                </div>
+                                <AiOutlinePlus onClick={() => handleClickAddMusic(item)} />
+                              </div>
+                              <img src={item.thumbnail} alt="" />
+                            </div>
+                            <div className="item-desc">
+                              <span className="item-name">
+                                <a
+                                  title={item.name}
+                                  onClick={() => handleChangeMusic(item)}
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  {item.name}
+                                </a>
+                              </span>
+                              <span className="item_desc">
+                                <Link to={"/artists/" + profileArtist._id}>{profileArtist.name}</Link>
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
                 </div>
                 <Swiper
                   loop={false}
@@ -394,9 +451,17 @@ const ArtistDetail = () => {
                             </div>
                             <div className="item-desc">
                               <span className="item-name">
-                                <a title={item.name}>{item.name}</a>
+                                <a
+                                  title={item.name}
+                                  onClick={() => handleChangeMusic(item)}
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  {item.name}
+                                </a>
                               </span>
-                              <span className="item_desc">{profileArtist.name}</span>
+                              <span className="item_desc">
+                                <Link to={"/artists/" + profileArtist._id}>{profileArtist.name}</Link>
+                              </span>
                             </div>
                           </div>
                         </SwiperSlide>
@@ -406,8 +471,8 @@ const ArtistDetail = () => {
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 };
