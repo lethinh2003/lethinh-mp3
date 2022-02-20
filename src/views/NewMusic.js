@@ -38,6 +38,7 @@ import { filterListHeartsDetail, checkMusicHearted } from "./utils/hearts";
 import { IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddIcon from "@mui/icons-material/Add";
+import SkeletonMUI from "@mui/material/Skeleton";
 SwiperCore.use([Pagination, Navigation]);
 
 const NewMusic = () => {
@@ -324,21 +325,21 @@ const NewMusic = () => {
           {isLoading &&
             Array.from({ length: 2 }).map((item, i) => {
               return (
-                <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
-                  <div className="new-music-item" style={{ width: "unset" }}>
+                <>
+                  <div className="new-music-item" style={{ width: "unset" }} key={i}>
                     <div className="item-thumbnail">
-                      <Skeleton height={178} width={188} />
+                      <SkeletonMUI variant="rectangular" width={190} height={188} />
                     </div>
                     <div className="item-desc">
                       <span className="item-name">
-                        <Skeleton />
+                        <SkeletonMUI variant="text" />
                       </span>
                       <span className="item_desc">
-                        <Skeleton />
+                        <SkeletonMUI variant="text" />
                       </span>
                     </div>
                   </div>
-                </SkeletonTheme>
+                </>
               );
             })}
 

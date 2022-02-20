@@ -16,7 +16,32 @@
   padding: 10px;
   color: $text-color;
   justify-content: space-between;
+
+  @include mobile {
+    display: none;
+  }
 }
+.music-player__mobile {
+  transform: translateY(100%);
+  transition: 0.25s linear;
+  cursor: pointer;
+  z-index: 99;
+  height: 150px;
+  background-color: $music-player-bg;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: none;
+  padding: 10px 30px 10px 27px;
+  color: $text-color;
+  justify-content: space-between;
+
+  @include mobile {
+    display: flex;
+  }
+}
+
 .music-info {
   justify-content: space-around;
   color: white;

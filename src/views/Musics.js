@@ -38,6 +38,12 @@ import { filterListHeartsDetail, checkMusicHearted } from "./utils/hearts";
 import { IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddIcon from "@mui/icons-material/Add";
+
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import { styled } from "@mui/material/styles";
+import SkeletonMUI from "@mui/material/Skeleton";
 SwiperCore.use([Pagination, Navigation]);
 const Musics = () => {
   let history = useHistory();
@@ -311,30 +317,30 @@ const Musics = () => {
   return (
     <>
       <div className="ms-mainpage">
-        <div className="box-new_music" style={{ marginTop: "80px" }}>
+        <div className="box-all_music" style={{ marginTop: "80px" }}>
           <div className="box-header">
-            <span className="box-title"># Music</span>
+            <span className="box-title" style={{ fontSize: "30px" }}>
+              # Music
+            </span>
           </div>
 
-          <div className="new-music" style={{ display: "flex", justifyContent: "center" }}>
+          <div className="all-music">
             {isLoading &&
-              Array.from({ length: 2 }).map((item, i) => {
+              Array.from({ length: 20 }).map((item, i) => {
                 return (
-                  <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
-                    <div className="new-music-item" style={{ width: "unset" }}>
-                      <div className="item-thumbnail">
-                        <Skeleton height={178} width={188} />
-                      </div>
-                      <div className="item-desc">
-                        <span className="item-name">
-                          <Skeleton />
-                        </span>
-                        <span className="item_desc">
-                          <Skeleton />
-                        </span>
-                      </div>
+                  <div className="all-music-item" key={i}>
+                    <div className="item-thumbnail">
+                      <SkeletonMUI variant="rectangular" width={"inherit"} height={188} />
                     </div>
-                  </SkeletonTheme>
+                    <div className="item-desc">
+                      <span className="item-name">
+                        <SkeletonMUI variant="text" />
+                      </span>
+                      <span className="item_desc">
+                        <SkeletonMUI variant="text" />
+                      </span>
+                    </div>
+                  </div>
                 );
               })}
 
@@ -343,7 +349,7 @@ const Musics = () => {
               dataMusic.length > 0 &&
               dataMusic.map((item, i) => {
                 return (
-                  <div className="new-music-item" style={{ width: "190px" }} key={i}>
+                  <div className="all-music-item" key={i}>
                     <div className="item-thumbnail">
                       <div className="item-thumbnail_hover"></div>
                       <div className="item-play_icon">
@@ -372,7 +378,9 @@ const Musics = () => {
                       <span className="item-name">
                         <a title={item.name}>{item.name}</a>
                       </span>
-                      <span className="item_desc">{item.artist[0].name}</span>
+                      <span className="item_desc">
+                        <Link to={"/artist/" + item.artist[0]._id}>{item.artist[0].name}</Link>
+                      </span>
                     </div>
                   </div>
                 );

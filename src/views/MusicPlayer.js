@@ -33,7 +33,30 @@ import { Slider, IconButton } from "@mui/material";
 import { PlayArrowRounded, PauseRounded, FastForwardRounded, FastRewindRounded } from "@mui/icons-material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddIcon from "@mui/icons-material/Add";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
+
 const MusicPlayer = () => {
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: "#ffffff",
+      },
+      musicBar: {
+        main: "#535858",
+      },
+    },
+    typography: {
+      fontFamily: ["Readex Pro", "sans-serif"].join(","),
+    },
+  });
   const dataMyPlaylist = useSelector((state) => state.addMyPlaylist);
   const dataMyPlaylistUser = useSelector((state) => state.addMyPlaylistUser);
   const dataListMusic = useSelector((state) => state.listMusic.data);
@@ -370,143 +393,207 @@ const MusicPlayer = () => {
   };
   return (
     <>
-      <FullView
-        musicVolume={musicVolume}
-        handleChangeVolume={handleChangeVolume}
-        currentMusic={currentMusic}
-        handleCloseFullView={handleCloseFullView}
-        handleUpdateStatusAudio={handleUpdateStatusAudio}
-        listCurrentMusic={dataListMusic}
-        handleSetCurrentMusic={handleUpdateCurrentMusic}
-      />
-      <div className="open-playlist" onClick={(e) => handleOpenMenuRight(e)}>
-        <MdQueueMusic />
-      </div>
+      <ThemeProvider theme={theme}>
+        <FullView
+          musicVolume={musicVolume}
+          handleChangeVolume={handleChangeVolume}
+          currentMusic={currentMusic}
+          handleCloseFullView={handleCloseFullView}
+          handleUpdateStatusAudio={handleUpdateStatusAudio}
+          listCurrentMusic={dataListMusic}
+          handleSetCurrentMusic={handleUpdateCurrentMusic}
+        />
+        <div className="open-playlist" onClick={(e) => handleOpenMenuRight(e)}>
+          <MdQueueMusic />
+        </div>
 
-      <div
-        className="music-player"
-        style={
-          Array.isArray(currentMusic) === true ? { transform: "translateY(100%)" } : { transform: "translateY(0px)" }
-        }
-        onClick={!isMouseValue ? () => openFullScreenPlayer() : null}
-      >
-        {Array.isArray(currentMusic) === false && (
-          <>
-            {/* Music Information */}
-            <div className="music-info">
-              <div className="music-info__image">
-                <div
-                  className="music-info__image--icon-play"
-                  style={isAudioPlay ? { display: "block" } : { display: "none" }}
-                >
-                  <Audio
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                    }}
-                  />
-                </div>
-                <img src={currentMusic.thumbnail} alt="" />
-              </div>
-              <div className="music-info__desc">
-                <span className="music-info__desc--name">{currentMusic.name}</span>
-                <span className="music-info__desc--author">{currentMusic.artist[0].name}</span>
-              </div>
-              <div className="music-info__icon">
-                <i
-                  className={!isAudioPlay ? "fa play-icon fa-play" : "fa play-icon fa-pause"}
-                  aria-hidden="true"
-                  onClick={(e) => handleOnOffMusic(e)}
-                ></i>
-                <IconButton aria-label="favorite music" onClick={(e) => handleClickHeart(currentMusic, e)}>
-                  <FavoriteIcon
-                    fontSize="small"
-                    color={checkMusicHearted(currentMusic._id, myListHearts) ? "error" : "inherit"}
-                  />
-                </IconButton>
-                <IconButton aria-label="add music" onClick={(e) => handleClickAddMusic(currentMusic, e)}>
-                  <AddIcon fontSize="small" />
-                </IconButton>
-                {/* <AiOutlinePlus onClick={(e) => handleClickAddMusic(currentMusic, e)} /> */}
-              </div>
-            </div>
-            {/* Music Process Bar */}
-
-            <audio id="audio" src={currentMusic.link}></audio>
-            <div className="music-process">
-              <div className="playbar-top">
-                <IconButton aria-label="previous song" onClick={(e) => handleClickPrevious(e)}>
-                  <FastRewindRounded fontSize="large" />
-                </IconButton>
-                <div className="playbar-top__icon--play">
-                  <IconButton
-                    color="inherit"
-                    aria-label={!isAudioPlay ? "play" : "pause"}
-                    onClick={(e) => handleOnOffMusic(e)}
+        <div
+          className="music-player__mobile"
+          style={
+            Array.isArray(currentMusic) === true ? { transform: "translateY(100%)" } : { transform: "translateY(0px)" }
+          }
+          onClick={!isMouseValue ? () => openFullScreenPlayer() : null}
+        >
+          {Array.isArray(currentMusic) === false && (
+            <>
+              {/* Music Information */}
+              <Card sx={{ display: "flex", width: "100%", boxShadow: "unset" }}>
+                <Box sx={{ display: "flex", flexDirection: "column", width: "calc(100% - 150px)" }}>
+                  <CardContent sx={{ flex: "1 0 auto", padding: "0 16px" }}>
+                    <Typography
+                      component="div"
+                      variant="h5"
+                      sx={{
+                        fontSize: "20px",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        color: "#292929",
+                      }}
+                    >
+                      {currentMusic.name}
+                    </Typography>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontSize: "15px",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        color: "#848283",
+                      }}
+                      component="div"
+                    >
+                      {currentMusic.artist[0].name}
+                    </Typography>
+                  </CardContent>
+                  <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
+                    <IconButton aria-label="previous" onClick={(e) => handleClickPrevious(e)}>
+                      <SkipPreviousIcon />
+                    </IconButton>
+                    <IconButton onClick={(e) => handleOnOffMusic(e)} aria-label="play/pause">
+                      {isAudioPlay ? (
+                        <PauseRounded sx={{ height: 38, width: 38 }} />
+                      ) : (
+                        <PlayArrowIcon sx={{ height: 38, width: 38 }} />
+                      )}
+                    </IconButton>
+                    <IconButton aria-label="next" onClick={(e) => handleClickNext(e)}>
+                      <SkipNextIcon />
+                    </IconButton>
+                  </Box>
+                </Box>
+                <CardMedia component="img" sx={{ width: 150 }} image={currentMusic.thumbnail} alt={currentMusic.name} />
+              </Card>
+            </>
+          )}
+        </div>
+        <div
+          className="music-player"
+          style={
+            Array.isArray(currentMusic) === true ? { transform: "translateY(100%)" } : { transform: "translateY(0px)" }
+          }
+          onClick={!isMouseValue ? () => openFullScreenPlayer() : null}
+        >
+          {Array.isArray(currentMusic) === false && (
+            <>
+              {/* Music Information */}
+              <div className="music-info">
+                <div className="music-info__image">
+                  <div
+                    className="music-info__image--icon-play"
+                    style={isAudioPlay ? { display: "block" } : { display: "none" }}
                   >
-                    {!isAudioPlay ? (
-                      <PlayArrowRounded color="#ffffff" sx={{ fontSize: "2rem" }} />
-                    ) : (
-                      <PauseRounded sx={{ fontSize: "2rem" }} />
-                    )}
+                    <Audio
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                      }}
+                    />
+                  </div>
+                  <img src={currentMusic.thumbnail} alt="" />
+                </div>
+                <div className="music-info__desc">
+                  <span className="music-info__desc--name">{currentMusic.name}</span>
+                  <span className="music-info__desc--author">{currentMusic.artist[0].name}</span>
+                </div>
+                <div className="music-info__icon">
+                  <i
+                    className={!isAudioPlay ? "fa play-icon fa-play" : "fa play-icon fa-pause"}
+                    aria-hidden="true"
+                    onClick={(e) => handleOnOffMusic(e)}
+                  ></i>
+                  <IconButton aria-label="favorite music" onClick={(e) => handleClickHeart(currentMusic, e)}>
+                    <FavoriteIcon
+                      fontSize="small"
+                      color={checkMusicHearted(currentMusic._id, myListHearts) ? "error" : "inherit"}
+                    />
                   </IconButton>
-                  {/* <i
+                  <IconButton aria-label="add music" onClick={(e) => handleClickAddMusic(currentMusic, e)}>
+                    <AddIcon fontSize="small" />
+                  </IconButton>
+                  {/* <AiOutlinePlus onClick={(e) => handleClickAddMusic(currentMusic, e)} /> */}
+                </div>
+              </div>
+              {/* Music Process Bar */}
+
+              <audio id="audio" src={currentMusic.link}></audio>
+              <div className="music-process">
+                <div className="playbar-top">
+                  <IconButton aria-label="previous song" onClick={(e) => handleClickPrevious(e)}>
+                    <FastRewindRounded fontSize="large" />
+                  </IconButton>
+                  <div className="playbar-top__icon--play">
+                    <IconButton
+                      color="inherit"
+                      aria-label={!isAudioPlay ? "play" : "pause"}
+                      onClick={(e) => handleOnOffMusic(e)}
+                    >
+                      {!isAudioPlay ? (
+                        <PlayArrowRounded color="#ffffff" sx={{ fontSize: "2rem" }} />
+                      ) : (
+                        <PauseRounded sx={{ fontSize: "2rem" }} />
+                      )}
+                    </IconButton>
+                    {/* <i
                     className={!isAudioPlay ? "fa play-icon fa-play" : "fa play-icon fa-pause"}
                     aria-hidden="true"
                     onClick={(e) => handleOnOffMusic(e)}
                   ></i> */}
+                  </div>
+                  <IconButton aria-label="previous song" onClick={(e) => handleClickNext(e)}>
+                    <FastForwardRounded fontSize="large" />
+                  </IconButton>
                 </div>
-                <IconButton aria-label="previous song" onClick={(e) => handleClickNext(e)}>
-                  <FastForwardRounded fontSize="large" />
-                </IconButton>
-              </div>
-              <div className="playbar-bottom">
-                <span className="playbar-bottom__time--left">
-                  {getMusicDuration && getMusicDuration.minutesCurrent ? getMusicDuration.minutesCurrent : "0"}:
-                  {getMusicDuration && getMusicDuration.secondsCurrent ? getMusicDuration.secondsCurrent : "00"}
-                </span>
-                <Slider
-                  className="range"
-                  onMouseDown={() => handleChangeValueMouseDown()}
-                  onMouseLeave={() => handleChangeValueMouseLeave()}
-                  onChange={(e) => handleChangeValue(e)}
-                  value={getMusicDuration && getMusicDuration.valueCurrent ? getMusicDuration.valueCurrent : "0"}
-                  size="small"
-                  aria-label="Small"
-                />
+                <div className="playbar-bottom">
+                  <span className="playbar-bottom__time--left">
+                    {getMusicDuration && getMusicDuration.minutesCurrent ? getMusicDuration.minutesCurrent : "0"}:
+                    {getMusicDuration && getMusicDuration.secondsCurrent ? getMusicDuration.secondsCurrent : "00"}
+                  </span>
+                  <Slider
+                    color="musicBar"
+                    className="range"
+                    onMouseDown={() => handleChangeValueMouseDown()}
+                    onMouseLeave={() => handleChangeValueMouseLeave()}
+                    onChange={(e) => handleChangeValue(e)}
+                    value={getMusicDuration && getMusicDuration.valueCurrent ? getMusicDuration.valueCurrent : "0"}
+                    size="small"
+                    aria-label="Small"
+                  />
 
-                <span className="playbar-bottom__time--right">
-                  {getMusicDuration && getMusicDuration.minutesDuration ? getMusicDuration.minutesDuration : "0"}:
-                  {getMusicDuration && getMusicDuration.secondsDuration ? getMusicDuration.secondsDuration : "00"}
-                </span>
-              </div>
-            </div>
-            {/* Control Music */}
-            <div className="music-control">
-              <div className="music-control__volume">
-                <div className="volume-icon">
-                  {musicVolume >= 1 ? (
-                    <BiVolumeFull />
-                  ) : musicVolume > 0 && musicVolume < 1 ? (
-                    <BiVolumeLow />
-                  ) : (
-                    <BiVolumeMute />
-                  )}
+                  <span className="playbar-bottom__time--right">
+                    {getMusicDuration && getMusicDuration.minutesDuration ? getMusicDuration.minutesDuration : "0"}:
+                    {getMusicDuration && getMusicDuration.secondsDuration ? getMusicDuration.secondsDuration : "00"}
+                  </span>
                 </div>
-                <Slider
-                  sx={{ ml: 1 }}
-                  size="small"
-                  className="range-volume"
-                  onMouseDown={() => handleChangeValueMouseDown()}
-                  onMouseLeave={() => handleChangeValueMouseLeave()}
-                  onChange={(e) => handleChangeVolume(e)}
-                  aria-label="Volume"
-                  min={0}
-                  max={1}
-                  step={0.1}
-                  value={musicVolume}
-                />
-                {/* <input
+              </div>
+              {/* Control Music */}
+              <div className="music-control">
+                <div className="music-control__volume">
+                  <div className="volume-icon">
+                    {musicVolume >= 1 ? (
+                      <BiVolumeFull />
+                    ) : musicVolume > 0 && musicVolume < 1 ? (
+                      <BiVolumeLow />
+                    ) : (
+                      <BiVolumeMute />
+                    )}
+                  </div>
+                  <Slider
+                    sx={{ ml: 1 }}
+                    size="small"
+                    color="musicBar"
+                    className="range-volume"
+                    onMouseDown={() => handleChangeValueMouseDown()}
+                    onMouseLeave={() => handleChangeValueMouseLeave()}
+                    onChange={(e) => handleChangeVolume(e)}
+                    aria-label="Volume"
+                    min={0}
+                    max={1}
+                    step={0.1}
+                    value={musicVolume}
+                  />
+                  {/* <input
                   onMouseDown={() => handleChangeValueMouseDown()}
                   onMouseLeave={() => handleChangeValueMouseLeave()}
                   onChange={(e) => handleChangeVolume(e)}
@@ -517,18 +604,19 @@ const MusicPlayer = () => {
                   step="0.1"
                   value={musicVolume}
                 /> */}
+                </div>
               </div>
-            </div>
-          </>
-        )}
-      </div>
+            </>
+          )}
+        </div>
 
-      <MenuRight
-        listCurrentMusic={dataListMusic}
-        currentMusic={currentMusic}
-        isOpenMenuRight={isOpenMenuRight}
-        handleUpdateCurrentMusic={handleUpdateCurrentMusic}
-      />
+        <MenuRight
+          listCurrentMusic={dataListMusic}
+          currentMusic={currentMusic}
+          isOpenMenuRight={isOpenMenuRight}
+          handleUpdateCurrentMusic={handleUpdateCurrentMusic}
+        />
+      </ThemeProvider>
     </>
   );
 };

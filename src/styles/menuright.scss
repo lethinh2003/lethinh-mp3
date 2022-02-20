@@ -16,6 +16,10 @@
 
   &.has-player {
     height: calc(100% - 90px);
+
+    @include mobile {
+      height: calc(100% - 150px);
+    }
   }
 }
 .menu-pre {

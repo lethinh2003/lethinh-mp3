@@ -32,6 +32,12 @@ import errorAuth from "./utils/errorAuth";
 import { findNextMusic, findPreviousMusic } from "./utils/FindIndexMusic";
 import { Audio } from "react-loading-icons";
 import { filterListHeartsDetail, checkMusicHearted } from "./utils/hearts";
+
+import { Button, IconButton } from "@mui/material";
+import SkeletonMUI from "@mui/material/Skeleton";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import AddIcon from "@mui/icons-material/Add";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 const TopPopular = () => {
   let history = useHistory();
   const TokenAccount = localStorage.getItem("jwt");
@@ -290,27 +296,25 @@ const TopPopular = () => {
               dataTopPopular.length === 0 &&
               Array.from({ length: 4 }).map((item, i) => {
                 return (
-                  <SkeletonTheme baseColor="#464646" highlightColor="#191420" key={i}>
-                    <div className="popular-item">
-                      <div className="popular-item__image">
-                        <Skeleton height={40} width={40} />
-                      </div>
-                      <div className="popular-item__desc " style={{ flex: 1 }}>
-                        <span className="popular-item__desc--name">
-                          <Skeleton />
-                        </span>
-                        <span className="popular-item__desc--author">
-                          <Skeleton />
-                        </span>
-                      </div>
-                      <div className="popular-item__icon">
-                        <Skeleton />
-                      </div>
+                  <div className="popular-item" key={i}>
+                    <div className="popular-item__image" style={{ marginLeft: "10px", boxShadow: "unset" }}>
+                      <SkeletonMUI variant="rectangular" width={40} height={40} />
                     </div>
-                  </SkeletonTheme>
+                    <div className="popular-item__desc" style={{ flex: 1 }}>
+                      <span className="popular-item__desc--name">
+                        <SkeletonMUI variant="text" />
+                      </span>
+                      <span className="popular-item__desc--author">
+                        <SkeletonMUI variant="text" />
+                      </span>
+                    </div>
+                    <div className="popular-item__icon">
+                      <SkeletonMUI variant="rectangular" width={20} height={20} />
+                      <SkeletonMUI variant="rectangular" width={20} height={20} />
+                    </div>
+                  </div>
                 );
               })}
-
             {dataTopPopular &&
               dataTopPopular.length > 0 &&
               dataTopPopular.map((item, i) => {
@@ -351,25 +355,26 @@ const TopPopular = () => {
                       <span className="popular-item__desc--author">{item.artist[0].name}</span>
                     </div>
                     <div className="popular-item__icon">
-                      <i
-                        className="fa fa-heart heart-icon"
-                        style={checkMusicHearted(item._id, myListHearts) ? { color: "#ff6e6e" } : { color: "" }}
-                        onClick={() => handleClickHeart(item)}
-                      >
-                        {/* <div className="heart-icon__value">
-                          <span>{item.hearts.length >= 9 ? "9+" : item.hearts.length}</span>
-                        </div> */}
-                      </i>
-                      <AiOutlinePlus className="cursor-pointer" onClick={() => handleClickAddMusic(item)} />
+                      <IconButton aria-label="favorite music" onClick={(e) => handleClickHeart(item)}>
+                        <FavoriteIcon
+                          fontSize="small"
+                          color={checkMusicHearted(item._id, myListHearts) ? "error" : "inherit"}
+                        />
+                      </IconButton>
+                      <IconButton aria-label="add music" onClick={(e) => handleClickAddMusic(item)}>
+                        <AddIcon fontSize="small" />
+                      </IconButton>
                     </div>
                   </div>
                 );
               })}
-            <div className="is-center">
-              <span className="more" ref={loadBtn} onClick={() => handleClickLoadMore()}>
-                Load more
-              </span>
-            </div>
+            {dataTopPopular && dataTopPopular.length > 0 && (
+              <div className="is-center">
+                <span className="more" ref={loadBtn} onClick={() => handleClickLoadMore()}>
+                  Load more
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
